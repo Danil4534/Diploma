@@ -7,6 +7,7 @@ export class User {
     id:UUID;
     @Column()
     fistName: string;
+    
     @Column()
     lastName: string;
 
