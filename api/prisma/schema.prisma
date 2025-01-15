@@ -11,14 +11,14 @@ datasource db {
 }
 
 model Admin {
-  id       String @id
-  username String @unique
+  id       String @id @default(uuid())
+  name String @unique
   email    String @unique
   password String
 }
 
 model Student {
-  id          String       @id
+  id          String       @id @default(uuid())
   name        String
   surname     String
   email       String?      @unique
@@ -31,14 +31,14 @@ model Student {
   parentId    String
   parent      Parent       @relation(fields: [parentId], references: [id])
   classId     Int
-  class       Class        @relation(fields: [classId], references: [id])
+  group       Group        @relation(fields: [classId], references: [id])
   attendances Attendance[]
   results     Result[]
   studentTasks StudentTask[]
 }
 
 model Teacher {
-  id        String    @id
+  id        String   @id @default(uuid())
   name      String
   surname   String
   email     String?   @unique
@@ -50,12 +50,12 @@ model Teacher {
   createdAt DateTime  @default(now())
   subjects  Subject[]
   lessons   Lesson[]
-  classes   Class[]
+  groups   Group[]
   birthday  DateTime
 }
 
 model Parent {
-  id        String    @id
+  id        String   @id @default(uuid())
   username  String    @unique
   name      String
   surname   String
@@ -72,7 +72,7 @@ model Grade {
   level Int @unique
 }
 
-model Class {
+model Group {
   id       Int    @id @default(autoincrement())
   name     String @unique
   capacity Int
@@ -99,8 +99,8 @@ model Lesson {
   endTime   DateTime
   subjectId   Int
   subject     Subject      @relation(fields: [subjectId], references: [id])
-  classId     Int
-  class       Class        @relation(fields: [classId], references: [id])
+  groupId     Int
+  group       Group        @relation(fields: [groupId], references: [id])
   teacherId   String
   teacher     Teacher      @relation(fields: [teacherId], references: [id])
   exams       Exam[]
@@ -178,8 +178,8 @@ model Event {
   description String
   startTime   DateTime
   endTime     DateTime
-  classId Int?
-  class   Class? @relation(fields: [classId], references: [id])
+  groupId Int?
+  group   Group? @relation(fields: [groupId], references: [id])
 }
 
 model Announcement {
@@ -187,8 +187,8 @@ model Announcement {
   title       String
   description String
   date        DateTime
-  classId Int?
-  class   Class? @relation(fields: [classId], references: [id])
+  groupId Int?
+  group   Group? @relation(fields: [groupId], references: [id])
 }
 
 enum UserSex {
