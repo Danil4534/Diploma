@@ -1,0 +1,58 @@
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+export default async function createTrigger() {
+  const functionSql = `
+CREATE OR REPLACE FUNCTION insert_user_role()
+RETURNS TRIGGER AS $$
+DECLARE
+  role text;
+BEGIN
+ 
+  FOREACH role IN ARRAY NEW.role
+  LOOP
+    
+    IF role = 'ADMIN' THEN
+      INSERT INTO Admin (id, name, surname, email, password, phone, address, img, sex, created)
+      VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
+
+    ELSIF role = 'STUDENT' THEN
+      INSERT INTO Student (id, name, surname, email, password, phone, address, img, sex, created)
+      VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
+
+    ELSIF role = 'TEACHER' THEN
+      INSERT INTO Teacher (id, name, surname, email, password, phone, address, img, sex, created)
+      VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
+
+    ELSIF role = 'PARENT' THEN
+      INSERT INTO Parent (id, name, surname, email, password, phone, address, img, sex, created)
+      VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
+    END IF;
+  END LOOP;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+  `;
+  const triggerSql = `
+    CREATE TRIGGER after_user_insert
+    AFTER INSERT ON "user"
+    FOR EACH ROW
+    EXECUTE FUNCTION insert_user_role();
+  `;
+
+  try {
+   
+    await prisma.$executeRawUnsafe(functionSql);
+    console.log("Function created successfully!");
+    await prisma.$executeRawUnsafe(triggerSql);
+    console.log("Trigger created successfully!");
+  } catch (error) {
+    console.error("Error creating trigger: ", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+
