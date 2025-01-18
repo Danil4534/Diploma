@@ -5,7 +5,7 @@ import { LoginDTO } from './dto/Login.dto';
 import { NotFoundError } from 'rxjs';
 import RegisterDto from './dto/Register.dto';
 import { AuthEntity } from './entities/auth.entity';
-
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -15,38 +15,33 @@ export class AuthService {
 
   async login(userData:LoginDTO): Promise<AuthEntity>{
     const {email, password }= userData
-    const loginStudentUser = await this.prisma.student.findFirst({where: {email:email}})
-    const loginParentUser = await this.prisma.parent.findFirst({where:{email:email}})
-    const loginTeacherUser =  await this.prisma.teacher.findFirst({where:{email:email}})
-    const loginAdminUser = await this.prisma.admin.findFirst({where:{email:email}})
-
-    if (!loginStudentUser && !loginParentUser && !loginTeacherUser && !loginAdminUser) {
-      throw new HttpException('No user found for this email', HttpStatus.NOT_FOUND);
-    }
-    const foundUser =  loginStudentUser ||
-    loginParentUser ||
-    loginTeacherUser ||
-    loginAdminUser;
-
+    try{
+      const foundUser = await this.prisma.user.findUnique({where:{email:email}})
     const isPasswordValid = foundUser.password === password
-
     if(!isPasswordValid){
       throw new NotFoundException('Invalid password');
     }
     return {
       accessToken:this.jwtService.sign({userId: foundUser.id})
     }
-  }
-
-  async register(userData:RegisterDto){
-    const {email} = userData
-    const existingStudentUser = await this.prisma.student.findUnique({where: {email:email}})
-    const existingParentUser = await this.prisma.parent.findUnique({where:{email:email}})
-    const existingTeacherUser =  await this.prisma.teacher.findUnique({where:{email:email}})
-    const existingAdminUser = await this.prisma.admin.findUnique({where:{email:email}})
-    if (existingAdminUser && existingParentUser && existingStudentUser && existingTeacherUser) {
-      throw new HttpException('User already exists with this email', HttpStatus.BAD_REQUEST);
+    }catch(e){
+      console.log(e)
     }
     
+  }
+
+  async register(userData:RegisterDto): Promise<RegisterDto>{
+    try{
+      const foundUser = await this.prisma.user.findFirst({where:{email: userData.email}})
+      if(!foundUser){
+        const hashedPassword = await bcrypt.hash(userData.password, 10)
+      userData.password = hashedPassword
+      return this.prisma.user.create({
+        data: userData
+      })
+      }
+    }catch(e){
+      console.log(e)
+    }
   }
 }

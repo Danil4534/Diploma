@@ -8,7 +8,6 @@ export class LoginDTO {
     email:string
 
     @IsString()
-    @MinLength(8)
     @ApiProperty()
     password:string
     

@@ -18,7 +18,7 @@ import { join } from 'path';
       database:'Unichub',
       entities:[User],
       migrations: [join(__dirname, '/../../', 'database/migrations/**/*{.ts,.js}')],
-      synchronize: true
+      synchronize: false
     }),
     AuthModule, UserModule],
   controllers: [AppController],

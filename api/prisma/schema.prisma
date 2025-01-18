@@ -74,7 +74,6 @@ model teacher {
   subjects  subject[]
   lessons   lesson[]
   groups   group[]
-  birthday  DateTime
   
 }
 

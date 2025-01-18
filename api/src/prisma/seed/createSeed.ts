@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, UserSex } from '@prisma/client'
 import createTrigger from '../triggers/createUserTrigger'
 
 const prisma = new PrismaClient()
@@ -9,14 +9,14 @@ async function main() {
         data: {
           name: 'Mr.',
           surname: 'Smith',
-          email: 'teacher@example.com',
-          phone: '2233445566',
+          email: 'teacher1@example.com',
+          phone: '22334455662',
           address: 'Teacher Blvd 101',
           img: null,
-          sex: 'MALE',
+          sex: UserSex.MALE,
           created: new Date(),
           password: "", 
-          role: ['STUDENT','ADMIN']
+          role: ['STUDENT','ADMIN', 'TEACHER','PARENT']
         },
       })
     
