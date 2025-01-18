@@ -16,13 +16,12 @@ export class AuthService {
     const {email, password }= userData
     try{
       const foundUser = await this.prisma.user.findUnique({where:{email:email}})
-      const isPasswordValid = foundUser.password === await bcrypt.hash(password,10)
-    
+      const isPasswordValid = await bcrypt.compare( password, foundUser.password)
       if(!isPasswordValid){
       throw new NotFoundException('Invalid password');
     }
     return {
-      accessToken:this.jwtService.sign({userId: foundUser.id})
+      accessToken:this.jwtService.sign({userId: foundUser})
     }
     }catch(e){
       console.log(e)
