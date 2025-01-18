@@ -10,11 +10,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+model User {
+  id       String  @id @default(uuid())
+  admin    Admin?  @relation(fields: [id], references: [id], map: "User_Admin_fkey")
+  teacher  Teacher? @relation(fields: [id], references: [id], map: "User_Teacher_fkey")
+  student  Student? @relation(fields: [id], references: [id], map: "User_Student_fkey")
+  parent   Parent?  @relation(fields: [id], references: [id], map: "User_Parent_fkey")
+}
+
 model Admin {
   id       String @id @default(uuid())
   name String @unique
   email    String @unique
   password String
+  user User[] 
 }
 
 model Student {
@@ -28,13 +38,15 @@ model Student {
   img         String?
   sex         UserSex
   createdAt   DateTime     @default(now())
-  parentId    String
-  parent      Parent       @relation(fields: [parentId], references: [id])
-  classId     Int
-  group       Group        @relation(fields: [classId], references: [id])
+  parentId    String?
+  parent      Parent?       @relation(fields: [parentId], references: [id])
+  groupId     Int?
+  group       Group?        @relation(fields: [groupId], references: [id])
   attendances Attendance[]
   results     Result[]
   studentTasks StudentTask[]
+
+  User User[]
 }
 
 model Teacher {
@@ -52,6 +64,7 @@ model Teacher {
   lessons   Lesson[]
   groups   Group[]
   birthday  DateTime
+  User User[]
 }
 
 model Parent {
@@ -65,12 +78,10 @@ model Parent {
   address   String
   createdAt DateTime  @default(now())
   students  Student[]
+  User User[]
 }
 
-model Grade {
-  id    Int @id @default(autoincrement())
-  level Int @unique
-}
+
 
 model Group {
   id       Int    @id @default(autoincrement())
@@ -202,4 +213,10 @@ enum Day {
   WEDNESDAY
   THURSDAY
   FRIDAY
+}
+enum UserRole {
+  ADMIN
+  STUDENT
+  TEACHER
+  PARENT
 }
