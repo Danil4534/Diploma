@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestj
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginDTO } from './dto/Login.dto';
-import { NotFoundError } from 'rxjs';
 import RegisterDto from './dto/Register.dto';
 import { AuthEntity } from './entities/auth.entity';
 import * as bcrypt from 'bcrypt';
@@ -17,8 +16,9 @@ export class AuthService {
     const {email, password }= userData
     try{
       const foundUser = await this.prisma.user.findUnique({where:{email:email}})
-    const isPasswordValid = foundUser.password === password
-    if(!isPasswordValid){
+      const isPasswordValid = foundUser.password === await bcrypt.hash(password,10)
+    
+      if(!isPasswordValid){
       throw new NotFoundException('Invalid password');
     }
     return {
@@ -30,13 +30,14 @@ export class AuthService {
     
   }
 
-  async register(userData:RegisterDto): Promise<RegisterDto>{
+  async register(userData:RegisterDto){
     try{
       const foundUser = await this.prisma.user.findFirst({where:{email: userData.email}})
       if(!foundUser){
         const hashedPassword = await bcrypt.hash(userData.password, 10)
-      userData.password = hashedPassword
-      return this.prisma.user.create({
+        userData.password = hashedPassword
+        console.log(userData)
+        return this.prisma.user.create({
         data: userData
       })
       }

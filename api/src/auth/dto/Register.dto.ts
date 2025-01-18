@@ -37,9 +37,9 @@ export default class RegisterDto {
     @ApiProperty({ description: "The sex of the user", enum: UserSex })
     @IsEnum(UserSex)
     sex:UserSex
-
+    @ApiProperty({ description: "The created of the user", example: new Date})
     created:Date
-
+    @ApiProperty({ description: "The role of the user", example: ["ADMIN"] })
     role:string[]
 
 }

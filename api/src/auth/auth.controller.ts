@@ -12,7 +12,7 @@ import RegisterDto from './dto/Register.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('login')
+  @Post('login')
   @ApiBody({ type: LoginDTO, description: 'Example login data.' })
   async login (@Body() userData: LoginDTO):Promise<AuthEntity>{
     return await this.authService.login(userData)
@@ -24,6 +24,5 @@ export class AuthController {
   async register(@Body() userData: RegisterDto){
     return await this.authService.register(userData)
   }
-  
   
 }

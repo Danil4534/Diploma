@@ -8,6 +8,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
   .setTitle('StudentApp')
   .setDescription('newApplication')
+  .addBearerAuth()
   .setVersion('1.0')
   .build()
 
