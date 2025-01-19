@@ -18,11 +18,12 @@ export class AuthController {
     return await this.authService.login(userData)
   }
 
-  @Post('register')
   @ApiBody({type: RegisterDto, description: 'User registration data.'})
   @ApiResponse({ status: 201, description: 'User registered successfully.' })
-  async register(@Body() userData: RegisterDto){
-    return await this.authService.register(userData)
+  @Post('register/createUser/:userRole')
+  async createUser(@Param('userRole')userRole:string,@Body() userData: RegisterDto){
+    const roles = userRole.split(",")
+    return await this.authService.createUser(userData, roles)
   }
-  
+
 }

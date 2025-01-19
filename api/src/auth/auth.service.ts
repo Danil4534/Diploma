@@ -29,21 +29,80 @@ export class AuthService {
     
   }
 
-  async register(userData:RegisterDto){
-    try{
-      const foundUser = await this.prisma.user.findFirst({where:{email: userData.email}})
-      if(!foundUser){
-        userData.password =  await this.hashedPassword(userData.password)
-        console.log(userData)
-        return this.prisma.user.create({
-        data: userData
-      })
-      }
-    }catch(e){
-      console.log(e)
-    }
-  }
+  // async register(userData:RegisterDto){
+  //   try{
+  //     const foundUser = await this.prisma.user.findFirst({where:{email: userData.email}})
+  //     if(!foundUser){
+  //       userData.password =  await this.hashedPassword(userData.password)
+  //       console.log(userData)
+  //       return this.prisma.user.create({
+  //       data: userData
+  //     })
+  //     }
+  //   }catch(e){
+  //     console.log(e)
+  //   }
+  // }
 
+  async createUser(userData:RegisterDto, roles:string[]){
+    userData.password = await this.hashedPassword(userData.password)
+    const createdUser = await this.prisma.user.create({
+      data:userData 
+    })
+    for (const role of roles) {
+      switch (role) {
+        case "admin":
+          await this.prisma.admin.create({
+            data: {
+              userId: createdUser.id,
+              phone: userData.phone,
+              address: userData.address,
+              img: userData.img,
+              created: userData.created,
+            },
+          });
+          break;
+        case "student":
+          await this.prisma.student.create({
+            data: {
+              userId: createdUser.id,
+              phone: userData.phone,
+              address: userData.address,
+              img: userData.img,
+              created: userData.created,
+              sex: userData.sex,
+            },
+          });
+          break;
+        case "teacher":
+          await this.prisma.teacher.create({
+            data: {
+              userId: createdUser.id,
+              phone: userData.phone,
+              address: userData.address,
+              img: userData.img,
+              created: userData.created,
+              sex: userData.sex,
+            },
+          });
+          break;
+        case "parent":
+          await this.prisma.parent.create({
+            data: {
+              userId: createdUser.id,
+              phone: userData.phone,
+              address: userData.address,
+              img: userData.img,
+              created: userData.created,
+              sex: userData.sex,
+            },
+          });
+          break;
+        default:
+          console.warn(`Unknown role: ${role}`);
+      }
+    
+    }}
   async hashedPassword(password):Promise<string>{
     const hashedPassword = await bcrypt.hash(password, 10) 
     return hashedPassword

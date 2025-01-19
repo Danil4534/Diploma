@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "student" ALTER COLUMN "parentId" DROP NOT NULL,
+ALTER COLUMN "groupId" DROP NOT NULL;

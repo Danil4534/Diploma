@@ -31,6 +31,7 @@ export default class RegisterDto {
     @IsString()
     address:string
 
+    @ApiProperty({ description: "The img of the user", example: "street" })
     @IsString()
     img:string
 
@@ -39,7 +40,6 @@ export default class RegisterDto {
     sex:UserSex
     @ApiProperty({ description: "The created of the user", example: new Date})
     created:Date
-    @ApiProperty({ description: "The role of the user", example: ["ADMIN"] })
-    role:string[]
+  
 
 }

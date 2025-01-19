@@ -6,6 +6,7 @@ import User from './entities/user.entity';
 
 import { JwtStrategy } from 'src/auth/strategy/jwt.strategy';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guard/AuthGuard';
 
 @Controller('user')
 export class UserController {
@@ -13,28 +14,28 @@ export class UserController {
   
   @Get()
   @ApiBearerAuth()
-  @UseGuards(JwtStrategy)
+  @UseGuards(JwtAuthGuard)
   async findAll():Promise<User[]> {
     return this.userService.findAll();
   }
   
   @Get(':id')
   @ApiBearerAuth()
-  @UseGuards(JwtStrategy)
+  @UseGuards(JwtAuthGuard)
   async findUserById(@Param('id') id: string):Promise<User>{
     return this.userService.findUserById(id)
   }
 
   @Put(':id')
   @ApiBearerAuth()
-  @UseGuards(JwtStrategy)
+  @UseGuards(JwtAuthGuard)
   async updateUserData(@Param('id') id: string, @Body() updateUserDTO:UpdateUserDto){
     return this.userService.updateUser(id, updateUserDTO)
   }
 
   @Delete(':id')
   @ApiBearerAuth()
-  @UseGuards(JwtStrategy)
+  @UseGuards(JwtAuthGuard)
   async deleteUser (@Param('id') id: string){
     return this.userService.deleteUser(id)
 
