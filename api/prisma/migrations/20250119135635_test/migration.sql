@@ -7,16 +7,15 @@ CREATE TYPE "Day" AS ENUM ('MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "surname" TEXT NOT NULL,
+    "name" TEXT,
+    "surname" TEXT,
     "email" TEXT,
-    "password" TEXT NOT NULL,
+    "password" TEXT,
     "phone" TEXT,
-    "address" TEXT NOT NULL,
+    "address" TEXT,
     "img" TEXT,
-    "sex" "UserSex" NOT NULL,
+    "sex" "UserSex",
     "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "role" TEXT[],
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -24,15 +23,11 @@ CREATE TABLE "user" (
 -- CreateTable
 CREATE TABLE "admin" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "surname" TEXT NOT NULL,
-    "email" TEXT,
-    "password" TEXT NOT NULL,
-    "phone" TEXT,
+    "phone" TEXT NOT NULL,
     "address" TEXT NOT NULL,
-    "img" TEXT,
-    "sex" "UserSex",
-    "created" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "img" TEXT NOT NULL,
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT,
 
     CONSTRAINT "admin_pkey" PRIMARY KEY ("id")
 );
@@ -40,17 +35,14 @@ CREATE TABLE "admin" (
 -- CreateTable
 CREATE TABLE "student" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "surname" TEXT NOT NULL,
-    "email" TEXT,
-    "password" TEXT NOT NULL,
-    "phone" TEXT,
+    "phone" TEXT NOT NULL,
     "address" TEXT NOT NULL,
-    "img" TEXT,
+    "img" TEXT NOT NULL,
     "sex" "UserSex" NOT NULL,
-    "created" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "parentId" TEXT,
-    "groupId" INTEGER,
+    "userId" TEXT,
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "parentId" TEXT NOT NULL,
+    "groupId" INTEGER NOT NULL,
 
     CONSTRAINT "student_pkey" PRIMARY KEY ("id")
 );
@@ -58,16 +50,12 @@ CREATE TABLE "student" (
 -- CreateTable
 CREATE TABLE "teacher" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "surname" TEXT NOT NULL,
-    "email" TEXT,
-    "password" TEXT NOT NULL,
     "phone" TEXT,
     "address" TEXT NOT NULL,
     "img" TEXT,
     "sex" "UserSex" NOT NULL,
+    "userId" TEXT,
     "created" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "birthday" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "teacher_pkey" PRIMARY KEY ("id")
 );
@@ -75,15 +63,12 @@ CREATE TABLE "teacher" (
 -- CreateTable
 CREATE TABLE "parent" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "surname" TEXT NOT NULL,
-    "email" TEXT,
-    "password" TEXT,
     "phone" TEXT,
     "img" TEXT,
     "sex" "UserSex" NOT NULL,
     "address" TEXT,
     "created" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT,
 
     CONSTRAINT "parent_pkey" PRIMARY KEY ("id")
 );
@@ -225,28 +210,28 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 CREATE UNIQUE INDEX "user_phone_key" ON "user"("phone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "admin_email_key" ON "admin"("email");
-
--- CreateIndex
 CREATE UNIQUE INDEX "admin_phone_key" ON "admin"("phone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "student_email_key" ON "student"("email");
+CREATE UNIQUE INDEX "admin_userId_key" ON "admin"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "student_phone_key" ON "student"("phone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "teacher_email_key" ON "teacher"("email");
+CREATE UNIQUE INDEX "student_userId_key" ON "student"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "teacher_phone_key" ON "teacher"("phone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "parent_email_key" ON "parent"("email");
+CREATE UNIQUE INDEX "teacher_userId_key" ON "teacher"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "parent_phone_key" ON "parent"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "parent_userId_key" ON "parent"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "group_name_key" ON "group"("name");
@@ -258,10 +243,22 @@ CREATE UNIQUE INDEX "subject_name_key" ON "subject"("name");
 CREATE INDEX "_subjectToteacher_B_index" ON "_subjectToteacher"("B");
 
 -- AddForeignKey
-ALTER TABLE "student" ADD CONSTRAINT "student_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "parent"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "admin" ADD CONSTRAINT "admin_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "student" ADD CONSTRAINT "student_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "group"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "student" ADD CONSTRAINT "student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "student" ADD CONSTRAINT "student_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "parent"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "student" ADD CONSTRAINT "student_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "teacher" ADD CONSTRAINT "teacher_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "parent" ADD CONSTRAINT "parent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "group" ADD CONSTRAINT "group_supervisorId_fkey" FOREIGN KEY ("supervisorId") REFERENCES "teacher"("id") ON DELETE SET NULL ON UPDATE CASCADE;

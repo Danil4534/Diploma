@@ -39,7 +39,6 @@ export default class User {
     sex:UserSex
     @ApiProperty({ description: "The created of the user", example: new Date})
     created:Date
-    @ApiProperty({ description: "The role of the user", example: ["ADMIN"] })
-    role:string[]
+  
 
 }

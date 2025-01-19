@@ -22,12 +22,15 @@ export class UserService {
     return findUser
   }
  
-  async updateUser(id:string, updateUserDto:UpdateUserDto){
-    try{
-      const updateUser = await this.prisma.user.update({where:{id}, data: updateUserDto})
-      return updateUser 
-    }catch(e){
-      throw new HttpException('', HttpStatus.NOT_FOUND)
-    }
+  async updateUser(id:string, updateUserDto:UpdateUserDto):Promise<User>{
+    const updateUser = await this.prisma.user.update({where:{id}, data: updateUserDto})
+    return updateUser 
+    
+  }
+
+  async deleteUser(id:string):Promise<User>{
+    const deleteUser = await this.prisma.user.delete({where:{id}})
+    return deleteUser
+
   }
 }

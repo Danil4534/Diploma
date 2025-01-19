@@ -18,8 +18,8 @@ async function main() {
           img: null,
           sex: UserSex.MALE,
           created: new Date(),
-          password:'', 
-          role: ['STUDENT','ADMIN', 'TEACHER','PARENT']
+          password: "", 
+         
         },
       })
     
@@ -27,10 +27,10 @@ async function main() {
   console.log('Seed data has been inserted!')
 }
 
-// main()
+main()
 // createTrigger()
 // deleteUserTrigger()
-updateUserTrigger()
+// updateUserTrigger()
   .catch(e => {
     console.error(e)
     process.exit(1)
