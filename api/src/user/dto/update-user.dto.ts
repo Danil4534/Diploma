@@ -30,16 +30,14 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
         @ApiProperty({ description: "The address of the user", example: "street" })
         @IsString()
         address:string
-    
+        @ApiProperty({ description: "The img of the user", example: "street" })
         @IsString()
         img:string
-    
+
         @ApiProperty({ description: "The sex of the user", enum: UserSex })
         @IsEnum(UserSex)
         sex:UserSex
         @ApiProperty({ description: "The created of the user", example: new Date})
         created:Date
-        @ApiProperty({ description: "The role of the user", example: ["ADMIN"] })
-        role:string[]
-    
+     
 }
