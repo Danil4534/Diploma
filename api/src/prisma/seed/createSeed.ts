@@ -1,5 +1,7 @@
 import { PrismaClient, UserSex } from '@prisma/client'
 import createTrigger from '../triggers/createUserTrigger'
+import { AuthService } from 'src/auth/auth.service'
+import deleteUserTrigger from '../triggers/deleteUserTrigger'
 
 const prisma = new PrismaClient()
 
@@ -15,7 +17,7 @@ async function main() {
           img: null,
           sex: UserSex.MALE,
           created: new Date(),
-          password: "", 
+          password:'', 
           role: ['STUDENT','ADMIN', 'TEACHER','PARENT']
         },
       })
@@ -26,6 +28,7 @@ async function main() {
 
 main()
 // createTrigger()
+// deleteUserTrigger()
 
   .catch(e => {
     console.error(e)

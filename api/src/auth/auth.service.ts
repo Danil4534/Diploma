@@ -33,8 +33,7 @@ export class AuthService {
     try{
       const foundUser = await this.prisma.user.findFirst({where:{email: userData.email}})
       if(!foundUser){
-        const hashedPassword = await bcrypt.hash(userData.password, 10)
-        userData.password = hashedPassword
+        userData.password =  await this.hashedPassword(userData.password)
         console.log(userData)
         return this.prisma.user.create({
         data: userData
@@ -43,5 +42,9 @@ export class AuthService {
     }catch(e){
       console.log(e)
     }
+  }
+  async hashedPassword(password){
+    const hashedPassword = await bcrypt.hash(password, 10) 
+    return hashedPassword
   }
 }

@@ -9,27 +9,25 @@ RETURNS TRIGGER AS $$
 DECLARE
   role text;
 BEGIN
- 
-  FOREACH role IN ARRAY NEW.role
-  LOOP
-    
-    IF role = 'ADMIN' THEN
-      INSERT INTO Admin (id, name, surname, email, password, phone, address, img, sex, created)
-      VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
 
-    ELSIF role = 'STUDENT' THEN
-      INSERT INTO Student (id, name, surname, email, password, phone, address, img, sex, created)
-      VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
-
-    ELSIF role = 'TEACHER' THEN
-      INSERT INTO Teacher (id, name, surname, email, password, phone, address, img, sex, created)
-      VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
-
-    ELSIF role = 'PARENT' THEN
-      INSERT INTO Parent (id, name, surname, email, password, phone, address, img, sex, created)
-      VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
-    END IF;
-  END LOOP;
+  IF NEW.role IS NOT NULL AND array_length(NEW.role, 1) IS NOT NULL THEN
+    FOREACH role IN ARRAY NEW.role
+    LOOP
+      IF role = 'ADMIN' THEN
+        INSERT INTO admin (id, name, surname, email, password, phone, address, img, sex, created)
+        VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
+      ELSIF role = 'STUDENT' THEN
+        INSERT INTO student (id, name, surname, email, password, phone, address, img, sex, created)
+        VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
+      ELSIF role = 'TEACHER' THEN
+        INSERT INTO teacher (id, name, surname, email, password, phone, address, img, sex, created)
+        VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
+      ELSIF role = 'PARENT' THEN
+        INSERT INTO parent (id, name, surname, email, password, phone, address, img, sex, created)
+        VALUES (NEW.id, NEW.name, NEW.surname, NEW.email, NEW.password, NEW.phone, NEW.address, NEW.img, NEW.sex, NEW.created);
+      END IF;
+    END LOOP;
+  END IF;
 
   RETURN NEW;
 END;
