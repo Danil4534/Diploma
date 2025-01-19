@@ -2,6 +2,7 @@ import { PrismaClient, UserSex } from '@prisma/client'
 import createTrigger from '../triggers/createUserTrigger'
 import { AuthService } from 'src/auth/auth.service'
 import deleteUserTrigger from '../triggers/deleteUserTrigger'
+import updateUserTrigger from '../triggers/updateUserTrigger'
 
 const prisma = new PrismaClient()
 
@@ -26,10 +27,10 @@ async function main() {
   console.log('Seed data has been inserted!')
 }
 
-main()
+// main()
 // createTrigger()
 // deleteUserTrigger()
-
+updateUserTrigger()
   .catch(e => {
     console.error(e)
     process.exit(1)
