@@ -51,9 +51,9 @@ model student {
   img         String?
   info        String
   sex         UserSex?
-  user      user?   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  userId    String? @unique 
-  created   DateTime?    @default(now())
+  user        user   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
+  userId      String @unique 
+  created     DateTime?    @default(now())
   parentId    String?
   parent      parent?       @relation(fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId     Int?
@@ -69,8 +69,9 @@ model teacher {
   phone     String?   @unique
   address   String
   img       String?
+  info        String
   sex       UserSex
-  position  String
+
   user      user?   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
   userId    String? @unique 
   created DateTime?  @default(now())
