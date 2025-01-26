@@ -20,14 +20,20 @@ model user {
   address   String?
   img       String?
   sex       UserSex?
+  messages  Message[]
   created   DateTime @default(now())
-
   admin     admin?  @relation
   student   student? @relation
   teacher   teacher? @relation
   parent    parent? @relation
 }
-
+model Message{
+  id Int @id @default(autoincrement())
+  content String
+  created DateTime @default(now())
+  userId String
+  user user @relation(fields: [userId], references: [id])
+}
 model admin {
   id        String  @id @default(uuid())
   phone     String @unique
@@ -43,6 +49,7 @@ model student {
   phone       String?     @unique
   address     String?
   img         String?
+  info        String
   sex         UserSex?
   user      user?   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
   userId    String? @unique 
@@ -63,6 +70,7 @@ model teacher {
   address   String
   img       String?
   sex       UserSex
+  position  String
   user      user?   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
   userId    String? @unique 
   created DateTime?  @default(now())
@@ -76,6 +84,7 @@ model parent {
   id        String   @id @default(uuid())
   phone     String?    @unique
   img       String?
+  info      String
   sex       UserSex
   address   String?
   created DateTime?  @default(now())
@@ -90,7 +99,8 @@ model parent {
 model group {
   id       Int    @id @default(autoincrement())
   name     String @unique
-  capacity Int
+  capacity Int 
+
   supervisorId  String?
   supervisor    teacher?       @relation(fields: [supervisorId], references: [id])
   lessons       lesson[]

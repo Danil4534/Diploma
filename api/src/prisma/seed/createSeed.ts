@@ -1,8 +1,7 @@
 import { PrismaClient, UserSex } from '@prisma/client'
-import createTrigger from '../triggers/createUserTrigger'
+
 import { AuthService } from 'src/auth/auth.service'
-import deleteUserTrigger from '../triggers/deleteUserTrigger'
-import updateUserTrigger from '../triggers/updateUserTrigger'
+
 
 const prisma = new PrismaClient()
 
