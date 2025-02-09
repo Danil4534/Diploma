@@ -1,15 +1,12 @@
-import  { useState } from 'react'
 
 import './App.css'
+import Header from './components/Header'
 
-function App(){
-  const [count, setCount] = useState<number>(0)
+function App() {
 
-  const count1: number= 10;
   return (
     <>
-    <h1>{count}</h1>
-      <h1>{count1}</h1>
+      <Header/>
     </>
   )
 }
