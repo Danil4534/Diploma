@@ -1,11 +1,17 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme');
 export default {
     content: [
       "./index.html",
-      "./src/App.tsx",
+      "./src/**",
     ],
     theme: {
-      extend: {},
+      extend: {
+        fontFamily:{
+          k2d:['"K2D"', ...defaultTheme.fontFamily.sans]
+        }
+        
+      },
     },
     plugins: [],
   }
