@@ -3,3 +3,26 @@
 @tailwind utilities;
 
 
+.react-calendar {
+    width: 100% !important;
+    border: none !important;
+    font-family: "Inter" sans-serif !important;
+
+}
+
+.react-calendar__tile--active {
+    background-color: #D9D9D9 !important;
+}
+
+.react-calendar__tile--now {
+    background: #42CB9B !important;
+    border-radius: 10px;
+}
+
+.react-calendar__navigation__label__labelText {
+    font-weight: 600;
+}
+
+abbr:where([title]) {
+    text-decoration: none !important;
+}

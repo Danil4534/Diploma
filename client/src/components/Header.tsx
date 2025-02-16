@@ -1,25 +1,15 @@
 import React from 'react'
 import { AiOutlineMessage } from 'react-icons/ai'
 import { IoNotificationsOutline } from 'react-icons/io5'
+import { User } from '../types/User'
 
 function Header() {
-
-    type User={
-        username:string,
-        lastname:string,
-        password:string,
-        role:string
-    }
-
-
 
     const user: User = {
         username: "Victor",
         lastname:"Ralenko",
         password: "1234",
         role:"teacher"
-
-        
     }
   return (
     <header className='w-full h-24 bg-white px-10 py-2 flex justify-between items-center'>
