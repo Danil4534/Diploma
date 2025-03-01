@@ -5,15 +5,16 @@ import { LoginDTO } from './dto/Login.dto';
 import RegisterDto from './dto/Register.dto';
 import { AuthEntity } from './entities/auth.entity';
 import * as bcrypt from 'bcrypt';
+import { UserService } from 'src/user/user.service';
 
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private jwtService: JwtService){}
+  constructor(private prisma: PrismaService, private jwtService: JwtService, private userService:UserService){}
 
 
   async login(userData:LoginDTO): Promise<AuthEntity>{
-    const {email, password }= userData
+    const { email, password }= userData
     try{
       const foundUser = await this.prisma.user.findUnique({where:{email:email}})
       const isPasswordValid = await bcrypt.compare( password, foundUser.password)
@@ -30,75 +31,7 @@ export class AuthService {
     
   }
 
-  async createUser(userData:RegisterDto, roles){
-    userData.password = await this.hashedPassword(userData.password)
-    const createdUser = await this.prisma.user.create({
-      data:userData 
-    })
-
-
-    for (const role of roles.split(",")) {
-      switch (role) {
-        case "admin":
-          await this.prisma.admin.create({
-            data: {
-              userId: createdUser.id,
-              phone: userData.phone,
-              address: userData.address,
-              img: userData.img,
-              created: userData.created,
-            },
-          });
-          break;
-        case "student":
-          await this.prisma.student.create({
-            data: {
-              userId: createdUser.id, 
-              phone: userData.phone || null, 
-              address: userData.address || null,
-              img: userData.img || null,
-              created: userData.created || new Date(),
-              sex: userData.sex || null,
-              groupId: null, 
-              parentId: null,
-              info: null,
-              
-            },
-          });
-          break;
-        case "teacher":
-          await this.prisma.teacher.create({
-            data: {
-              userId: createdUser.id,
-              phone: userData.phone,
-              address: userData.address,
-              img: userData.img,
-              created: userData.created,
-              info: null, 
-              sex: userData.sex
-            },
-          });
-          break;
-        case "parent":
-          await this.prisma.parent.create({
-            data: {
-              userId: createdUser.id,
-              phone: userData.phone,
-              address: userData.address,
-              img: userData.img,
-              created: userData.created,
-              info: null,
-              sex:userData.sex
-            },
-          });
-          break;
-        default:
-          console.warn(`Unknown role: ${role}`);
-      }
-    }}
-
-  async hashedPassword(password):Promise<string>{
-    const hashedPassword = await bcrypt.hash(password, 10) 
-    return hashedPassword
+  async registerNewUser(userData:RegisterDto){
+      return this.userService.createNewUser(userData)
   }
 }

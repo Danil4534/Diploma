@@ -1,6 +1,3 @@
-
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,211 +7,150 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id        String  @id @default(uuid())
-  name      String?
-  surname   String?
-  email     String? @unique
-  password  String?
-  phone     String? @unique
-  address   String?
-  img       String?
-  sex       UserSex?
-  messages  Message[]
-  created   DateTime @default(now())
-  admin     admin?  @relation
-  student   student? @relation
-  teacher   teacher? @relation
-  parent    parent? @relation
+model User {
+  id           String      @id @default(uuid())
+  name         String?
+  surname      String?
+  email        String?     @unique
+  phone        String?     @unique
+  password     String?
+  img          String?
+  sex          UserSex?
+  info         String?
+  banned       Boolean?    @default(false)
+  activeStatus UserStatus? @default(Offline)
+  roles        Role[]      @default([])
+  chats        Chat[]
+  created      DateTime?   @default(now())
+  Group        Group?      @relation(fields: [groupId], references: [id])
+  groupId      String?
+  subjects     Subject[]
+  subjectId    String?
+  Comment      Comment[]
+  GradeBook    GradeBook[]
 }
-model Message{
-  id Int @id @default(autoincrement())
+
+model Message {
+  id      String   @id @default(uuid())
   content String
   created DateTime @default(now())
-  userId String
-  user user @relation(fields: [userId], references: [id])
-}
-model admin {
-  id        String  @id @default(uuid())
-  phone     String @unique
-  address   String
-  img       String
-  created   DateTime @default(now())
-  user      user?   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  userId    String? @unique 
+  userId  String
+  Chat    Chat?    @relation(fields: [chatId], references: [id])
+  chatId  String?
 }
 
-model student {
-  id          String       @id @default(uuid())
-  phone       String?     @unique
-  address     String?
-  img         String?
-  info        String
-  sex         UserSex?
-  user        user   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  userId      String @unique 
-  created     DateTime?    @default(now())
-  parentId    String?
-  parent      parent?       @relation(fields: [parentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  groupId     Int?
-  group       group?        @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  attendances attendance[]
-  results     result[]
-  studentTasks studentTask[]
-
+model Chat {
+  id       String    @id @default(uuid())
+  user     User?     @relation(fields: [userId], references: [id])
+  userId   String?
+  messages Message[]
 }
 
-model teacher {
-  id        String   @id @default(uuid())
-  phone     String?   @unique
-  address   String
-  img       String?
-  info        String
-  sex       UserSex
-
-  user      user?   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  userId    String? @unique 
-  created DateTime?  @default(now())
-  subjects  subject[]
-  lessons   lesson[]
-  groups   group[]
-  
+model Group {
+  id           String         @id @default(uuid())
+  userId       String?
+  name         String
+  students     User[]
+  Subject      Subject[]
+  capacity     Int
+  Events       Event[]
+  Announcement Announcement[]
 }
 
-model parent {
-  id        String   @id @default(uuid())
-  phone     String?    @unique
-  img       String?
-  info      String
-  sex       UserSex
-  address   String?
-  created DateTime?  @default(now())
-  user      user?   @relation(fields: [userId], references: [id],onDelete: Cascade, onUpdate: Cascade)
-  userId    String? @unique 
-  students  student[]
-
-}
-
-
-
-model group {
-  id       Int    @id @default(autoincrement())
-  name     String @unique
-  capacity Int 
-
-  supervisorId  String?
-  supervisor    teacher?       @relation(fields: [supervisorId], references: [id])
-  lessons       lesson[]
-  students      student[]
-  events        event[]
-  announcements announcement[]
-}
-
-model subject {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  teachers teacher[]
-  lessons  lesson[]
-}
-
-model lesson {
-  id        Int      @id @default(autoincrement())
-  name      String
-  day       Day
-  startTime DateTime
-  endTime   DateTime
-  subjectId   Int
-  subject     subject      @relation(fields: [subjectId], references: [id])
-  groupId     Int
-  group       group        @relation(fields: [groupId], references: [id])
-  teacherId   String
-  teacher     teacher      @relation(fields: [teacherId], references: [id])
-  exams       exam[]
-  assignments assignment[]
-  attendances attendance[]
-  tasks       task[]
-}
-
-model task {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String
-  dueDate     DateTime
-  totalMarks  Int
-  lessonId Int
-  lesson   lesson   @relation(fields: [lessonId], references: [id])
-  studentTasks studentTask[]
-}
-
-model studentTask {
-  id       Int     @id @default(autoincrement())
-  studentId String
-  student   student @relation(fields: [studentId], references: [id])
-  taskId Int
-  task   task   @relation(fields: [taskId], references: [id])
-  marksObtained Int
-  submittedAt   DateTime?
-}
-
-model exam {
-  id        Int      @id @default(autoincrement())
-  title     String
-  startTime DateTime
-  endTime   DateTime
-
-  lessonId Int
-  lesson   lesson   @relation(fields: [lessonId], references: [id])
-  results  result[]
-}
-
-model assignment {
-  id        Int      @id @default(autoincrement())
-  title     String
-  startDate DateTime
-  dueDate   DateTime
-  lessonId Int
-  lesson   lesson   @relation(fields: [lessonId], references: [id])
-  results  result[]
-}
-
-model result {
-  id    Int @id @default(autoincrement())
-  score Int
-  examId       Int?
-  exam         exam?       @relation(fields: [examId], references: [id])
-  assignmentId Int?
-  assignment   assignment? @relation(fields: [assignmentId], references: [id])
-  studentId    String
-  student      student     @relation(fields: [studentId], references: [id])
-}
-
-model attendance {
-  id      Int      @id @default(autoincrement())
-  date    DateTime
-  present Boolean
-  studentId String
-  student   student @relation(fields: [studentId], references: [id])
-  lessonId  Int
-  lesson    lesson  @relation(fields: [lessonId], references: [id])
-}
-
-model event {
-  id          Int      @id @default(autoincrement())
+model Event {
+  id          String   @id @default(uuid())
   title       String
   description String
   startTime   DateTime
   endTime     DateTime
-  groupId Int?
-  group   group? @relation(fields: [groupId], references: [id])
+  status      String
+  created     DateTime
+  Group       Group?   @relation(fields: [groupId], references: [id])
+  groupId     String?
 }
 
-model announcement {
-  id          Int      @id @default(autoincrement())
+model Subject {
+  id          String      @id @default(uuid())
+  name        String
+  description String
+  lessons     Lesson[]
+  tasks       Task[]
+  groups      Group       @relation(fields: [groupId], references: [id])
+  groupId     String
+  User        User?       @relation(fields: [userId], references: [id])
+  userId      String?
+  GradeBook   GradeBook[]
+}
+
+model Lesson {
+  id             String   @id @default(uuid())
+  title          String
+  description    String
+  startTime      DateTime
+  endTime        DateTime
+  linkForMeeting String
+  tasks          Task[]
+  created        DateTime
+  Subject        Subject? @relation(fields: [subjectId], references: [id])
+  subjectId      String?
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  type        TypeTask
+  startTime   DateTime
+  endTime     DateTime
+  grade       Int
+  comments    Comment[]
+  Lesson      Lesson?   @relation(fields: [lessonId], references: [id])
+  lessonId    String?
+  Subject     Subject?  @relation(fields: [subjectId], references: [id])
+  subjectId   String?
+}
+
+model Comment {
+  id      String  @id @default(uuid())
+  content String
+  user    User    @relation(fields: [userId], references: [id])
+  Task    Task?   @relation(fields: [taskId], references: [id])
+  taskId  String?
+  userId  String
+}
+
+model GradeBook {
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+  subject   Subject @relation(fields: [subjectId], references: [id])
+  subjectId String
+}
+
+model Announcement {
+  id          String   @id @default(uuid())
   title       String
   description String
   date        DateTime
-  groupId Int?
-  group   group? @relation(fields: [groupId], references: [id])
+  group       Group    @relation(fields: [groupId], references: [id])
+  groupId     String
+}
+
+enum TypeTask {
+  Test
+  Default
+}
+
+enum UserStatus {
+  Online
+  Offline
+}
+
+enum Role {
+  Admin
+  Student
+  Teacher
+  Parent
 }
 
 enum UserSex {
@@ -228,4 +164,6 @@ enum Day {
   WEDNESDAY
   THURSDAY
   FRIDAY
+  Saturday
+  Sunday
 }

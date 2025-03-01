@@ -19,26 +19,29 @@ export default class User {
     @IsEmail()
     email: string
 
-    @ApiProperty({ description: "The password of the user", example: "password123" })
-    @IsString()
-    password: string
-
     @ApiProperty({ description: "The phone of the user", example: "+380....." })
     @IsString()
     phone: string
 
-    @ApiProperty({ description: "The address of the user", example: "street" })
+    @ApiProperty({ description: "The password of the user", example: "password123" })
     @IsString()
-    address:string
+    password: string
 
+    @ApiProperty({ description: "The img of the user", example: "street" })
     @IsString()
     img:string
 
     @ApiProperty({ description: "The sex of the user", enum: UserSex })
     @IsEnum(UserSex)
     sex:UserSex
+    
+    @ApiProperty({ description: "The info of the user", example:"Senior Lecturer"})
+    @IsString()
+    info: String
+
     @ApiProperty({ description: "The created of the user", example: new Date})
     created:Date
   
+
 
 }

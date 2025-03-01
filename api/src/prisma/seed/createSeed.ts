@@ -27,9 +27,7 @@ async function main() {
 }
 
 main()
-// createTrigger()
-// deleteUserTrigger()
-// updateUserTrigger()
+
   .catch(e => {
     console.error(e)
     process.exit(1)

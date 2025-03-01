@@ -10,6 +10,4 @@ export class LoginDTO {
     @IsString()
     @ApiProperty()
     password:string
-    
-    
 }

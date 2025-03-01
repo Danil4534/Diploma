@@ -10,7 +10,7 @@ import RegisterDto from './dto/Register.dto';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService ) {}
 
   @Post('login')
   @ApiBody({ type: LoginDTO, description: 'Example login data.' })
@@ -21,10 +21,8 @@ export class AuthController {
   @ApiBody({type: RegisterDto, description: 'User registration data.'})
   @ApiResponse({ status: 201, description: 'User registered successfully.' })
   @Post('register/createUser/:userRole')
-  async createUser(@Param('userRole')userRole:UserRole[],@Body() userData: RegisterDto){
-
-    const role = userRole
-    return await this.authService.createUser(userData, role)
+  async createUser(@Body() userData: RegisterDto){
+    return await this.authService.registerNewUser(userData)
   }
 
 }
