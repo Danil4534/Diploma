@@ -20,7 +20,7 @@ export class AuthController {
 
   @ApiBody({type: RegisterDto, description: 'User registration data.'})
   @ApiResponse({ status: 201, description: 'User registered successfully.' })
-  @Post('register/createUser/:userRole')
+  @Post('register')
   async createUser(@Body() userData: RegisterDto){
     return await this.authService.registerNewUser(userData)
   }

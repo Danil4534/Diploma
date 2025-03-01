@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaClient, private authService: AuthService){}
+  constructor(private prisma: PrismaClient){}
  
 
   async findAll(): Promise<any> {
@@ -33,7 +33,7 @@ export class UserService {
         throw new HttpException("This user is exist", HttpStatus.BAD_REQUEST) 
       }
       userData.password = await this.hashedPassword(userData.password) 
-      const newUser = await this.prisma.user.create({
+      await this.prisma.user.create({
         data: userData
       })
     }catch(e){

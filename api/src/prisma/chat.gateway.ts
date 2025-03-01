@@ -15,6 +15,8 @@ import { PrismaService } from "./prisma.service";
 export class CreateMessageDTO{
     content:string
     userId: string
+
+
 }
 
 
@@ -34,20 +36,12 @@ export class CreateMessageDTO{
       console.log('Client connected: ', client.id);
     }
   
-    @SubscribeMessage('sendMessage')
-   
-   
-   async handleMessage(
-      @MessageBody() createMessageData: CreateMessageDTO,
-      @ConnectedSocket() client: Socket,
-    ) {
+  @SubscribeMessage('sendMessage')
+   async handleMessage(@MessageBody() createMessageData: CreateMessageDTO,@ConnectedSocket() client: Socket,) {
       const message = await this.prisma.message.create({
         data: {
           content: createMessageData.content,
           userId: createMessageData.userId,
-        },
-        include: {
-          user: true,
         },
       });
       this.server.emit('message', message);

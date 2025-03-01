@@ -41,9 +41,6 @@ export default class RegisterDto {
     @IsString()
     info?: string
 
-    @ApiProperty({ description: "The info of the user", example:false})
-    @IsBoolean()
-    banned?: boolean 
 }
 
 
