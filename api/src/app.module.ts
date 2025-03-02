@@ -7,10 +7,10 @@ import { ChatGateway } from './prisma/chat.gateway';
 import { PrismaService } from './prisma/prisma.service';
 import { MessageModule } from './message/message.module';
 import { ChatModule } from './chat/chat.module';
-
+import { GroupModule } from './group/group.module';
 
 @Module({
-  imports: [AuthModule, UserModule, MessageModule, ChatModule],
+  imports: [AuthModule, UserModule, MessageModule, ChatModule, GroupModule],
   controllers: [AppController],
   providers: [AppService, ChatGateway, PrismaService],
 })

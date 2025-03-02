@@ -19,7 +19,7 @@ export class AuthService {
       const foundUser = await this.prisma.user.findUnique({where:{email:email}})
       const isPasswordValid = await bcrypt.compare( password, foundUser.password)
       if(!isPasswordValid){
-      throw new NotFoundException('Invalid password');
+      throw new HttpException('Invalid password', HttpStatus.BAD_REQUEST);
     }
     return {
       accessToken:this.jwtService.sign({userId: foundUser},{expiresIn:"15m"}),
