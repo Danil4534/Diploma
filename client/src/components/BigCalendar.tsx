@@ -1,22 +1,29 @@
-import React from 'react'
+import React from "react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
 
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment);
 
 function BigCalendar() {
-
-    return (
-        <div>
-            <Calendar
-            localizer={localizer}
-                startAccessor="start"
-                endAccessor="end"
-                style={{ height: 500 }}
-            />
-        </div>
-    )
+  return (
+    <div>
+      <Calendar
+        localizer={localizer}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 500 }}
+        events={[
+          {
+            title: "All Day Event very long title",
+            allDay: true,
+            start: new Date(),
+            end: new Date(),
+          },
+        ]}
+      />
+    </div>
+  );
 }
 
-export default BigCalendar
+export default BigCalendar;
