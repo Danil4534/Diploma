@@ -22,11 +22,10 @@ model User {
   roles        Role[]      @default([Student])
   chats        Chat[]
   created      DateTime?   @default(now())
-  Group        Group?      @relation(fields: [groupId], references: [id])
+  Group        Group?      @relation("UserGroup", fields: [groupId], references: [id], onUpdate: Cascade)
   groupId      String?
-
-  Comment   Comment[]
-  GradeBook GradeBook[]
+  Comment      Comment[]
+  GradeBook    GradeBook[]
 }
 
 model Message {
@@ -34,13 +33,13 @@ model Message {
   content String
   created DateTime @default(now())
   userId  String
-  Chat    Chat?    @relation(fields: [chatId], references: [id])
+  Chat    Chat?    @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   chatId  String?
 }
 
 model Chat {
   id       String    @id @default(uuid())
-  user     User?     @relation(fields: [userId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId   String?
   messages Message[]
 }
@@ -48,7 +47,7 @@ model Chat {
 model Group {
   id           String         @id @default(uuid())
   name         String?
-  students     User[]
+  students     User[]         @relation("UserGroup")
   Subject      Subject[]
   capacity     Int?           @default(0)
   Events       Event[]
@@ -63,7 +62,7 @@ model Event {
   endTime     DateTime
   status      String
   created     DateTime
-  Group       Group?   @relation(fields: [groupId], references: [id])
+  Group       Group?   @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId     String?
 }
 
@@ -73,7 +72,7 @@ model Subject {
   description String
   lessons     Lesson[]
   tasks       Task[]
-  groups      Group       @relation(fields: [groupId], references: [id])
+  groups      Group       @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId     String
   userId      String?
   GradeBook   GradeBook[]
@@ -88,7 +87,7 @@ model Lesson {
   linkForMeeting String
   tasks          Task[]
   created        DateTime
-  Subject        Subject? @relation(fields: [subjectId], references: [id])
+  Subject        Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subjectId      String?
 }
 
@@ -101,26 +100,26 @@ model Task {
   endTime     DateTime
   grade       Int
   comments    Comment[]
-  Lesson      Lesson?   @relation(fields: [lessonId], references: [id])
+  Lesson      Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lessonId    String?
-  Subject     Subject?  @relation(fields: [subjectId], references: [id])
+  Subject     Subject?  @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subjectId   String?
 }
 
 model Comment {
   id      String  @id @default(uuid())
   content String
-  user    User    @relation(fields: [userId], references: [id])
-  Task    Task?   @relation(fields: [taskId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Task    Task?   @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   taskId  String?
   userId  String
 }
 
 model GradeBook {
   id        String  @id @default(uuid())
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId    String
-  subject   Subject @relation(fields: [subjectId], references: [id])
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subjectId String
 }
 
@@ -129,7 +128,7 @@ model Announcement {
   title       String
   description String
   date        DateTime
-  group       Group    @relation(fields: [groupId], references: [id])
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   groupId     String
 }
 

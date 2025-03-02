@@ -11,13 +11,24 @@ export class GroupService {
 
   async createGroup(createGroupDto: Prisma.GroupCreateInput) {
     try {
+      const existGroup = await this.prisma.group.findFirst({
+        where: { name: createGroupDto.name },
+      });
+
+      if (existGroup) {
+        throw new HttpException(
+          'The group with this name already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       return await this.prisma.group.create({
         data: createGroupDto,
       });
     } catch (e) {
       console.log(e);
       throw new HttpException(
-        'Group already exists',
+        'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -59,16 +70,19 @@ export class GroupService {
     }
   }
 
-  // async remove(id: string): Promise<Group> {
-  //   try{
-  //     const deleteGroup = await this.prisma.group.findFirst({where:{id: id}})
-  //     if (deleteGroup){
-  //       await this.prisma.group.delete()
-  //     }
-
-  //   }catch(e){
-  //     throw new HttpException("Error with deleting this group", HttpStatus.BAD_REQUEST)
-  //   }
-
-  // }
+  async remove(id: string) {
+    try {
+      const deleteGroup = await this.prisma.group.findFirst({
+        where: { id: id },
+      });
+      if (deleteGroup) {
+        await this.prisma.group.delete({ where: { id: id } });
+      }
+    } catch (e) {
+      throw new HttpException(
+        'Error with deleting this group',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }

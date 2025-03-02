@@ -48,7 +48,10 @@ export class UserService {
   }
 
   async findUserById(id: string): Promise<User> {
-    const findUser = await this.prisma.user.findFirst({ where: { id: id } });
+    const findUser = await this.prisma.user.findFirst({
+      where: { id: id },
+      include: { Comment: true },
+    });
     if (!findUser) {
       throw new HttpException(
         'User with this id is not found',
