@@ -16,12 +16,13 @@ import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { Group, Prisma, PrismaClient } from '@prisma/client';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { UserService } from 'src/user/user.service';
 
 @Controller('group')
 export class GroupController {
   constructor(
     private readonly groupService: GroupService,
-    private prisma: PrismaClient,
+    private readonly userService: UserService,
   ) {}
 
   @Post()
@@ -36,46 +37,41 @@ export class GroupController {
     status: 400,
     description: 'Bad request',
   })
+  @ApiBody({ type: CreateGroupDto })
   async create(@Body() createGroupDto: Prisma.GroupCreateInput) {
     return await this.groupService.createGroup(createGroupDto);
   }
 
   @Get()
-  async findAll(
+  async findAllGroups(
     @Query('where') where?: string,
     @Query('orderBy') orderBy?: string,
     @Query('skip') skip?: string,
     @Query('take') take?: string,
   ): Promise<Group[]> {
-    let parsedWhere: Prisma.GroupWhereInput | undefined;
-    let parsedOrderBy: Prisma.GroupOrderByWithRelationInput | undefined;
-    let parsedSkip: number | undefined;
-    let parsedTake: number | undefined;
-
     try {
-      parsedWhere = where ? JSON.parse(where) : undefined;
-      parsedOrderBy = orderBy ? JSON.parse(orderBy) : undefined;
-      parsedSkip = skip ? parseInt(skip, 10) : undefined;
-      parsedTake = take ? parseInt(take, 10) : undefined;
+      const parsedData = await this.groupService.parseTypes(
+        where,
+        orderBy,
+        skip,
+        take,
+      );
       return this.groupService.findAllGroups({
-        where: parsedWhere,
-        orderBy: parsedOrderBy,
-        skip: parsedSkip,
-        take: parsedTake,
+        where: parsedData.where,
+        orderBy: parsedData.orderBy,
+        skip: parsedData.skip,
+        take: parsedData.take,
       });
-    } catch (error) {
+    } catch (e) {
       throw new HttpException(
         'Invalid query parameters',
-        HttpStatus.BAD_GATEWAY,
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
   @Get('getStudents/:id')
   async findUsersInGroup(@Param('groupId') groupId: string) {
-    return await this.prisma.group.findMany({
-      where: { id: groupId },
-      include: { students: true, Subject: true, Events: true },
-    });
+    return await this.groupService.findUsersIntoGroup(groupId);
   }
 
   @Get(':id')

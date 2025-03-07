@@ -1,9 +1,9 @@
-import { Prisma } from './../../node_modules/.prisma/client/index.d';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Group } from './entities/group.entity';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class GroupService {
@@ -33,7 +33,12 @@ export class GroupService {
       );
     }
   }
-
+  async findUsersIntoGroup(groupId: string) {
+    return await this.prisma.group.findMany({
+      where: { id: groupId },
+      include: { students: true },
+    });
+  }
   async findAllGroups(params: {
     skip?: number;
     take?: number;
@@ -84,5 +89,26 @@ export class GroupService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  parseTypes(where, orderBy, skip, take) {
+    let parsedWhere: Prisma.GroupWhereInput | undefined;
+    let parsedOrderBy: Prisma.GroupOrderByWithRelationInput | undefined;
+    let parsedSkip: number | undefined;
+    let parsedTake: number | undefined;
+
+    parsedWhere = where ? JSON.parse(where) : undefined;
+    parsedOrderBy = orderBy ? JSON.parse(orderBy) : undefined;
+    parsedSkip = skip ? parseInt(skip, 10) : 0;
+    parsedTake = take ? parseInt(take, 10) : undefined;
+
+    let parsedData = {
+      where: parsedWhere,
+      orderBy: parsedOrderBy,
+      skip: parsedSkip,
+      take: parsedTake,
+    };
+
+    return parsedData;
   }
 }

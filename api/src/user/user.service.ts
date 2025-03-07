@@ -33,7 +33,6 @@ export class UserService {
     let parsedSkip: number | undefined;
     let parsedTake: number | undefined;
     parsedWhere = where ? JSON.parse(where) : undefined;
-    parsedWhere = where ? JSON.parse(where) : undefined;
     parsedOrderBy = orderBy ? JSON.parse(orderBy) : undefined;
     parsedSkip = skip ? parseInt(skip, 10) : 0;
     parsedTake = take ? parseInt(take, 10) : undefined;
@@ -53,10 +52,7 @@ export class UserService {
       include: { Comment: true },
     });
     if (!findUser) {
-      throw new HttpException(
-        'User with this id is not found',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
     return findUser;
   }
