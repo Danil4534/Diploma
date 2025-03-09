@@ -18,7 +18,7 @@ export class GroupService {
       if (existGroup) {
         throw new HttpException(
           'The group with this name already exists',
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
 

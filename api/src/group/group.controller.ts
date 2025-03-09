@@ -16,14 +16,10 @@ import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { Group, Prisma, PrismaClient } from '@prisma/client';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { UserService } from 'src/user/user.service';
 
 @Controller('group')
 export class GroupController {
-  constructor(
-    private readonly groupService: GroupService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly groupService: GroupService) {}
 
   @Post()
   @ApiBody({
@@ -36,6 +32,10 @@ export class GroupController {
   @ApiResponse({
     status: 400,
     description: 'Bad request',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'The group with this name already exists',
   })
   @ApiBody({ type: CreateGroupDto })
   async create(@Body() createGroupDto: Prisma.GroupCreateInput) {
@@ -69,7 +69,7 @@ export class GroupController {
       );
     }
   }
-  @Get('getStudents/:id')
+  @Get('getStudentsFromGroup/:id')
   async findUsersInGroup(@Param('groupId') groupId: string) {
     return await this.groupService.findUsersIntoGroup(groupId);
   }
