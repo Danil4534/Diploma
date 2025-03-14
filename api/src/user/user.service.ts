@@ -1,9 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-
 import { Prisma, PrismaClient, User } from '@prisma/client';
-import { AuthService } from 'src/auth/auth.service';
 import RegisterDto from 'src/auth/dto/Register.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -67,9 +63,10 @@ export class UserService {
         throw new HttpException('This user is exist', HttpStatus.BAD_REQUEST);
       }
       userData.password = await this.hashedPassword(userData.password);
-      await this.prisma.user.create({
+      const newUser = await this.prisma.user.create({
         data: userData,
       });
+      return newUser;
     } catch (e) {
       console.log(e);
       throw new HttpException(
@@ -99,10 +96,12 @@ export class UserService {
     }
   }
 
-  async deleteUser(where): Promise<User> {
+  async deleteUser(id: string) {
     try {
-      const deleteUser = await this.prisma.user.delete({ where });
-      return deleteUser;
+      const deletedUser = await this.prisma.user.delete({
+        where: { id: id },
+      });
+      return deletedUser;
     } catch (e) {
       console.log(e);
       throw new HttpException(

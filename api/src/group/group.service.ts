@@ -1,9 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateGroupDto } from './dto/create-group.dto';
-import { UpdateGroupDto } from './dto/update-group.dto';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Group } from './entities/group.entity';
-import { Prisma } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class GroupService {
@@ -14,17 +12,16 @@ export class GroupService {
       const existGroup = await this.prisma.group.findFirst({
         where: { name: createGroupDto.name },
       });
-
       if (existGroup) {
         throw new HttpException(
           'The group with this name already exists',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
-
-      return await this.prisma.group.create({
+      const newGroup = await this.prisma.group.create({
         data: createGroupDto,
       });
+      return newGroup;
     } catch (e) {
       console.log(e);
       throw new HttpException(
@@ -46,6 +43,7 @@ export class GroupService {
     orderBy?: Prisma.GroupOrderByWithRelationInput;
   }) {
     const { skip, take, where, orderBy } = params;
+
     return this.prisma.group.findMany({
       skip,
       take,

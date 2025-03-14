@@ -66,12 +66,10 @@ export class UserController {
     return this.userService.updateUser(id, updateUserDTO);
   }
 
-  @Delete()
+  @Delete(':id')
   // @ApiBearerAuth()
   // @UseGuards(JwtAuthGuard)
-  async deleteUser(@Query('where') where?: string) {
-    let parsedWhere: Prisma.UserWhereInput | undefined;
-    parsedWhere = where ? JSON.parse(where) : undefined;
-    return this.userService.deleteUser(parsedWhere);
+  async deleteUser(@Param('id') id: string) {
+    return this.userService.deleteUser(id);
   }
 }

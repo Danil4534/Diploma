@@ -12,7 +12,12 @@ import {
   Delete,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Group, Prisma, PrismaClient } from '@prisma/client';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
@@ -22,23 +27,10 @@ export class GroupController {
   constructor(private readonly groupService: GroupService) {}
 
   @Post()
-  @ApiBody({
-    description: 'Create a new group',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'The group has been successfully created',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request',
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'The group with this name already exists',
-  })
   @ApiBody({ type: CreateGroupDto })
-  async create(@Body() createGroupDto: Prisma.GroupCreateInput) {
+  async create(
+    @Body() createGroupDto: Prisma.GroupCreateInput,
+  ): Promise<Group> {
     return await this.groupService.createGroup(createGroupDto);
   }
 
@@ -75,8 +67,8 @@ export class GroupController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.groupService.findGroupById(id);
+  async findOne(@Param('id') id: string) {
+    return await this.groupService.findGroupById(id);
   }
 
   @Put(':id')
@@ -84,8 +76,11 @@ export class GroupController {
     type: UpdateGroupDto,
     description: 'Update group data',
   })
-  update(@Param('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
-    return this.groupService.updateGroup(id, updateGroupDto);
+  async updateGroup(
+    @Param('id') id: string,
+    @Body() updateGroupDto: UpdateGroupDto,
+  ): Promise<Group> {
+    return await this.groupService.updateGroup(id, updateGroupDto);
   }
 
   @Delete(':id')

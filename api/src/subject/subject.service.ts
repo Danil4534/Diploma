@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, Subject } from '@prisma/client';
 @Injectable()
 export class SubjectService {
   constructor(private prisma: PrismaService) {}
@@ -18,6 +18,7 @@ export class SubjectService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
+
       return await this.prisma.subject.create({
         data: createSubjectDto,
       });
@@ -30,12 +31,29 @@ export class SubjectService {
     }
   }
 
-  findAll() {
-    return `This action returns all subject`;
+  async findAllSubjects(params: {
+    skip?: number;
+    take?: number;
+    where?: Prisma.SubjectWhereInput;
+    orderBy?: Prisma.SubjectOrderByWithRelationInput;
+  }) {
+    const { skip, take, where, orderBy } = params;
+
+    return this.prisma.subject.findMany({
+      skip,
+      take,
+      where,
+      orderBy,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} subject`;
+  async findOne(id: string): Promise<Subject> {
+    try {
+      const subject = this.prisma.subject.findFirst({ where: { id: id } });
+      return subject;
+    } catch (e) {
+      throw new HttpException('Invalid subject', HttpStatus.BAD_REQUEST);
+    }
   }
 
   update(id: number, updateSubjectDto: UpdateSubjectDto) {
@@ -44,5 +62,26 @@ export class SubjectService {
 
   remove(id: number) {
     return `This action removes a #${id} subject`;
+  }
+
+  parseTypes(where, orderBy, skip, take) {
+    let parsedWhere: Prisma.SubjectWhereInput | undefined;
+    let parsedOrderBy: Prisma.SubjectOrderByWithRelationInput | undefined;
+    let parsedSkip: number | undefined;
+    let parsedTake: number | undefined;
+
+    parsedWhere = where ? JSON.parse(where) : undefined;
+    parsedOrderBy = orderBy ? JSON.parse(orderBy) : undefined;
+    parsedSkip = skip ? parseInt(skip, 10) : 0;
+    parsedTake = take ? parseInt(take, 10) : undefined;
+
+    let parsedData = {
+      where: parsedWhere,
+      orderBy: parsedOrderBy,
+      skip: parsedSkip,
+      take: parsedTake,
+    };
+
+    return parsedData;
   }
 }

@@ -11,7 +11,14 @@ import { GroupModule } from './group/group.module';
 import { SubjectModule } from './subject/subject.module';
 
 @Module({
-  imports: [AuthModule, UserModule, MessageModule, ChatModule, GroupModule, SubjectModule],
+  imports: [
+    AuthModule,
+    UserModule,
+    MessageModule,
+    ChatModule,
+    GroupModule,
+    SubjectModule,
+  ],
   controllers: [AppController],
   providers: [AppService, ChatGateway, PrismaService],
 })
