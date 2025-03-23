@@ -8,19 +8,25 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { PrismaClient } from '@prisma/client';
 import { RefreshStrategy } from './strategy/rt.strategy';
 import { UserService } from 'src/user/user.service';
-
-
+import { EmailService } from './otp/email.service';
 
 @Module({
   imports: [
-    PrismaModule, 
-    PassportModule, 
+    PrismaModule,
+    PassportModule,
     JwtModule.register({
       secret: process.env.JWT,
-      signOptions: {expiresIn: '5m'}
-    })
+      signOptions: { expiresIn: '5m' },
+    }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, PrismaClient,RefreshStrategy, UserService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    PrismaClient,
+    RefreshStrategy,
+    UserService,
+    EmailService,
+  ],
 })
 export class AuthModule {}

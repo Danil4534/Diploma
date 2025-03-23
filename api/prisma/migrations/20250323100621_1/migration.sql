@@ -24,6 +24,8 @@ CREATE TABLE "User" (
     "img" TEXT,
     "sex" "UserSex",
     "info" TEXT,
+    "otpCode" TEXT,
+    "otpExpiresAt" TIMESTAMP(3),
     "banned" BOOLEAN DEFAULT false,
     "activeStatus" "UserStatus" DEFAULT 'Offline',
     "roles" "Role"[] DEFAULT ARRAY['Student']::"Role"[],
@@ -151,8 +153,11 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "User_phone_key" ON "User"("phone");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "User_otpCode_key" ON "User"("otpCode");
+
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("id") ON DELETE CASCADE ON UPDATE CASCADE;

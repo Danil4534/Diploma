@@ -22,6 +22,20 @@ export class UserService {
       orderBy,
     });
   }
+  async toggleBanUser(id: string, ban: boolean) {
+    try {
+      const foundUser = this.findUserById(id);
+      if (foundUser) {
+        this.prisma.user.update({
+          where: { id: id },
+          data: { banned: ban },
+        });
+      }
+      return ban ? 'User has been banned' : 'User has been unbanned';
+    } catch (e) {
+      throw new HttpException('Invalid request', HttpStatus.BAD_REQUEST);
+    }
+  }
 
   parseTypes(where, orderBy, skip, take) {
     let parsedWhere: Prisma.UserWhereInput | undefined;

@@ -9,6 +9,7 @@ import { MessageModule } from './message/message.module';
 import { ChatModule } from './chat/chat.module';
 import { GroupModule } from './group/group.module';
 import { SubjectModule } from './subject/subject.module';
+import { LessonModule } from './lesson/lesson.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SubjectModule } from './subject/subject.module';
     ChatModule,
     GroupModule,
     SubjectModule,
+    LessonModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway, PrismaService],

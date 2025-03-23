@@ -83,6 +83,14 @@ export class GroupController {
     return await this.groupService.updateGroup(id, updateGroupDto);
   }
 
+  @Put('/:groupId/student/:studentId')
+  async inviteStudent(
+    @Param('groupId') groupId: string,
+    @Param('studentId') studentId: string,
+  ): Promise<String> {
+    return await this.groupService.inviteStudent(groupId, studentId);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.groupService.remove(id);

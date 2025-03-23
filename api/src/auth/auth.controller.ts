@@ -6,12 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/Login.dto';
 
 import { AuthEntity } from './entities/auth.entity';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import RegisterDto from './dto/Register.dto';
 
 @ApiTags('auth')
@@ -30,5 +31,10 @@ export class AuthController {
   @Post('register')
   async createUser(@Body() userData: RegisterDto) {
     return await this.authService.registerNewUser(userData);
+  }
+
+  @Post('verify-otp/:userId')
+  async verifyOtp(@Body() dto: number, @Param('userId') userId) {
+    return this.authService.verifyOtp(dto, userId);
   }
 }

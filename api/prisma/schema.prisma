@@ -17,6 +17,8 @@ model User {
   img          String?
   sex          UserSex?
   info         String?
+  otpCode      Int?        @unique
+  otpExpiresAt DateTime?
   banned       Boolean?    @default(false)
   activeStatus UserStatus? @default(Offline)
   roles        Role[]      @default([Student])

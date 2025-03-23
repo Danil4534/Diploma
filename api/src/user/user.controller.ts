@@ -65,7 +65,14 @@ export class UserController {
   ) {
     return this.userService.updateUser(id, updateUserDTO);
   }
-
+  @Put('/ban/:id')
+  async banUser(@Param('id') id: string): Promise<String> {
+    return this.userService.toggleBanUser(id, true);
+  }
+  @Put('/unBan/:id')
+  async unBanUser(@Param('id') id: string): Promise<String> {
+    return this.userService.toggleBanUser(id, false);
+  }
   @Delete(':id')
   // @ApiBearerAuth()
   // @UseGuards(JwtAuthGuard)

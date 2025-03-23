@@ -1,4 +1,4 @@
-enum UserStatus{
-    Online,
-    Offline
+enum UserStatus {
+  'Online',
+  'Offline',
 }

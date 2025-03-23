@@ -1,3 +1,4 @@
+import { Lesson } from './../lesson/entities/lesson.entity';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Group } from './entities/group.entity';
@@ -49,6 +50,7 @@ export class GroupService {
       take,
       where,
       orderBy,
+      include: { students: true, Subject: true },
     });
   }
 
@@ -108,5 +110,44 @@ export class GroupService {
     };
 
     return parsedData;
+  }
+
+  async inviteStudent(groupId: string, studentId: string) {
+    const group = await this.prisma.group.findUnique({
+      where: { id: groupId },
+    });
+
+    if (!group) {
+      throw new HttpException('Group is not found', HttpStatus.BAD_REQUEST);
+    }
+
+    const student = await this.prisma.user.findUnique({
+      where: { id: studentId },
+    });
+
+    if (!student) {
+      throw new HttpException('Student is not found', HttpStatus.BAD_REQUEST);
+    }
+
+    const existingMember = await this.prisma.user.findFirst({
+      where: {
+        id: studentId,
+        groupId: groupId,
+      },
+    });
+
+    // if (!existingMember) {
+    //   throw new HttpException('', HttpStatus.BAD_REQUEST);
+    // }
+    await this.prisma.group.update({
+      where: { id: groupId },
+      data: { capacity: { increment: 1 } },
+    });
+
+    await this.prisma.user.update({
+      where: { id: studentId },
+      data: { groupId: groupId },
+    });
+    return 'Student successfully added to the group';
   }
 }
