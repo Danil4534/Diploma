@@ -47,7 +47,7 @@ export class SubjectService {
     });
   }
 
-  async findOne(id: string): Promise<Subject> {
+  async findOneSubject(id: string): Promise<Subject> {
     try {
       const subject = this.prisma.subject.findFirst({ where: { id: id } });
       return subject;
@@ -56,12 +56,32 @@ export class SubjectService {
     }
   }
 
-  update(id: number, updateSubjectDto: UpdateSubjectDto) {
-    return `This action updates a #${id} subject`;
+  async updateSubject(id: string, updateSubjectDto: Prisma.SubjectUpdateInput) {
+    try {
+      const updateSubject = await this.prisma.subject.update({
+        where: { id },
+        data: updateSubjectDto,
+      });
+      return updateSubject;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} subject`;
+  async remove(id: string) {
+    try {
+      const deleteSubject = await this.prisma.subject.findFirst({
+        where: { id: id },
+      });
+      if (deleteSubject) {
+        await this.prisma.subject.delete({ where: { id: id } });
+      }
+    } catch (e) {
+      throw new HttpException(
+        'Error with deleting this subject',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   parseTypes(where, orderBy, skip, take) {

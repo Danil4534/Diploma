@@ -35,12 +35,18 @@ export const OtpEmail = ({ username, code }: OtpEmailProps) => {
           }}
         >
           <Text style={{ fontSize: '18px' }}>Hello {username},</Text>
-          <Hr className="my-[16px] border-t-2 border-gray-300" />
-          <Text style={{ fontSize: '16px', display: 'flex' }}>
-            Your OTP code is:{' '}
+          <Hr className="my-[16px] border-t-2 border-gray-300 w-full" />
+          <Text
+            style={{
+              fontSize: '16px',
+              display: 'flex',
+              justifyContent: 'center',
+              textAlign: 'center',
+            }}
+          >
+            Your OTP code for Unichub is:
             <Text
               style={{
-                width: '100%',
                 fontSize: '24px',
                 backgroundColor: '#000000',
                 color: 'white',

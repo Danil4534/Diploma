@@ -13,7 +13,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User, Prisma } from '@prisma/client';
+import { User, Prisma, Role, $Enums } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
@@ -72,6 +72,14 @@ export class UserController {
   @Put('/unBan/:id')
   async unBanUser(@Param('id') id: string): Promise<String> {
     return this.userService.toggleBanUser(id, false);
+  }
+  @Put('/changeRole/:id/:role')
+  async changeRole(
+    @Param('id') id: string,
+    @Param('role') roles: string,
+  ): Promise<String> {
+    const roleArray = await this.userService.parseRole(roles);
+    return this.userService.changeRole(id, roleArray);
   }
   @Delete(':id')
   // @ApiBearerAuth()

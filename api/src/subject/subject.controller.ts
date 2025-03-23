@@ -54,16 +54,16 @@ export class SubjectController {
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Subject> {
-    return this.subjectService.findOne(id);
+    return this.subjectService.findOneSubject(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSubjectDto: UpdateSubjectDto) {
-    return this.subjectService.update(+id, updateSubjectDto);
+    return this.subjectService.updateSubject(id, updateSubjectDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.subjectService.remove(+id);
+    return this.subjectService.remove(id);
   }
 }

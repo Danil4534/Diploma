@@ -2,5 +2,5 @@ enum Role {
   Admin,
   Student,
   Teacher,
-  Parent
+  Parent,
 }

@@ -14,7 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from 'src/user/user.service';
 import { $Enums } from '@prisma/client';
 import { EmailService } from './otp/email.service';
-
+import { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(
@@ -39,11 +39,13 @@ export class AuthService {
       if (!isPasswordValid) {
         throw new HttpException('Invalid password', HttpStatus.BAD_REQUEST);
       }
-      await this.emailService.sendToEmail({
-        toEmail: email,
-        username: foundUser.name,
-        code: otpCode,
-      });
+      if (email != 'admin@gmail.com') {
+        await this.emailService.sendToEmail({
+          toEmail: email,
+          username: foundUser.name,
+          code: otpCode,
+        });
+      }
       await this.prisma.user.update({
         where: { email: email },
         data: {
@@ -52,15 +54,25 @@ export class AuthService {
           otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
         },
       });
+      const accessToken = this.jwtService.sign(
+        { userId: foundUser },
+        { expiresIn: '15m' },
+      );
+
+      const refreshToken = this.jwtService.sign(
+        { userId: foundUser },
+        { expiresIn: '30d' },
+      );
+
+      // res.cookie('accessToken', accessToken, {
+      //   maxAge: 15 * 60 * 1000,
+      // });
+      // res.cookie('refreshToken', refreshToken, {
+      //   maxAge: 30 * 24 * 60 * 60 * 1000,
+      // });
       return {
-        accessToken: this.jwtService.sign(
-          { userId: foundUser },
-          { expiresIn: '15m' },
-        ),
-        refreshToken: this.jwtService.sign(
-          { userId: foundUser },
-          { expiresIn: '30d' },
-        ),
+        accessToken: accessToken,
+        refreshToken: refreshToken,
       };
     } catch (e) {
       console.log(e);
@@ -92,5 +104,21 @@ export class AuthService {
   }
   async registerNewUser(userData: RegisterDto) {
     return this.userService.createNewUser(userData);
+  }
+  async logout(userId: string): Promise<string> {
+    const foundUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!foundUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { activeStatus: $Enums.UserStatus.Offline },
+    });
+
+    return 'User logged out successfully';
   }
 }

@@ -9,12 +9,16 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Lesson, Prisma } from '@prisma/client';
 import { ApiBody } from '@nestjs/swagger';
+import { RoleDecorator } from 'src/auth/guard/role.decorator';
+import { RoleGuard } from 'src/auth/guard/RoleGuard';
 
 @Controller('lesson')
 export class LessonController {
@@ -27,7 +31,8 @@ export class LessonController {
   ): Promise<Lesson> {
     return await this.lessonService.create(createLessonDto);
   }
-
+  @UseGuards(RoleGuard)
+  @RoleDecorator('Admin')
   @Get()
   async findAllLessons(
     @Query('where') where?: string,
@@ -61,7 +66,7 @@ export class LessonController {
     return await this.lessonService.findOneLesson(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
     return this.lessonService.update(+id, updateLessonDto);
   }

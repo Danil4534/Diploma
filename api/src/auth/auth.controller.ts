@@ -10,11 +10,10 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/Login.dto';
-
 import { AuthEntity } from './entities/auth.entity';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import RegisterDto from './dto/Register.dto';
-
+import { Response } from 'express';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -36,5 +35,10 @@ export class AuthController {
   @Post('verify-otp/:userId/:otp')
   async verifyOtp(@Param('otp') otp: number, @Param('userId') userId: string) {
     return this.authService.verifyOtp(otp, userId);
+  }
+
+  @Post('logout/:userId')
+  async logout(@Param('userId') userId: string) {
+    return this.authService.logout(userId);
   }
 }

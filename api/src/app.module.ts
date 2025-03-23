@@ -10,6 +10,7 @@ import { ChatModule } from './chat/chat.module';
 import { GroupModule } from './group/group.module';
 import { SubjectModule } from './subject/subject.module';
 import { LessonModule } from './lesson/lesson.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { LessonModule } from './lesson/lesson.module';
     GroupModule,
     SubjectModule,
     LessonModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway, PrismaService],

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient, User } from '@prisma/client';
+import { Prisma, PrismaClient, User, Role, $Enums } from '@prisma/client';
 import RegisterDto from 'src/auth/dto/Register.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -123,5 +123,41 @@ export class UserService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+  async changeRole(id: string, roleArray: $Enums.Role[]) {
+    try {
+      const changeRole = await this.prisma.user.update({
+        where: { id },
+        data: {
+          roles: roleArray,
+        },
+      });
+      console.log(changeRole);
+      return 'User roles updated successfully';
+    } catch (e) {
+      console.log(e);
+      throw new HttpException(
+        'Error updating user roles',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  async parseRole(roles: string): Promise<$Enums.Role[]> {
+    const roleArray = roles.split(',').map((role) => {
+      switch (role.trim().toLowerCase()) {
+        case 'admin':
+          return $Enums.Role.Admin;
+        case 'student':
+          return $Enums.Role.Student;
+        case 'teacher':
+          return $Enums.Role.Teacher;
+        case 'parent':
+          return $Enums.Role.Parent;
+
+        default:
+          throw new HttpException('Invalid role', HttpStatus.BAD_REQUEST);
+      }
+    });
+    return roleArray;
   }
 }
