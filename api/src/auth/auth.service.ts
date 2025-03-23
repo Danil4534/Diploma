@@ -26,6 +26,7 @@ export class AuthService {
 
   async login(userData: LoginDTO): Promise<AuthEntity> {
     const { email, password } = userData;
+    const otpCode = this.generateOtpCode();
     try {
       const foundUser = await this.prisma.user.findUnique({
         where: { email: email },
@@ -34,7 +35,7 @@ export class AuthService {
         password,
         foundUser.password,
       );
-      const otpCode = this.generateOtpCode();
+
       if (!isPasswordValid) {
         throw new HttpException('Invalid password', HttpStatus.BAD_REQUEST);
       }
@@ -66,7 +67,7 @@ export class AuthService {
     }
   }
 
-  async verifyOtp(dto: number, userId: string): Promise<void> {
+  async verifyOtp(otp: number, userId: string): Promise<string> {
     const foundUser = await this.prisma.user.findUnique({
       where: { id: userId },
     });
@@ -74,8 +75,9 @@ export class AuthService {
     if (!foundUser.otpCode || new Date(foundUser.otpExpiresAt) < new Date()) {
       throw new UnauthorizedException('OTP has expired or is invalid');
     }
-
-    if (foundUser.otpCode !== dto) {
+    console.log(foundUser.otpCode);
+    console.log(otp);
+    if (foundUser.otpCode != otp) {
       throw new UnauthorizedException('Invalid OTP');
     }
 
@@ -83,6 +85,7 @@ export class AuthService {
       where: { id: userId },
       data: { otpCode: null, otpExpiresAt: null },
     });
+    return 'Success';
   }
   generateOtpCode(): number {
     return Math.floor(100000 + Math.random() * 90000);
