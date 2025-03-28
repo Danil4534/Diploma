@@ -24,7 +24,7 @@ CREATE TABLE "User" (
     "img" TEXT,
     "sex" "UserSex",
     "info" TEXT,
-    "otpCode" TEXT,
+    "otpCode" INTEGER,
     "otpExpiresAt" TIMESTAMP(3),
     "banned" BOOLEAN DEFAULT false,
     "activeStatus" "UserStatus" DEFAULT 'Offline',
@@ -82,7 +82,7 @@ CREATE TABLE "Subject" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "groupId" TEXT NOT NULL,
+    "groupId" TEXT,
     "userId" TEXT,
 
     CONSTRAINT "Subject_pkey" PRIMARY KEY ("id")
@@ -93,9 +93,9 @@ CREATE TABLE "Lesson" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "startTime" TIMESTAMP(3) NOT NULL,
-    "endTime" TIMESTAMP(3) NOT NULL,
-    "linkForMeeting" TEXT NOT NULL,
+    "startTime" TIMESTAMP(3),
+    "endTime" TIMESTAMP(3),
+    "linkForMeeting" TEXT,
     "created" TIMESTAMP(3) NOT NULL,
     "subjectId" TEXT,
 

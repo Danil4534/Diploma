@@ -2,10 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma, PrismaClient, User, Role, $Enums } from '@prisma/client';
 import RegisterDto from 'src/auth/dto/Register.dto';
 import * as bcrypt from 'bcrypt';
+import { StorageManagerService } from 'src/storage-manager/storage-manager.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(
+    private prisma: PrismaClient,
+    private storageManagerService: StorageManagerService,
+  ) {}
 
   async findAll(params: {
     skip?: number;
@@ -67,7 +71,7 @@ export class UserService {
     return findUser;
   }
 
-  async createNewUser(userData: RegisterDto) {
+  async createNewUser(userData: RegisterDto, file: Buffer, fileName: string) {
     const { email } = userData;
     try {
       const exitUser = await this.prisma.user.findFirst({
@@ -76,6 +80,11 @@ export class UserService {
       if (exitUser) {
         throw new HttpException('This user is exist', HttpStatus.BAD_REQUEST);
       }
+      const image = await this.storageManagerService.uploadPublicFile(
+        file,
+        fileName,
+      );
+      userData.img = image.Location;
       userData.password = await this.hashedPassword(userData.password);
       const newUser = await this.prisma.user.create({
         data: userData,

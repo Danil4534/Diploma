@@ -9,6 +9,7 @@ import { PrismaClient } from '@prisma/client';
 import { RefreshStrategy } from './strategy/rt.strategy';
 import { UserService } from 'src/user/user.service';
 import { EmailService } from './otp/email.service';
+import { StorageManagerService } from 'src/storage-manager/storage-manager.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { EmailService } from './otp/email.service';
     RefreshStrategy,
     UserService,
     EmailService,
+    StorageManagerService,
   ],
 })
 export class AuthModule {}

@@ -9,19 +9,24 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { Prisma, Subject } from '@prisma/client';
 import { ApiBody } from '@nestjs/swagger';
+import { CreateSubjectDto } from './dto/create-subject.dto';
 
 @Controller('subject')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
   @Post()
-  createSubject(@Body() createSubjectDto: Prisma.SubjectCreateInput) {
-    return this.subjectService.create(createSubjectDto);
+  @ApiBody({ type: CreateSubjectDto })
+  async createSubject(
+    @Body() createSubjectDto: Prisma.SubjectCreateInput,
+  ): Promise<Subject> {
+    return await this.subjectService.create(createSubjectDto);
   }
 
   @Get()
@@ -53,13 +58,16 @@ export class SubjectController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Subject> {
-    return this.subjectService.findOneSubject(id);
+  async findOne(@Param('id') id: string): Promise<Subject> {
+    return await this.subjectService.findOneSubject(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubjectDto: UpdateSubjectDto) {
-    return this.subjectService.updateSubject(id, updateSubjectDto);
+  @Put(':id')
+  async updateSubject(
+    @Param('id') id: string,
+    @Body() updateSubjectDto: UpdateSubjectDto,
+  ): Promise<Subject> {
+    return await this.subjectService.updateSubject(id, updateSubjectDto);
   }
 
   @Delete(':id')

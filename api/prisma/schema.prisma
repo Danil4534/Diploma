@@ -50,7 +50,7 @@ model Group {
   id           String         @id @default(uuid())
   name         String?
   students     User[]         @relation("UserGroup")
-  Subject      Subject[]
+  subjects     Subject[]
   capacity     Int?           @default(0)
   Events       Event[]
   Announcement Announcement[]
@@ -74,22 +74,22 @@ model Subject {
   description String
   lessons     Lesson[]
   tasks       Task[]
-  groups      Group       @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  groupId     String
+  groups      Group?      @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  groupId     String?
   userId      String?
   GradeBook   GradeBook[]
 }
 
 model Lesson {
-  id             String   @id @default(uuid())
+  id             String    @id @default(uuid())
   title          String
   description    String
-  startTime      DateTime
-  endTime        DateTime
-  linkForMeeting String
+  startTime      DateTime?
+  endTime        DateTime?
+  linkForMeeting String?
   tasks          Task[]
   created        DateTime
-  Subject        Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subject        Subject?  @relation(fields: [subjectId], references: [id])
   subjectId      String?
 }
 

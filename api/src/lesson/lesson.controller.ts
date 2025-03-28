@@ -31,8 +31,8 @@ export class LessonController {
   ): Promise<Lesson> {
     return await this.lessonService.create(createLessonDto);
   }
-  @UseGuards(RoleGuard)
-  @RoleDecorator('Admin')
+  // @UseGuards(RoleGuard)
+  // @RoleDecorator('Admin')
   @Get()
   async findAllLessons(
     @Query('where') where?: string,
@@ -67,12 +67,15 @@ export class LessonController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
-    return this.lessonService.update(+id, updateLessonDto);
+  async updateLesson(
+    @Param('id') id: string,
+    @Body() updateLessonDto: UpdateLessonDto,
+  ) {
+    return this.lessonService.updateLesson(id, updateLessonDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.lessonService.remove(+id);
+  remove(@Param('id') id: string): Promise<string> {
+    return this.lessonService.removeLesson(id);
   }
 }

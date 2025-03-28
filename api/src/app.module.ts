@@ -11,6 +11,8 @@ import { GroupModule } from './group/group.module';
 import { SubjectModule } from './subject/subject.module';
 import { LessonModule } from './lesson/lesson.module';
 import { TaskModule } from './task/task.module';
+import { EventModule } from './event/event.module';
+import { StorageManagerModule } from './storage-manager/storage-manager.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { TaskModule } from './task/task.module';
     SubjectModule,
     LessonModule,
     TaskModule,
+    EventModule,
+    StorageManagerModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway, PrismaService],

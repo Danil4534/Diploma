@@ -81,6 +81,7 @@ export class UserController {
     const roleArray = await this.userService.parseRole(roles);
     return this.userService.changeRole(id, roleArray);
   }
+
   @Delete(':id')
   // @ApiBearerAuth()
   // @UseGuards(JwtAuthGuard)

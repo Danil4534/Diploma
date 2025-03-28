@@ -61,7 +61,7 @@ export class GroupController {
       );
     }
   }
-  @Get('getStudentsFromGroup/:id')
+  @Get('getStudentsFromGroup/:groupId')
   async findUsersInGroup(@Param('groupId') groupId: string) {
     return await this.groupService.findUsersIntoGroup(groupId);
   }
@@ -83,7 +83,7 @@ export class GroupController {
     return await this.groupService.updateGroup(id, updateGroupDto);
   }
 
-  @Put('/:groupId/student/:studentId')
+  @Put('/:groupId/inviteStudent/:studentId')
   async inviteStudent(
     @Param('groupId') groupId: string,
     @Param('studentId') studentId: string,
@@ -91,6 +91,23 @@ export class GroupController {
     return await this.groupService.inviteStudent(groupId, studentId);
   }
 
+  @Put('/:groupId/unInviteStudent/:studentId')
+  async unInviteStudent(
+    @Param('groupId') groupId: string,
+    @Param('studentId') studentId: string,
+  ): Promise<String> {
+    return await this.groupService.unInviteStudent(groupId, studentId);
+  }
+
+  @Put(':groupIds/inviteSubjectForGroup/:subId')
+  async inviteSubjectForGroup(
+    @Param('groupIds') groupIds: string,
+    @Param('subId') subId: string,
+  ): Promise<String> {
+    const groupIdsArray = groupIds.split(',');
+
+    return await this.groupService.inviteSubjectForGroup(groupIdsArray, subId);
+  }
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.groupService.remove(id);

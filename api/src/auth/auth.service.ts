@@ -102,9 +102,11 @@ export class AuthService {
   generateOtpCode(): number {
     return Math.floor(100000 + Math.random() * 90000);
   }
-  async registerNewUser(userData: RegisterDto) {
-    return this.userService.createNewUser(userData);
+
+  async registerNewUser(userData: RegisterDto, file: Buffer, fileName: string) {
+    return this.userService.createNewUser(userData, file, fileName);
   }
+
   async logout(userId: string): Promise<string> {
     const foundUser = await this.prisma.user.findUnique({
       where: { id: userId },

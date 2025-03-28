@@ -51,21 +51,12 @@ export class LessonService {
       take,
       where,
       orderBy,
-      include: { tasks: true, Subject: true },
+      include: { tasks: true, subject: true },
     });
   }
 
   async create(createLessonDto: Prisma.LessonCreateInput) {
     try {
-      const existLesson = this.prisma.lesson.findFirst({
-        where: { id: createLessonDto.id },
-      });
-      if (existLesson) {
-        throw new HttpException(
-          'Internal Server Error',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
       const newLesson = await this.prisma.lesson.create({
         data: createLessonDto,
       });
@@ -78,19 +69,35 @@ export class LessonService {
     }
   }
 
-  findAll() {
-    return `This action returns all lesson`;
+  async updateLesson(id: string, updateLessonDto: Prisma.LessonUpdateInput) {
+    try {
+      const updateLesson = await this.prisma.lesson.update({
+        where: { id },
+        data: updateLessonDto,
+      });
+      return updateLesson;
+    } catch (e) {
+      throw new HttpException(
+        'Error with update Lesson data',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} lesson`;
-  }
-
-  update(id: number, updateLessonDto: UpdateLessonDto) {
-    return `This action updates a #${id} lesson`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} lesson`;
+  async removeLesson(id: string): Promise<string> {
+    try {
+      const deleteLesson = await this.prisma.lesson.findFirst({
+        where: { id },
+      });
+      if (deleteLesson) {
+        await this.prisma.lesson.delete({ where: { id } });
+      }
+      return 'Delete was successful';
+    } catch (e) {
+      throw new HttpException(
+        'Error with deleting this lesson',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

@@ -31,8 +31,9 @@ export class GroupService {
       );
     }
   }
+
   async findUsersIntoGroup(groupId: string) {
-    return await this.prisma.group.findMany({
+    return await this.prisma.group.findFirst({
       where: { id: groupId },
       include: { students: true },
     });
@@ -50,7 +51,7 @@ export class GroupService {
       take,
       where,
       orderBy,
-      include: { students: true, Subject: true },
+      include: { students: true, subjects: true },
     });
   }
 
@@ -129,16 +130,6 @@ export class GroupService {
       throw new HttpException('Student is not found', HttpStatus.BAD_REQUEST);
     }
 
-    const existingMember = await this.prisma.user.findFirst({
-      where: {
-        id: studentId,
-        groupId: groupId,
-      },
-    });
-
-    // if (!existingMember) {
-    //   throw new HttpException('', HttpStatus.BAD_REQUEST);
-    // }
     await this.prisma.group.update({
       where: { id: groupId },
       data: { capacity: { increment: 1 } },
@@ -149,5 +140,52 @@ export class GroupService {
       data: { groupId: groupId },
     });
     return 'Student successfully added to the group';
+  }
+
+  async unInviteStudent(groupId: string, studentId: string): Promise<string> {
+    const group = await this.prisma.group.findUnique({
+      where: { id: groupId },
+    });
+
+    if (!group) {
+      throw new HttpException('Group is not found', HttpStatus.BAD_REQUEST);
+    }
+
+    const student = await this.prisma.user.findUnique({
+      where: { id: studentId },
+    });
+    if (!student) {
+      throw new HttpException('Student is not found', HttpStatus.BAD_REQUEST);
+    }
+    await this.prisma.group.update({
+      where: { id: groupId },
+      data: { capacity: { decrement: 1 } },
+    });
+
+    await this.prisma.user.update({
+      where: { id: studentId },
+      data: { groupId: null },
+    });
+    return 'Student successfully deleted from the group';
+  }
+
+  async inviteSubjectForGroup(
+    groupIds: string[],
+    subjectId: string,
+  ): Promise<string> {
+    await Promise.all(
+      groupIds.map(async (groupId) => {
+        await this.prisma.group.update({
+          where: { id: groupId },
+          data: {
+            subjects: {
+              connect: { id: subjectId },
+            },
+          },
+        });
+      }),
+    );
+
+    return 'Subject was successfully added to each group';
   }
 }
