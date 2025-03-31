@@ -98,7 +98,29 @@ export class UserService {
       );
     }
   }
+  async changeUserImage(
+    id: string,
+    file: Buffer,
+    fileName: string,
+  ): Promise<string> {
+    const user = await this.prisma.user.findFirst({ where: { id } });
 
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const newImage = await this.storageManagerService.uploadPublicFile(
+      file,
+      fileName,
+    );
+
+    await this.prisma.user.update({
+      where: { id },
+      data: { img: newImage.Location },
+    });
+
+    return newImage.Location;
+  }
   async hashedPassword(password): Promise<string> {
     const hashedPassword = await bcrypt.hash(password, 10);
     return hashedPassword;

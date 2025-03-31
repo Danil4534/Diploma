@@ -15,7 +15,7 @@ import { LoginDTO } from './dto/Login.dto';
 import { AuthEntity } from './entities/auth.entity';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import RegisterDto from './dto/Register.dto';
-import { Express } from 'express';
+import { Express, Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 @ApiTags('auth')
 @Controller('auth')
@@ -24,8 +24,11 @@ export class AuthController {
 
   @Post('login')
   @ApiBody({ type: LoginDTO, description: 'Example login data.' })
-  async login(@Body() userData: LoginDTO): Promise<AuthEntity> {
-    return await this.authService.login(userData);
+  async login(
+    @Body() userData: LoginDTO,
+    @Res() res: Response,
+  ): Promise<AuthEntity> {
+    return await this.authService.login(userData, res);
   }
 
   @ApiBody({ type: RegisterDto, description: 'User registration data.' })

@@ -60,6 +60,7 @@ export class LessonService {
       const newLesson = await this.prisma.lesson.create({
         data: createLessonDto,
       });
+
       return newLesson;
     } catch (e) {
       throw new HttpException(

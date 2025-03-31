@@ -11,9 +11,12 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User, Prisma, Role, $Enums } from '@prisma/client';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -80,6 +83,15 @@ export class UserController {
   ): Promise<String> {
     const roleArray = await this.userService.parseRole(roles);
     return this.userService.changeRole(id, roleArray);
+  }
+
+  @Put('/changeUserImage/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async changeUserImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<string> {
+    return this.userService.changeUserImage(id, file.buffer, file.originalname);
   }
 
   @Delete(':id')

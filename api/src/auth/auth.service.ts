@@ -24,7 +24,7 @@ export class AuthService {
     private emailService: EmailService,
   ) {}
 
-  async login(userData: LoginDTO): Promise<AuthEntity> {
+  async login(userData: LoginDTO, res: Response): Promise<AuthEntity> {
     const { email, password } = userData;
     const otpCode = this.generateOtpCode();
     try {
@@ -64,12 +64,12 @@ export class AuthService {
         { expiresIn: '30d' },
       );
 
-      // res.cookie('accessToken', accessToken, {
-      //   maxAge: 15 * 60 * 1000,
-      // });
-      // res.cookie('refreshToken', refreshToken, {
-      //   maxAge: 30 * 24 * 60 * 60 * 1000,
-      // });
+      res.cookie('accessToken', accessToken, {
+        maxAge: 15 * 60 * 1000,
+      });
+      res.cookie('refreshToken', refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
       return {
         accessToken: accessToken,
         refreshToken: refreshToken,
