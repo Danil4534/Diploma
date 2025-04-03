@@ -9,6 +9,7 @@ import {
   Res,
   UploadedFile,
   UseInterceptors,
+  Put,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/Login.dto';
@@ -26,9 +27,9 @@ export class AuthController {
   @ApiBody({ type: LoginDTO, description: 'Example login data.' })
   async login(
     @Body() userData: LoginDTO,
-    @Res() res: Response,
+    // @Res() res: Response,
   ): Promise<AuthEntity> {
-    return await this.authService.login(userData, res);
+    return await this.authService.login(userData);
   }
 
   @ApiBody({ type: RegisterDto, description: 'User registration data.' })
@@ -46,8 +47,19 @@ export class AuthController {
     );
   }
 
+  @Put('resetPassword/:id/:newPassword')
+  async resetPassword(
+    @Param('id') id: string,
+    @Param('newPassword') newPassword: string,
+  ) {
+    return await this.authService.resetPassword(id, newPassword);
+  }
+
   @Post('verify-otp/:userId/:otp')
-  async verifyOtp(@Param('otp') otp: number, @Param('userId') userId: string) {
+  async verifyOtp(
+    @Param('otp') otp: number,
+    @Param('userId') userId: string,
+  ): Promise<string> {
     return this.authService.verifyOtp(otp, userId);
   }
 

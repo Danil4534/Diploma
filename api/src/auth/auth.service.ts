@@ -24,7 +24,7 @@ export class AuthService {
     private emailService: EmailService,
   ) {}
 
-  async login(userData: LoginDTO, res: Response): Promise<AuthEntity> {
+  async login(userData: LoginDTO): Promise<AuthEntity> {
     const { email, password } = userData;
     const otpCode = this.generateOtpCode();
     try {
@@ -64,12 +64,12 @@ export class AuthService {
         { expiresIn: '30d' },
       );
 
-      res.cookie('accessToken', accessToken, {
-        maxAge: 15 * 60 * 1000,
-      });
-      res.cookie('refreshToken', refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-      });
+      // res.cookie('accessToken', accessToken, {
+      //   maxAge: 15 * 60 * 1000,
+      // });
+      // res.cookie('refreshToken', refreshToken, {
+      //   maxAge: 30 * 24 * 60 * 60 * 1000,
+      // });
       return {
         accessToken: accessToken,
         refreshToken: refreshToken,
@@ -87,8 +87,6 @@ export class AuthService {
     if (!foundUser.otpCode || new Date(foundUser.otpExpiresAt) < new Date()) {
       throw new UnauthorizedException('OTP has expired or is invalid');
     }
-    console.log(foundUser.otpCode);
-    console.log(otp);
     if (foundUser.otpCode != otp) {
       throw new UnauthorizedException('Invalid OTP');
     }
@@ -99,6 +97,31 @@ export class AuthService {
     });
     return 'Success';
   }
+
+  async resetPassword(id: string, newPassword: string) {
+    try {
+      const user = await this.prisma.user.findFirst({ where: { id } });
+      const otpCode = this.generateOtpCode();
+      if (user) {
+        await this.emailService.sendToEmail({
+          toEmail: user.email,
+          username: user.name,
+          code: otpCode,
+        });
+
+        const result = await this.prisma.user.update({
+          where: { id },
+          data: {
+            password: await this.userService.hashedPassword(newPassword),
+          },
+        });
+        return result;
+      }
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   generateOtpCode(): number {
     return Math.floor(100000 + Math.random() * 90000);
   }
