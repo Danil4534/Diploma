@@ -6,12 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { ApiBody, ApiProperty } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
+import { Prisma, Event } from '@prisma/client';
 
 @Controller('event')
 export class EventController {
@@ -20,17 +23,37 @@ export class EventController {
   @Post()
   @ApiBody({ type: CreateEventDto })
   create(@Body() createEventDto: Prisma.EventCreateInput) {
-    return this.eventService.create(createEventDto);
+    return this.eventService.createEvent(createEventDto);
   }
 
   @Get()
-  findAll() {
-    return this.eventService.findAll();
+  async findAllEvents(
+    @Query('where') where?: string,
+    @Query('orderBy') orderBy?: string,
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
+  ): Promise<Event[]> {
+    try {
+      const parsedData = await this.eventService.parseTypes(
+        where,
+        orderBy,
+        skip,
+        take,
+      );
+      return this.eventService.findAllEvents({
+        where: parsedData.where,
+        orderBy: parsedData.orderBy,
+        skip: parsedData.skip,
+        take: parsedData.take,
+      });
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.eventService.findOne(+id);
+  findOneEvent(@Param('id') id: string) {
+    return this.eventService.findOneEvent(id);
   }
 
   @Patch(':id')

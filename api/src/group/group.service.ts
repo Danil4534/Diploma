@@ -45,7 +45,6 @@ export class GroupService {
     orderBy?: Prisma.GroupOrderByWithRelationInput;
   }) {
     const { skip, take, where, orderBy } = params;
-
     return this.prisma.group.findMany({
       skip,
       take,
