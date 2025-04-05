@@ -45,6 +45,10 @@ export class SubjectService {
       take,
       where,
       orderBy,
+      include: {
+        lessons: true,
+        tasks: true,
+      },
     });
   }
 

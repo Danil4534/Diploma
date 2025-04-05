@@ -24,12 +24,14 @@ import { RoleGuard } from 'src/auth/guard/RoleGuard';
 export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
-  @Post()
+  @Post(':groupIds')
   @ApiBody({ type: CreateLessonDto })
   async create(
     @Body() createLessonDto: Prisma.LessonCreateInput,
+    @Param('groupIds') groupIds: string,
   ): Promise<Lesson> {
-    return await this.lessonService.create(createLessonDto);
+    const groupIdsArray = groupIds.split(',');
+    return await this.lessonService.create(createLessonDto, groupIdsArray);
   }
   // @UseGuards(RoleGuard)
   // @RoleDecorator('Admin')
@@ -72,6 +74,11 @@ export class LessonController {
     @Body() updateLessonDto: UpdateLessonDto,
   ) {
     return this.lessonService.updateLesson(id, updateLessonDto);
+  }
+
+  @Delete('/deleteAllLessonsIntoSubject/:subId')
+  async deleteAllLessonsIntoSubject(@Param('subId') subId: string) {
+    return await this.lessonService.removeAllLessonIntoSubject(subId);
   }
 
   @Delete(':id')

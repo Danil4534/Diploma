@@ -105,7 +105,6 @@ export class GroupController {
     @Param('subId') subId: string,
   ): Promise<String> {
     const groupIdsArray = groupIds.split(',');
-
     return await this.groupService.inviteSubjectForGroup(groupIdsArray, subId);
   }
   @Delete(':id')

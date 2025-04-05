@@ -7,20 +7,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createTaskDto: Prisma.TaskCreateInput) {
+  async create(createTaskDto: Prisma.TaskCreateInput, groupIds: string[]) {
     try {
-      // const existTask = await this.prisma.task.findFirst({
-      //   where: { id: createTaskDto.id },
-      // });
-      // if (existTask) {
-      //   throw new HttpException(
-      //     'The group with this name already exists',
-      //     HttpStatus.BAD_REQUEST,
-      //   );
-      // }
       const newTask = await this.prisma.task.create({
         data: createTaskDto,
       });
+
       return newTask;
     } catch (e) {
       console.log(e);

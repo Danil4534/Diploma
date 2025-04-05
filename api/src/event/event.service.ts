@@ -25,15 +25,15 @@ export class EventService {
 
   async createEvent(createEventDto: Prisma.EventCreateInput) {
     try {
-      const existEvent = this.prisma.event.findFirst({
-        where: { id: createEventDto.id },
-      });
-      if (existEvent) {
-        throw new HttpException(
-          'This event was created later',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      // const existEvent = this.prisma.event.findFirst({
+      //   where: { id: createEventDto.id },
+      // });
+      // if (existEvent) {
+      //   throw new HttpException(
+      //     'This event was created later',
+      //     HttpStatus.BAD_REQUEST,
+      //   );
+      // }
       const newEvent = await this.prisma.event.create({
         data: createEventDto,
       });

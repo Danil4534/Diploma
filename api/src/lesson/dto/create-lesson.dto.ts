@@ -13,4 +13,6 @@ export class CreateLessonDto {
   linkForMeeting: string;
   @ApiProperty()
   created: Date;
+  @ApiProperty()
+  subjectId: string;
 }

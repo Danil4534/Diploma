@@ -59,25 +59,30 @@ export class LessonService {
       include: { tasks: true, subject: true },
     });
   }
-
-  async create(createLessonDto: Prisma.LessonCreateInput) {
+  async create(createLessonDto: Prisma.LessonCreateInput, groupIds: string[]) {
     try {
       const newLesson = await this.prisma.lesson.create({
         data: createLessonDto,
       });
-      const newEvent = {
-        title: newLesson.title,
-        description: newLesson.description,
-        startTime: newLesson.startTime,
-        endTime: newLesson.endTime,
-        created: newLesson.created,
-        status: 'New',
-      };
-      await this.eventService.createEvent(newEvent);
+
+      const eventPromises = groupIds.map(async (groupId) => {
+        const newEvent = {
+          title: newLesson.title,
+          description: newLesson.description,
+          startTime: newLesson.startTime,
+          endTime: newLesson.endTime,
+          created: newLesson.created,
+          status: 'New',
+          groupId: groupId,
+        };
+        return await this.eventService.createEvent(newEvent);
+      });
+      await Promise.all(eventPromises);
       return newLesson;
     } catch (e) {
+      console.error('Error creating lesson or events:', e);
       throw new HttpException(
-        'Internal Server Error',
+        'Failed to create lesson and associated events',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -89,6 +94,7 @@ export class LessonService {
         where: { id },
         data: updateLessonDto,
       });
+
       return updateLesson;
     } catch (e) {
       throw new HttpException(
@@ -112,6 +118,17 @@ export class LessonService {
         'Error with deleting this lesson',
         HttpStatus.BAD_REQUEST,
       );
+    }
+  }
+
+  async removeAllLessonIntoSubject(subId: string) {
+    try {
+      const deletedLessons = await this.prisma.lesson.deleteMany({
+        where: { subjectId: subId },
+      });
+      return deletedLessons;
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
     }
   }
 }
