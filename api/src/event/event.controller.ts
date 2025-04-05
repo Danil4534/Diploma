@@ -9,6 +9,7 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -52,17 +53,20 @@ export class EventController {
   }
 
   @Get(':id')
-  findOneEvent(@Param('id') id: string) {
-    return this.eventService.findOneEvent(id);
+  async findOneEvent(@Param('id') id: string) {
+    return await this.eventService.findOneEvent(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventService.update(+id, updateEventDto);
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateEventDto: UpdateEventDto,
+  ): Promise<Event> {
+    return await this.eventService.updateEvent(id, updateEventDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.eventService.remove(+id);
+    return this.eventService.remove(id);
   }
 }

@@ -23,6 +23,60 @@ export class EventService {
     });
   }
 
+  async createEvent(createEventDto: Prisma.EventCreateInput) {
+    try {
+      const existEvent = this.prisma.event.findFirst({
+        where: { id: createEventDto.id },
+      });
+      if (existEvent) {
+        throw new HttpException(
+          'This event was created later',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const newEvent = await this.prisma.event.create({
+        data: createEventDto,
+      });
+      return newEvent;
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async findOneEvent(id: string): Promise<Event> {
+    try {
+      const event = await this.prisma.event.findFirst({ where: { id } });
+      return event;
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async updateEvent(id: string, updateEventDto: Prisma.EventUpdateInput) {
+    try {
+      const updateEvent = await this.prisma.event.update({
+        where: { id },
+        data: updateEventDto,
+      });
+      return updateEvent;
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async remove(id: string) {
+    try {
+      const deleteEvent = await this.prisma.event.findFirst({
+        where: { id },
+      });
+      if (deleteEvent) {
+        await this.prisma.event.delete({ where: { id } });
+      }
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   parseTypes(where, orderBy, skip, take) {
     let parsedWhere: Prisma.EventWhereInput | undefined;
     let parsedOrderBy: Prisma.EventOrderByWithRelationInput | undefined;
@@ -42,46 +96,5 @@ export class EventService {
     };
 
     return parsedData;
-  }
-
-  async createEvent(createEventDto: Prisma.EventCreateInput) {
-    try {
-      const existEvent = this.prisma.event.findFirst({
-        where: { id: createEventDto.id },
-      });
-      if (existEvent) {
-        throw new HttpException(
-          'This event was created later',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-      const newEvent = await this.prisma.event.create({
-        data: createEventDto,
-      });
-      return newEvent;
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  findAll() {
-    return `This action returns all event`;
-  }
-
-  async findOneEvent(id: string): Promise<Event> {
-    try {
-      const event = await this.prisma.event.findFirst({ where: { id } });
-      return event;
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} event`;
   }
 }

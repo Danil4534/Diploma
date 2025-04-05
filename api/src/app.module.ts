@@ -14,6 +14,9 @@ import { TaskModule } from './task/task.module';
 import { EventModule } from './event/event.module';
 import { StorageManagerModule } from './storage-manager/storage-manager.module';
 
+import { GradeBookModule } from './grade-book/grade-book.module';
+import { TaskGradeModule } from './task-grade/task-grade.module';
+
 @Module({
   imports: [
     AuthModule,
@@ -26,6 +29,9 @@ import { StorageManagerModule } from './storage-manager/storage-manager.module';
     TaskModule,
     EventModule,
     StorageManagerModule,
+
+    GradeBookModule,
+    TaskGradeModule,
   ],
   controllers: [AppController],
   providers: [AppService, ChatGateway, PrismaService],

@@ -28,6 +28,7 @@ model User {
   groupId      String?
   Comment      Comment[]
   GradeBook    GradeBook[]
+  TaskGrade    TaskGrade[]
 }
 
 model Message {
@@ -94,18 +95,19 @@ model Lesson {
 }
 
 model Task {
-  id          String    @id @default(uuid())
-  title       String
-  description String
+  id          String      @id @default(uuid())
+  title       String?
+  description String?
   type        TypeTask
-  startTime   DateTime
-  endTime     DateTime
-  grade       Int
+  startTime   DateTime?
+  endTime     DateTime?
+  grade       Int?
   comments    Comment[]
-  Lesson      Lesson?   @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson      Lesson?     @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lessonId    String?
-  Subject     Subject?  @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Subject     Subject?    @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subjectId   String?
+  TaskGrade   TaskGrade[]
 }
 
 model Comment {
@@ -117,12 +119,25 @@ model Comment {
   userId  String
 }
 
+model TaskGrade {
+  id      String   @id @default(uuid())
+  grade   Int
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  task    Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  taskId  String
+  created DateTime @default(now())
+
+  @@unique([userId, taskId])
+}
+
 model GradeBook {
   id        String  @id @default(uuid())
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId    String
   subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subjectId String
+  grade     Int
 }
 
 model Announcement {

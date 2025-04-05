@@ -3,10 +3,15 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Lesson, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { EventService } from 'src/event/event.service';
+import { CreateEventDto } from 'src/event/dto/create-event.dto';
 
 @Injectable()
 export class LessonService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventService: EventService,
+  ) {}
 
   async findOneLesson(id: string): Promise<Lesson> {
     try {
@@ -60,7 +65,15 @@ export class LessonService {
       const newLesson = await this.prisma.lesson.create({
         data: createLessonDto,
       });
-
+      const newEvent = {
+        title: newLesson.title,
+        description: newLesson.description,
+        startTime: newLesson.startTime,
+        endTime: newLesson.endTime,
+        created: newLesson.created,
+        status: 'New',
+      };
+      await this.eventService.createEvent(newEvent);
       return newLesson;
     } catch (e) {
       throw new HttpException(
