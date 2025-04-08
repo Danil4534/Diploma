@@ -1,3 +1,5 @@
+import { Subject } from './../subject/entities/subject.entity';
+import { TaskGrade } from './../task-grade/entities/task-grade.entity';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as ExcelJS from 'exceljs';
@@ -10,22 +12,22 @@ export class GradeBookService {
   constructor(private prisma: PrismaService) {}
 
   async getAllSubjectGradesWithTasks(userId: string) {
-    return this.prisma.gradeBook.findMany({
-      where: { userId },
+    const result = await this.prisma.group.findMany({
       include: {
-        subject: {
+        students: {
           include: {
-            tasks: {
-              include: {
-                TaskGrade: {
-                  where: { userId },
-                },
+            TaskGrade: {
+              select: {
+                id: true,
+                grade: true,
               },
             },
           },
         },
       },
     });
+
+    return result;
   }
 
   async exportGroupedRatingsToExcel(res: Response) {

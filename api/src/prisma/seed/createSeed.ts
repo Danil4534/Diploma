@@ -1,85 +1,137 @@
-// import { PrismaClient, UserSex } from '@prisma/client'
-// import { UserService } from '../../user/user.service'
+import { PrismaClient, Role, UserSex, TypeTask } from '@prisma/client';
+const prisma = new PrismaClient();
 
-// const prisma = new PrismaClient()
-// const userService = new UserService(prisma)
+function getRandomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-// async function main() {
-//    const hashedPassword =  await userService.hashedPassword("test")
-//    const users = [
-//     {
-//       name: 'Mr.',
-//       surname: 'Smith',
-//       email: 'test@gmail.com',
-//       phone: '22334234455662',
-//       img: null,
-//       sex: UserSex.MALE,
-//       created: new Date(),
-//       password: hashedPassword,
-//     },
-//     {
-//       name: 'Mr.',
-//       surname: 'Smith',
-//       email: 'test1@gmail.com',
-//       phone: '2233433254455662',
-//       img: null,
-//       sex: UserSex.MALE,
-//       created: new Date(),
-//       password: hashedPassword,
-//     },
-//     {
-//       name: 'Mr.',
-//       surname: 'Smith',
-//       email: 'test2@gmail.com',
-//       phone: '123',
-//       img: null,
-//       sex: UserSex.MALE,
-//       created: new Date(),
-//       password: hashedPassword,
-//     },
-//     {
-//       name: 'Mr.',
-//       surname: 'Smith',
-//       email: 'test3@gmail.com',
-//       phone: '2233445d5662',
-//       img: null,
-//       sex: UserSex.MALE,
-//       created: new Date(),
-//       password: hashedPassword,
-//     },
-//     {
-//       name: 'Mr.',
-//       surname: 'Smith',
-//       email: 'test4@gmail.com',
-//       phone: '22334451235662',
-//       img: null,
-//       sex: UserSex.MALE,
-//       created: new Date(),
-//       password: hashedPassword,
-//     },
-//   ]
-//     await Promise.all(
-//       users.map((user)=>prisma.user.create({
-//         data: {
-//           ...user,
-//           img: null,
-//           sex: UserSex.MALE,
-//           created: new Date(),
-//           password: hashedPassword,
-//         },
-//       }))
+async function main() {
+  console.log('🌱 Seeding database...');
 
-//     )
+  const groups = await Promise.all([
+    prisma.group.create({ data: { name: 'Group A', capacity: 15 } }),
+    prisma.group.create({ data: { name: 'Group B', capacity: 15 } }),
+  ]);
 
-//   console.log('Seed data has been inserted!')
-// }
+  const users = await Promise.all(
+    Array.from({ length: 20 }).map((_, i) =>
+      prisma.user.create({
+        data: {
+          name: `User${i + 1}`,
+          surname: `Surname${i + 1}`,
+          email: `user${i + 1}@example.com`,
+          phone: `+123456789${i}`,
+          password: 'hashed-password',
+          roles: [Role.Student],
+          sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
+        },
+      }),
+    ),
+  );
 
-// main()
+  // Randomly assign users to groups
+  for (const user of users) {
+    const randomGroup = groups[Math.floor(Math.random() * groups.length)];
+    await prisma.group.update({
+      where: { id: randomGroup.id },
+      data: {
+        students: {
+          connect: { id: user.id },
+        },
+      },
+    });
+  }
 
-//   .catch(e => {
-//     console.error(e)
-//     process.exit(1)
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect()
-//   })
+  // Create 10 subjects and assign randomly to groups
+  const subjectNames = [
+    'Math',
+    'Science',
+    'History',
+    'Biology',
+    'Physics',
+    'Chemistry',
+    'Literature',
+    'Geography',
+    'Art',
+    'PE',
+  ];
+
+  const subjects = await Promise.all(
+    subjectNames.map((name) => {
+      const randomGroup = groups[Math.floor(Math.random() * groups.length)];
+      return prisma.subject.create({
+        data: {
+          name,
+          description: `Description for ${name}`,
+          groupId: randomGroup.id,
+        },
+      });
+    }),
+  );
+
+  // Create tasks for each subject
+  const tasks = await Promise.all(
+    subjects.flatMap((subject) =>
+      ['Test', 'Quiz'].map((typeName, i) =>
+        prisma.task.create({
+          data: {
+            title: `${typeName} for ${subject.name}`,
+            description: `${typeName} description`,
+            type: i === 0 ? TypeTask.Test : TypeTask.Default,
+            grade: 100,
+            subjectId: subject.id,
+          },
+        }),
+      ),
+    ),
+  );
+
+  // Assign random task grades for each user
+  for (const user of users) {
+    for (const task of tasks) {
+      await prisma.taskGrade.create({
+        data: {
+          userId: user.id,
+          taskId: task.id,
+          grade: getRandomInt(50, 100),
+        },
+      });
+    }
+  }
+
+  // GradeBook - average grade per subject per student
+  for (const user of users) {
+    for (const subject of subjects) {
+      const grades = await prisma.taskGrade.findMany({
+        where: {
+          userId: user.id,
+          task: {
+            subjectId: subject.id,
+          },
+        },
+      });
+
+      if (grades.length > 0) {
+        const avg = grades.reduce((sum, g) => sum + g.grade, 0) / grades.length;
+        await prisma.gradeBook.create({
+          data: {
+            userId: user.id,
+            subjectId: subject.id,
+            grade: Math.round(avg),
+          },
+        });
+      }
+    }
+  }
+
+  console.log('✅ Seed completed.');
+}
+
+main()
+  .catch((e) => {
+    console.error('❌ Seed error:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
