@@ -47,7 +47,7 @@ export class GradeBookService {
         subjects: true,
       },
     });
-
+    console.log(groups);
     const workbook = new ExcelJS.Workbook();
 
     for (const group of groups) {
@@ -72,7 +72,6 @@ export class GradeBookService {
       });
       header.eachCell((cell) => {
         cell.alignment = {
-          textRotation: 90,
           vertical: 'bottom',
           horizontal: 'left',
           wrapText: true,
@@ -120,7 +119,7 @@ export class GradeBookService {
         row.eachCell((cell, colNumber) => {
           if (cell.value !== 'N/A') {
             const avgValue = parseFloat(cell.value as string);
-            if (avgValue < 60) {
+            if (avgValue < 60 && colNumber == headerRow.length) {
               cell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
