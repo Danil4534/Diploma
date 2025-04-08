@@ -21,15 +21,20 @@ import { ApiBody } from '@nestjs/swagger';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  @Post(':groupIds')
+  @Post(':subId/:groupIds')
   @ApiBody({ type: CreateTaskDto })
   async create(
     @Body() createTaskDto: Prisma.TaskCreateInput,
+    @Param('subId') subId: string,
     @Param('groupIds') groupIds: string,
   ): Promise<Task> {
     const groupIdsArray = groupIds.split(',');
 
-    return await this.taskService.create(createTaskDto, groupIdsArray);
+    return await this.taskService.createTask(
+      subId,
+      createTaskDto,
+      groupIdsArray,
+    );
   }
 
   @Get()

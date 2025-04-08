@@ -55,6 +55,7 @@ model Group {
   capacity     Int?           @default(0)
   Events       Event[]
   Announcement Announcement[]
+  TaskGroup    TaskGroup[]
 }
 
 model Event {
@@ -108,6 +109,15 @@ model Task {
   Subject     Subject?    @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subjectId   String?
   TaskGrade   TaskGrade[]
+  taskGroups  TaskGroup[]
+}
+
+model TaskGroup {
+  id      String @id @default(uuid())
+  task    Task   @relation(fields: [taskId], references: [id])
+  taskId  String
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId String
 }
 
 model Comment {

@@ -7,11 +7,31 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TaskService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createTaskDto: Prisma.TaskCreateInput, groupIds: string[]) {
+  async createTask(
+    subId: string,
+    createTaskDto: Prisma.TaskCreateInput,
+    groupIds: string[],
+  ) {
     try {
       const newTask = await this.prisma.task.create({
-        data: createTaskDto,
+        data: {
+          ...createTaskDto,
+          Subject: {
+            connect: { id: subId },
+          },
+        },
       });
+
+      if (groupIds && groupIds.length > 0) {
+        for (const groupId of groupIds) {
+          await this.prisma.taskGroup.create({
+            data: {
+              taskId: newTask.id,
+              groupId: groupId,
+            },
+          });
+        }
+      }
 
       return newTask;
     } catch (e) {
