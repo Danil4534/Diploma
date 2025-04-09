@@ -62,8 +62,8 @@ model Event {
   id          String   @id @default(uuid())
   title       String
   description String
-  startTime   DateTime
-  endTime     DateTime
+  start       DateTime
+  end         DateTime
   status      String
   created     DateTime
   Group       Group?   @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)

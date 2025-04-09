@@ -29,7 +29,6 @@ async function main() {
     ),
   );
 
-  // Randomly assign users to groups
   for (const user of users) {
     const randomGroup = groups[Math.floor(Math.random() * groups.length)];
     await prisma.group.update({
@@ -42,7 +41,6 @@ async function main() {
     });
   }
 
-  // Create 10 subjects and assign randomly to groups
   const subjectNames = [
     'Math',
     'Science',
@@ -69,7 +67,6 @@ async function main() {
     }),
   );
 
-  // Create tasks for each subject
   const tasks = await Promise.all(
     subjects.flatMap((subject) =>
       ['Test', 'Quiz'].map((typeName, i) =>
@@ -86,7 +83,6 @@ async function main() {
     ),
   );
 
-  // Assign random task grades for each user
   for (const user of users) {
     for (const task of tasks) {
       await prisma.taskGrade.create({
@@ -99,7 +95,6 @@ async function main() {
     }
   }
 
-  // GradeBook - average grade per subject per student
   for (const user of users) {
     for (const subject of subjects) {
       const grades = await prisma.taskGrade.findMany({

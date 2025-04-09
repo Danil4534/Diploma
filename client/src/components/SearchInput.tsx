@@ -5,14 +5,11 @@ import { debounce } from "lodash";
 export default function SearchInput() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<any>([]);
-
-  console.log(results);
   const fetchResults = debounce(async (query: string) => {
     if (query.length === 0) {
       setResults([]);
       return;
     }
-
     try {
       const response = await axios.get(
         `http://localhost:3000/user?where=%7B%7D&orderBy=%7B%7D&skip=0&take=10`

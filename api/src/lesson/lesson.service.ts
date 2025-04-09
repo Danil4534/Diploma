@@ -69,8 +69,8 @@ export class LessonService {
         const newEvent = {
           title: newLesson.title,
           description: newLesson.description,
-          startTime: newLesson.startTime,
-          endTime: newLesson.endTime,
+          start: newLesson.startTime,
+          end: newLesson.endTime,
           created: newLesson.created,
           status: 'New',
           groupId: groupId,

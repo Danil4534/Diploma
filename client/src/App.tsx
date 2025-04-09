@@ -3,6 +3,7 @@ import BigCalendar from "./components/BigCalendar";
 import EventCalendar from "./components/EventCalendar";
 
 import Header from "./components/Header";
+import LoginForm from "./components/LoginForm";
 import SearchInput from "./components/SearchInput";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Header />
       <EventCalendar />
       <BigCalendar />
+      <LoginForm />
     </>
   );
 }
