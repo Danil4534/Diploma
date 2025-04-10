@@ -4,14 +4,21 @@ interface ButtonProps {
   content: string;
   type: "submit" | "button" | "reset";
   className: string;
+  action?: () => void;
 }
 
-const Button: React.FC<ButtonProps> = ({ content, type, className }) => {
+const Button: React.FC<ButtonProps> = ({
+  content,
+  type,
+  className,
+  action,
+}) => {
   return (
     <>
       <div className="relative group">
         <button
           type={type}
+          onClick={action}
           className={cn(
             `relative inline-block p-px font-semibold leading-6 text-white bg-gray-800 cursor-pointer rounded-xl shadow-zinc-900 transition-transform duration-300 ease-in-out  active:scale-95`,
             className

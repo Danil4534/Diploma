@@ -21,7 +21,7 @@ const RegisterForm: React.FC = () => {
       </p>
       <div className="flex justify-around items-center">
         <h1 className="font-k2d text-3xl mt-6 flex items-end ">
-          <Image src={LogoIconBlack} className={"mr-2"} />
+          <Image src={LogoIconBlack} className={"mr-2 animate-rotate"} />
           Sign up
         </h1>
         <div className="w-1/2 z-10 h-auto">
@@ -57,11 +57,11 @@ const RegisterForm: React.FC = () => {
 
         <LabelInputContainer className="mb-2">
           <Label htmlFor="info">Sex</Label>
-          <Input id="info" placeholder="sex" type="text" />
+          <Input id="info" placeholder="Male" type="text" />
         </LabelInputContainer>
         <LabelInputContainer className="mb-2">
           <Label htmlFor="info">Info</Label>
-          <Input id="info" placeholder="info" type="text" />
+          <Input id="info" placeholder="Senior Lecturer" type="text" />
         </LabelInputContainer>
         <div className="w-[150px] h-0.5 mt-[20px] bg-slate-500"></div>
         <div className="justify-items-center">

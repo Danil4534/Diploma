@@ -2,27 +2,16 @@ import React from "react";
 import LoginForm from "../../components/LoginForm";
 import LaptopImage from "../../assets/icons/LaptopImage.svg";
 import { Image } from "../../components/ui/Image";
-import Background from "../../assets/icons/Background.svg";
+
 import LogoIconBlack from "../../assets/icons/LogoIconBlack.svg";
 const LoginPage: React.FC = () => {
   return (
     <>
-      <div
-        className="relative flex justify-center gap-20 items-center w-full h-screen  overflow-hidden"
-        // style={{
-        //   backgroundImage: `url(${Background})`,
-        //   backgroundRepeat: "no-repeat",
-        //   backgroundPosition: "bottom",
-        // }}
-      >
+      <div className="relative flex justify-center gap-20 items-center w-full h-screen  overflow-hidden">
         <div className="z-20">
           <LoginForm />
         </div>
         <Image src={LaptopImage} className="z-20 animate-rightIn  w-1/2" />
-        {/* <Image
-          src={Background}
-          className="absolute bottom-0 animate-bottomIn"
-        /> */}
         <div className="absolute top-0 right-[60px]">
           <div className="flex justify-end">
             <Image src={LogoIconBlack} className="flex animate-rotate " />
