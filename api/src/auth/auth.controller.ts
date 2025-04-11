@@ -25,10 +25,7 @@ export class AuthController {
 
   @Post('login')
   @ApiBody({ type: LoginDTO, description: 'Example login data.' })
-  async login(
-    @Body() userData: LoginDTO,
-    // @Res() res: Response,
-  ): Promise<AuthEntity> {
+  async login(@Body() userData: LoginDTO): Promise<AuthEntity> {
     return await this.authService.login(userData);
   }
 

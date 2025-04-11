@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "../../lib/utils";
@@ -10,8 +10,8 @@ const mainVariant = {
     y: 0,
   },
   animate: {
-    x: 20,
-    y: -20,
+    x: 5,
+    y: -5,
     opacity: 0.9,
   },
 };
@@ -25,17 +25,17 @@ const secondaryVariant = {
   },
 };
 
-export const UploadFile = ({
-  onChange,
-}: {
-  onChange?: (files: File[]) => void;
-}) => {
-  const [files, setFiles] = useState<File[]>([]);
+interface UploadFileProps {
+  onChange?: (file: File) => void;
+}
+
+export const UploadFile: React.FC<UploadFileProps> = ({ onChange }) => {
+  const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (newFiles: File[]) => {
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-    onChange && onChange(newFiles);
+  const handleFileChange = (newFile: File) => {
+    setFile(newFile);
+    onChange?.(newFile);
   };
 
   const handleClick = () => {
@@ -45,14 +45,17 @@ export const UploadFile = ({
   const { getRootProps, isDragActive } = useDropzone({
     multiple: false,
     noClick: true,
-    onDrop: handleFileChange,
-    onDropRejected: (error: any) => {
-      console.log(error);
+    onDropAccepted: (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        handleFileChange(acceptedFiles[0]);
+      }
     },
   });
 
+  const imageUrl = file ? URL.createObjectURL(file) : "";
+
   return (
-    <div className="" {...getRootProps()}>
+    <div {...getRootProps()} className="w-full">
       <motion.div
         onClick={handleClick}
         whileHover="animate"
@@ -60,60 +63,63 @@ export const UploadFile = ({
       >
         <input
           ref={fileInputRef}
-          id="file-upload-handle"
           type="file"
-          onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
+          accept="image/*"
           className="hidden"
+          onChange={(e) => {
+            const selectedFile = e.target.files?.[0];
+            if (selectedFile) {
+              console.log(selectedFile);
+              handleFileChange(selectedFile);
+            }
+          }}
         />
-        <div className="flex flex-col ">
-          <div className="relative ">
-            {files.length > 0 &&
-              files.map((file) => (
-                <div className="flex w-full gap-4">
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    layout
-                    className="text-base text-neutral-700 dark:text-neutral-300 truncate max-w-xs"
-                  >
-                    {file.name}
-                  </motion.p>
-                </div>
-              ))}
-            {!files.length && (
-              <motion.div
-                layoutId="file-upload"
-                variants={mainVariant}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 20,
-                }}
-                className={cn(
-                  "relative group-hover/file:shadow-xl z-40 bg-white dark:bg-neutral-900 flex items-center justify-center h-24 mt-4 w-24 mx-auto rounded-full"
-                )}
-              >
-                {isDragActive ? (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-neutral-600 flex flex-col items-center"
-                  >
-                    <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
-                  </motion.p>
-                ) : (
-                  <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
-                )}
-              </motion.div>
-            )}
 
-            {!files.length && (
-              <motion.div
-                variants={secondaryVariant}
-                className="absolute opacity-0 border border-dashed border-sky-400 inset-0 z-30 bg-transparent flex items-center justify-center h-24 w-24 mt-4   mx-auto rounded-full"
-              ></motion.div>
-            )}
-          </div>
+        <div className="flex flex-col items-center">
+          {file && imageUrl && (
+            <motion.img
+              src={imageUrl}
+              variants={mainVariant}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+              }}
+              alt="Uploaded"
+              className="relative w-24 h-24 justify-center items-center object-center mt-2 rounded-full group-hover/file:shadow-xl z-50"
+            />
+          )}
+          {!file && (
+            <motion.div
+              layoutId="file-upload"
+              variants={mainVariant}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+              }}
+              className={cn(
+                "relative group-hover/file:shadow-xl z-40 bg-white dark:bg-neutral-900 flex items-center justify-center h-24 mt-2 w-24 mx-auto rounded-full"
+              )}
+            >
+              {isDragActive ? (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-neutral-600 flex flex-col items-center"
+                >
+                  <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                </motion.p>
+              ) : (
+                <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
+              )}
+            </motion.div>
+          )}
+
+          <motion.div
+            variants={secondaryVariant}
+            className="absolute opacity-0 border border-dashed border-sky-400 inset-0 z-30 bg-transparent flex items-center justify-center h-24 w-24 mt-2 mx-auto rounded-full"
+          ></motion.div>
         </div>
       </motion.div>
     </div>
