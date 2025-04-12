@@ -58,6 +58,16 @@ export default {
     					transform: 'translateY(0)'
     				}
     			},
+				topIn: {
+    				'0%': {
+    					opacity: 0,
+    					transform: 'translateY(-50px)'
+    				},
+    				'100%': {
+    					opacity: 1,
+    					transform: 'translateY(0)'
+    				}
+    			},
     			rotate: {
     				'0%': {
     					opacity: 0,
@@ -89,6 +99,7 @@ export default {
     		},
     		animation: {
     			fadeIn: 'fadeIn 0.8s ease-in-out',
+				topIn: 'topIn 1s linear',
     			fadeInOpacity: 'fadeInOpacity 3s linear',
     			rightIn: 'rightIn 0.8s ease-in-out',
     			rotateHomePage: 'rotateHomePage 0.8s ease-in-out',

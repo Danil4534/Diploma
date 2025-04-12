@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { debounce } from "lodash";
-
+import { Input } from "./ui/Input";
+import { CiSearch } from "react-icons/ci";
 export default function SearchInput() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<any>([]);
@@ -32,23 +33,31 @@ export default function SearchInput() {
 
   return (
     <div className="p-4">
-      <input
+      <div className="relative">
+        <CiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <Input
+          type="text"
+          placeholder=" Search..."
+          className="caret-[#34d399]"
+        />
+      </div>
+      {/* <input
         type="text"
-        placeholder="Поиск..."
+        placeholder="Search..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="border p-2 rounded-md w-full"
-      />
+      /> */}
       {searchTerm.length > 0 && (
         <ul className="mt-2 border rounded-md p-2 bg-white">
           {filteredResults.length > 0 ? (
-            filteredResults.map((item, index) => (
+            filteredResults.map((item: any, index: any) => (
               <p key={index}>
                 {item.name} {item.surname}
               </p>
             ))
           ) : (
-            <li className="p-2 text-gray-500">Ничего не найдено</li>
+            <li className="p-2 text-gray-500">Not fround</li>
           )}
         </ul>
       )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
@@ -10,7 +10,7 @@ function EventCalendar() {
 
   return (
     <>
-      <div className="w-[380px] bg-white rounded-md p-4 flex justify-center">
+      <div className="w-[380px] bg-white rounded-lg p-4 flex justify-center shadow-md">
         <Calendar onChange={onChange} value={value} />
       </div>
     </>

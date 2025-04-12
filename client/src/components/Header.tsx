@@ -5,6 +5,7 @@ import { Image } from "./ui/Image";
 import Button from "./ui/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import SearchInput from "./SearchInput";
 
 const Header: React.FC = () => {
   const store = useStore();
@@ -22,14 +23,19 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="w-full h-24 bg-white px-10 py-2 flex justify-between items-center">
-      <div>
-        <h1 className="text-black font-k2d text-2xl ">
-          Welcome back, {store.currentUser?.name}
-        </h1>
-        <p className="text-neutral-400 font-k2d text-base">
-          Welcome back to Unichub
-        </p>
+    <header className="w-full h-24 bg-white px-10 py-1 flex justify-between items-center animate-topIn shadow-sm">
+      <div className="flex items-center gap-20">
+        <div>
+          <h1 className="text-black font-k2d text-2xl ">
+            Welcome back, {store.currentUser?.name}
+          </h1>
+          <p className="text-neutral-400 font-k2d text-base">
+            Welcome back to Unichub
+          </p>
+        </div>
+        <div>
+          <SearchInput />
+        </div>
       </div>
       <div className="flex flex-row gap-5 items-center">
         <div className="">
