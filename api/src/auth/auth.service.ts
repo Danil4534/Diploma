@@ -64,12 +64,6 @@ export class AuthService {
         { expiresIn: '30d' },
       );
 
-      // res.cookie('accessToken', accessToken, {
-      //   maxAge: 15 * 60 * 1000,
-      // });
-      // res.cookie('refreshToken', refreshToken, {
-      //   maxAge: 30 * 24 * 60 * 60 * 1000,
-      // });
       return {
         accessToken: accessToken,
         refreshToken: refreshToken,
@@ -97,26 +91,33 @@ export class AuthService {
     });
     return 'Success';
   }
+  async sendOtpCode(email: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { email: email },
+    });
+    const otpCode = this.generateOtpCode();
+    if (user) {
+      await this.emailService.sendToEmail({
+        toEmail: email,
+        username: user.name,
+        code: otpCode,
+      });
+      console.log('Send');
+    }
+  }
 
-  async resetPassword(id: string, newPassword: string) {
+  async resetPassword(email: string, newPassword: string) {
     try {
-      const user = await this.prisma.user.findFirst({ where: { id } });
-      const otpCode = this.generateOtpCode();
-      if (user) {
-        await this.emailService.sendToEmail({
-          toEmail: user.email,
-          username: user.name,
-          code: otpCode,
-        });
-
-        const result = await this.prisma.user.update({
-          where: { id },
-          data: {
-            password: await this.userService.hashedPassword(newPassword),
-          },
-        });
-        return result;
-      }
+      const user = await this.prisma.user.findFirst({
+        where: { email: email },
+      });
+      const result = await this.prisma.user.update({
+        where: { email },
+        data: {
+          password: await this.userService.hashedPassword(newPassword),
+        },
+      });
+      return result;
     } catch (e) {
       throw new HttpException(e, HttpStatus.BAD_REQUEST);
     }

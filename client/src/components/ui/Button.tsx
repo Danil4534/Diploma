@@ -3,7 +3,7 @@ import { cn } from "../../lib/utils";
 interface ButtonProps {
   content: string;
   type: "submit" | "button" | "reset";
-  className: string;
+  className?: string;
   action?: () => void;
 }
 

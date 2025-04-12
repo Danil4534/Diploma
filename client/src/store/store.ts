@@ -3,6 +3,9 @@ import { UserSex } from "../enum/userSex";
 
 export type typeStore = {
   activeOtp: boolean;
+  activeLogin: boolean;
+  activeForgotPasswd: boolean;
+  activeNewPassword: boolean;
   currentUser: any;
   initialValuesLogin: {
     email: string;
@@ -10,6 +13,12 @@ export type typeStore = {
   };
   initialValuesOtp: {
     otpCode: string;
+  };
+  initialValuesPassword: {
+    password: string;
+  };
+  initialValuesEmail: {
+    email: string;
   };
   initialValueRegister: {
     name: string;
@@ -22,14 +31,27 @@ export type typeStore = {
     info: string;
   };
   setActiveOtpForm: () => void;
-  setDisActiveOtpForm: () => void;
+  setActiveLoginForm: () => void;
   setCurrentUser: () => void;
+  setActiveForgotPasswd: () => void;
+  setActiveNewPasswordForm: () => void;
+  clearCookie: () => void;
 };
+
 export const useStore = create<typeStore>((set) => ({
   activeOtp: false,
+  activeLogin: true,
+  activeForgotPasswd: false,
+  activeNewPassword: false,
   currentUser: null,
+  initialValuesEmail: {
+    email: "",
+  },
   initialValuesLogin: {
     email: "",
+    password: "",
+  },
+  initialValuesPassword: {
     password: "",
   },
   initialValuesOtp: {
@@ -45,8 +67,35 @@ export const useStore = create<typeStore>((set) => ({
     sex: UserSex.FEMALE,
     info: "",
   },
-  setActiveOtpForm: () => set({ activeOtp: true }),
-  setDisActiveOtpForm: () => set({ activeOtp: false }),
+  setActiveOtpForm: () =>
+    set({
+      activeOtp: true,
+      activeForgotPasswd: false,
+      activeLogin: false,
+      activeNewPassword: false,
+    }),
+
+  setActiveForgotPasswd: () =>
+    set({
+      activeForgotPasswd: true,
+      activeLogin: false,
+      activeOtp: false,
+      activeNewPassword: false,
+    }),
+  setActiveLoginForm: () =>
+    set({
+      activeForgotPasswd: false,
+      activeLogin: true,
+      activeOtp: false,
+      activeNewPassword: false,
+    }),
+  setActiveNewPasswordForm: () =>
+    set({
+      activeForgotPasswd: false,
+      activeLogin: false,
+      activeOtp: false,
+      activeNewPassword: true,
+    }),
   setCurrentUser: () => {
     const token = document.cookie
       .split("; ")
@@ -55,5 +104,9 @@ export const useStore = create<typeStore>((set) => ({
     const jwt = token.split("=")[1];
     const payload = JSON.parse(atob(jwt.split(".")[1]));
     set({ currentUser: payload.userId });
+  },
+  clearCookie: () => {
+    document.cookie =
+      "accessToken= expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   },
 }));

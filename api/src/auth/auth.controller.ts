@@ -44,12 +44,17 @@ export class AuthController {
     );
   }
 
-  @Put('resetPassword/:id/:newPassword')
+  @Put('resetPassword/:email/:newPassword')
   async resetPassword(
-    @Param('id') id: string,
+    @Param('email') email: string,
     @Param('newPassword') newPassword: string,
   ) {
-    return await this.authService.resetPassword(id, newPassword);
+    return await this.authService.resetPassword(email, newPassword);
+  }
+
+  @Post('sendOtpCode/:email')
+  async sendOtpCode(@Param('email') email: string) {
+    return await this.authService.sendOtpCode(email);
   }
 
   @Post('verify-otp/:userId/:otp')

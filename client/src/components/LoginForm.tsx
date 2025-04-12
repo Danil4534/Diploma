@@ -9,14 +9,21 @@ import * as Yup from "yup";
 import { useStore } from "../store/store";
 import { FormikInput } from "./ui/FormikInput";
 import axios from "axios";
+import { toast, Toaster } from "sonner";
+import { useState } from "react";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const [emailForReset, setEmailForReset] = useState<string | undefined>();
   const store = useStore();
 
   const validationSchemaLogin = Yup.object({
     email: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string().min(6, "At least 6 characters").required("Required"),
+  });
+
+  const validationSchemaEmail = Yup.object({
+    email: Yup.string().email("Invalid email").required("Required"),
   });
 
   const validationSchemaOtp = Yup.object({
@@ -40,6 +47,23 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  const handleSubmitResetForm = async (values: string) => {
+    try {
+      console.log(emailForReset);
+      const response = await axios.put(
+        `http://localhost:3000/auth/resetPassword/${emailForReset}/${values}`
+      );
+      if (response.status == 200) {
+        toast("✅ Password changed successfully!");
+        handleBackForm("login");
+      }
+    } catch (error: any) {
+      if (error) {
+        toast("❌ Something went wrong. Please try again.");
+      }
+    }
+  };
+
   const handleSubmitOtpForm = async (values: any) => {
     try {
       const userId = store.currentUser.id;
@@ -47,13 +71,39 @@ const LoginForm: React.FC = () => {
         const response = await axios.post(
           `http://localhost:3000/auth/verify-otp/${userId}/${values.otpCode}`
         );
-        console.log(response.data);
+
+        console.log(response);
         if (response.data == "Success") {
-          navigate("/homepage");
+          toast("✅ OTP verified successfully!");
+          setTimeout(() => {
+            navigate("/homepage");
+          }, 2000);
         }
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error: any) {
+      const status = error.response?.status;
+      if (status == 401) {
+        toast("❌ You entered a wrong OTP code. Please check your email!");
+      } else if (status == 404) {
+        toast("❌ OTP not found. Please request a new one.");
+      } else {
+        toast("Something went wrong. Please try again.");
+      }
+    }
+  };
+  const handleBackForm = (valueForm: string) => {
+    switch (valueForm) {
+      case (valueForm = "otp"):
+        store.setActiveOtpForm();
+        break;
+      case (valueForm = "login"):
+        store.setActiveLoginForm();
+        break;
+      case (valueForm = "enterPassword"):
+        store.setActiveNewPasswordForm();
+        break;
+      case (valueForm = "reset"):
+        store.setActiveForgotPasswd();
     }
   };
 
@@ -67,9 +117,15 @@ const LoginForm: React.FC = () => {
       </p>
       <h1 className="font-k2d text-3xl mt-6 flex items-end ">
         <Image src={LogoIconBlack} className={"mr-2 animate-rotate"} />
-        Sign in
-      </h1>{" "}
-      {!store.activeOtp ? (
+        {store.activeLogin
+          ? "Sign in"
+          : store.activeForgotPasswd
+          ? "Reset Password"
+          : store.activeOtp
+          ? "Send OTP"
+          : ""}
+      </h1>
+      {store.activeLogin ? (
         <Formik
           initialValues={store.initialValuesLogin}
           validationSchema={validationSchemaLogin}
@@ -92,14 +148,21 @@ const LoginForm: React.FC = () => {
                   placeholder="Password"
                   type="password"
                 />
+                <p
+                  onClick={() => store.setActiveForgotPasswd()}
+                  className="text-right font-k2d font-medium hover:underline cursor-pointer "
+                >
+                  Forgot password
+                </p>
               </LabelInputContainer>
             </div>
-            <div className="w-[150px] h-0.5 mt-[76px] bg-slate-500"></div>
+            <div className="w-[150px] h-0.5 mt-[26px] bg-slate-500"></div>
             <div className="justify-items-center">
               <Button
                 content={"Sign in"}
                 type="submit"
                 className=" w-[382px] mt-4 font-k2d text-xl"
+                action={() => toast("📩 Check your Email")}
               />
               <p className="font-medium">
                 Don`t have an account?
@@ -110,7 +173,8 @@ const LoginForm: React.FC = () => {
             </div>
           </Form>
         </Formik>
-      ) : (
+      ) : null}
+      {store.activeOtp ? (
         <Formik
           initialValues={store.initialValuesOtp}
           validationSchema={validationSchemaOtp}
@@ -136,14 +200,94 @@ const LoginForm: React.FC = () => {
               />
               <p
                 className="font-k2d pt-4 cursor-pointer hover:underline"
-                onClick={() => store.setDisActiveOtpForm()}
+                onClick={() => handleBackForm("login")}
               >
                 Cancel
               </p>
             </div>
           </Form>
         </Formik>
-      )}
+      ) : null}
+      {store.activeForgotPasswd ? (
+        <Formik
+          initialValues={store.initialValuesEmail}
+          validationSchema={validationSchemaEmail}
+          onSubmit={(values) => {
+            setEmailForReset(values.email);
+            handleBackForm("enterPassword");
+          }}
+        >
+          <Form className="mt-8 justify-items-center items-center ">
+            <div className="flex-col w-full  md:flex-row md:space-y-0 justify-items-center animate-fadeIn ">
+              <LabelInputContainer className="mb-2">
+                <Label htmlFor="password" className="text-left">
+                  Email
+                </Label>
+                <FormikInput
+                  name="email"
+                  placeholder="testmail@gmail.com"
+                  type="email"
+                  className="text-center text-xl"
+                />
+              </LabelInputContainer>
+              <Button
+                content={"Check Email"}
+                type="submit"
+                className=" w-[382px] mt-4 font-k2d text-xl"
+              />
+              <p
+                className="font-k2d pt-4 cursor-pointer hover:underline"
+                onClick={() => handleBackForm("login")}
+              >
+                Cancel
+              </p>
+            </div>
+          </Form>
+        </Formik>
+      ) : null}
+      {store.activeNewPassword ? (
+        <Formik
+          initialValues={store.initialValuesPassword}
+          onSubmit={(values) => handleSubmitResetForm(values.password)}
+        >
+          <Form className="mt-8 justify-items-center items-center ">
+            <div className="flex-col w-full  md:flex-row md:space-y-0 justify-items-center animate-fadeIn ">
+              <LabelInputContainer className="mb-2">
+                <Label htmlFor="password" className="text-left">
+                  New Password
+                </Label>
+                <FormikInput
+                  name="password"
+                  placeholder="New password"
+                  type="password"
+                  className="text-center text-xl"
+                />
+                <Label htmlFor="password" className="text-left">
+                  Re-enter Password
+                </Label>
+                <FormikInput
+                  name="reEnterPassword"
+                  placeholder="New password"
+                  type="password"
+                  className="text-center text-xl"
+                />
+              </LabelInputContainer>
+              <Button
+                content={"Change Password"}
+                type="submit"
+                className=" w-[382px] mt-4 font-k2d text-xl"
+              />
+              <p
+                className="font-k2d pt-4 cursor-pointer hover:underline"
+                onClick={() => handleBackForm("enter")}
+              >
+                Cancel
+              </p>
+            </div>
+          </Form>
+        </Formik>
+      ) : null}
+      <Toaster />
     </div>
   );
 };

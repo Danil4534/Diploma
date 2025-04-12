@@ -99,7 +99,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({ onChange }) => {
                 damping: 20,
               }}
               className={cn(
-                "relative group-hover/file:shadow-xl z-40 bg-white dark:bg-neutral-900 flex items-center justify-center h-24 mt-2 w-24 mx-auto rounded-full"
+                "relative group-hover/file:shadow-xl z-40 bg-neutral-800 dark:bg-neutral-900 flex items-center justify-center h-24 mt-2 w-24 mx-auto rounded-full"
               )}
             >
               {isDragActive ? (
@@ -108,10 +108,10 @@ export const UploadFile: React.FC<UploadFileProps> = ({ onChange }) => {
                   animate={{ opacity: 1 }}
                   className="text-neutral-600 flex flex-col items-center"
                 >
-                  <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                  <IconUpload className="h-4 w-4 text-neutral-500 dark:text-neutral-400" />
                 </motion.p>
               ) : (
-                <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
+                <IconUpload className="h-4 w-4 text-neutral-500 dark:text-neutral-300" />
               )}
             </motion.div>
           )}
