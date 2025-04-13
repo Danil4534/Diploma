@@ -1,9 +1,8 @@
-import { Link, LinkProps } from "react-router-dom";
+import { Link, LinkProps, NavLink } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import { cn } from "../../lib/utils";
-import { Image } from "./Image";
 
 interface Links {
   label: string;
@@ -166,7 +165,7 @@ export const SidebarLink = ({
 }) => {
   const { open, animate } = useSidebar();
   return (
-    <Link
+    <NavLink
       to={link.href}
       className={cn(
         "flex items-center justify-start gap-2 group/sidebar px-2 py-2 hover:bg-neutral-200 rounded-lg transition-colors duration-200",
@@ -186,6 +185,6 @@ export const SidebarLink = ({
       >
         {link.label}
       </motion.span>
-    </Link>
+    </NavLink>
   );
 };

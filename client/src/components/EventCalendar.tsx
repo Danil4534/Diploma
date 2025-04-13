@@ -10,7 +10,7 @@ function EventCalendar() {
 
   return (
     <>
-      <div className="w-[380px] bg-white rounded-lg p-4 flex justify-center shadow-md">
+      <div className="w-full bg-white p-2 flex justify-center items-end ">
         <Calendar onChange={onChange} value={value} />
       </div>
     </>

@@ -6,6 +6,7 @@ import Button from "./ui/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SearchInput from "./SearchInput";
+import { useEffect } from "react";
 
 const Header: React.FC = () => {
   const store = useStore();
@@ -17,11 +18,14 @@ const Header: React.FC = () => {
       );
       store.setActiveLoginForm();
       navigate("/login");
+      store.clearCookie();
     } catch (e) {
       console.log(e);
     }
   };
-
+  useEffect(() => {
+    store.setCurrentUser();
+  }, []);
   return (
     <header className="w-full h-24 bg-white px-10 py-1 flex justify-between items-center animate-topIn shadow-sm">
       <div className="flex items-center gap-20">

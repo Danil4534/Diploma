@@ -17,14 +17,18 @@ export class CreateEventDto {
     example: '2025-04-05T10:00:00.000Z',
   })
   @IsDateString()
-  startTime: Date;
+  start: Date;
 
   @ApiProperty({
     description: 'End time of the event ',
     example: '2025-04-05T12:00:00.000Z',
   })
   @IsDateString()
-  endTime: Date;
+  end: Date;
+  @ApiProperty({
+    description: 'Status for event',
+    example: 'New',
+  })
   @IsString()
   status: string;
   @ApiProperty({
