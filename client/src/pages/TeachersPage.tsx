@@ -9,7 +9,6 @@ function TeachersPage(props: Props) {
   return (
     <>
       <Breadcrumbs />
-      <div>Teacher</div>
     </>
   );
 }

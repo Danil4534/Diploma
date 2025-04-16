@@ -5,7 +5,9 @@ import TeacherIcon from "../assets/icons/icon _teacher_.svg";
 import UsersIcon from "../assets/icons/icon _Users_.svg";
 import BooksIcon from "../assets/icons/ImBooks.svg";
 import LogoIconBlack from "../assets/icons/LogoIconBlack.svg";
+import MessageIcon from "../assets/icons/Message.svg";
 import { Logo, LogoIcon } from "./Logo";
+
 type SideBarContentProps = {
   open: boolean;
 };
@@ -40,12 +42,12 @@ export const SideBarContent: React.FC<SideBarContentProps> = ({ open }) => {
     {
       label: "Events",
       href: "events",
-      icon: <Image src={HomeIcon} className="w-4" />,
+      icon: <Image src={BooksIcon} className="w-4" />,
     },
     {
       label: "Messages",
       href: "messages",
-      icon: <Image src={HomeIcon} className="w-4" />,
+      icon: <Image src={MessageIcon} className="w-4" />,
     },
   ];
   return (

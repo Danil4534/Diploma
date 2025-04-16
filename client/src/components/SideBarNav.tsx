@@ -34,7 +34,6 @@ export const SideBarNav: React.FC = () => {
               <EventCalendar />
               <Events />
             </div>
-
             <Outlet />
             {pathname == "/homepage" ? (
               <>

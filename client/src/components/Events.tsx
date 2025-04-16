@@ -35,7 +35,6 @@ const Events: React.FC = () => {
   useEffect(() => {
     const handleEvents = async () => {
       const orderBy = encodeURIComponent(JSON.stringify({ start: "desc" }));
-
       const response = await axios.get(
         `http://localhost:3000/event?orderBy=${orderBy}`
       );
