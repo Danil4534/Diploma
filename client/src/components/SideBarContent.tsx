@@ -6,6 +6,7 @@ import UsersIcon from "../assets/icons/icon _Users_.svg";
 import BooksIcon from "../assets/icons/ImBooks.svg";
 import LogoIconBlack from "../assets/icons/LogoIconBlack.svg";
 import MessageIcon from "../assets/icons/Message.svg";
+import EventsIcon from "../assets/icons/Events.svg";
 import { Logo, LogoIcon } from "./Logo";
 
 type SideBarContentProps = {
@@ -20,6 +21,11 @@ export const SideBarContent: React.FC<SideBarContentProps> = ({ open }) => {
       icon: <Image src={HomeIcon} className="w-4" />,
     },
     {
+      label: "Groups",
+      href: "groups",
+      icon: <Image src={LogoIconBlack} className="w-4 " />,
+    },
+    {
       label: "Teachers",
       href: "teachers",
       icon: <Image src={TeacherIcon} className="w-4" />,
@@ -30,19 +36,20 @@ export const SideBarContent: React.FC<SideBarContentProps> = ({ open }) => {
       icon: <Image src={UsersIcon} className="w-4" />,
     },
     {
-      label: "Groups",
-      href: "groups",
-      icon: <Image src={LogoIconBlack} className="w-4 " />,
-    },
-    {
       label: "Subjects",
       href: "subjects",
       icon: <Image src={BooksIcon} className="w-4" />,
     },
     {
+      label: "Tasks",
+      href: "groups",
+      icon: <Image src={BooksIcon} className="w-4 " />,
+    },
+
+    {
       label: "Events",
       href: "events",
-      icon: <Image src={BooksIcon} className="w-4" />,
+      icon: <Image src={EventsIcon} className="w-4" />,
     },
     {
       label: "Messages",

@@ -27,29 +27,32 @@ export const SideBarNav: React.FC = () => {
         </SidebarBody>
       </Sidebar>
       <div className="flex flex-1">
-        <div className="flex h-full w-full flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md: dark:border-neutral-700 dark:bg-neutral-900">
+        <div className="flex h-full w-full flex-col gap-4 rounded-tl-2xl border border-neutral-200 bg-white p-2 md: dark:border-neutral-700 dark:bg-neutral-900">
           <Header />
-          <div className="w-full flex flex-row-reverse">
-            <div className="h-auto w-[380px] rounded-2xl border border-neutral-200 p-4 animate-rightIn">
-              <EventCalendar />
-              <Events />
+          <div className="w-full flex flex-row-reverse gap-4">
+            <div className="flex flex-col gap-4">
+              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 p-4 animate-rightIn ">
+                <EventCalendar />
+                <Events />
+              </div>
+              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 p-4 animate-rightIn"></div>
             </div>
             <Outlet />
             {pathname == "/homepage" ? (
-              <>
-                <div className="w-[calc(100%-380px)] p-4">
-                  <div className="flex w-full">
+              <div className="w-full h-screen border border-neutral-200 rounded-2xl justify-center items-center">
+                <div className="w-full p-4">
+                  <div className="flex w-full justify-center">
                     {routeData.map((item: any, index: number) => (
                       <div key={index}>
                         <RadialChart item={item} />
                       </div>
                     ))}
                   </div>
-                  <div>
+                  <div className="w-full">
                     <BigCalendar />
                   </div>
                 </div>
-              </>
+              </div>
             ) : (
               ""
             )}

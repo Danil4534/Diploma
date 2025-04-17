@@ -100,7 +100,7 @@ export default {
     		animation: {
     			fadeIn: 'fadeIn 0.8s ease-in-out',
 				topIn: 'topIn 1s linear',
-    			fadeInOpacity: 'fadeInOpacity 3s linear',
+    			fadeInOpacity: 'fadeInOpacity 0.5s ease forwards',
     			rightIn: 'rightIn 0.8s ease-in-out',
     			rotateHomePage: 'rotateHomePage 0.8s ease-in-out',
     			rotate: 'rotate 0.8s ease-in-out',

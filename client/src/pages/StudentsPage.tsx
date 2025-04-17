@@ -1,41 +1,39 @@
-import React, { useEffect, useState } from "react";
-import Breadcrumbs from "../components/Breadcrumbs";
 import axios from "axios";
 import { debounce } from "lodash";
+import React, { useEffect, useState } from "react";
+import Breadcrumbs from "../components/Breadcrumbs";
 import { CiSearch } from "react-icons/ci";
 import { Input } from "../components/ui/Input";
 import { Image } from "../components/ui/Image";
 import LogoIcon from "../assets/icons/LogoIconBlack.svg";
-
-const TeachersPage: React.FC = () => {
-  const [teachers, setTeachers] = useState([]);
+function StudentsPage() {
+  const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  console.log(teachers);
   const fetchTeachers = debounce(async (query: string) => {
     const where = encodeURIComponent(
-      JSON.stringify({ roles: { has: "Teacher" } })
+      JSON.stringify({ roles: { has: "Student" } })
     );
     try {
       const response = await axios.get(
         `http://localhost:3000/user?where=${where}`
       );
-      setTeachers(response.data);
+      setStudents(response.data);
     } catch (e) {
       console.log(e);
     }
   });
-  const filteredResults = teachers.filter((item: any) =>
+  const filteredResults = students.filter((item: any) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   useEffect(() => {
     fetchTeachers(searchTerm);
   }, [searchTerm]);
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full ">
       <div className="w-full flex justify-end mb-2">
-        <h1 className="font-k2d text-6xl">All Teachers</h1>
+        <h1 className="font-k2d text-6xl">All Students</h1>
       </div>
-      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 rounded-2xl p-4">
+      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 rounded-2xl p-2">
         <div className="flex items-center justify-between p-4">
           <Breadcrumbs />
           <div className="relative w-1/6">
@@ -48,13 +46,13 @@ const TeachersPage: React.FC = () => {
             />
           </div>
         </div>
-        <div className="flex gap-4">
+        <div className="grid grid-cols-4 gap-4 overflow-y-auto h-2/3 w-full p-4">
           {filteredResults.length > 0 ? (
             filteredResults.map((item: any, index: number) => (
               <div
                 key={index}
                 style={{ animationDelay: `${index * 200}ms` }}
-                className="flex justify-between border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md py-2 px-2 mt-2 shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
+                className="h-40 opacity-0 animate-fadeInOpacity hover:animate-background cursor-pointer rounded-2xl border-t-2 shadow-md border-emerald-400 hover:bg-[length:400%_400%] hover:shadow-xl animate-fill-forwards"
               >
                 <div className="w-auto h-full rounded-2xl bg-white p-2 sm:p-2">
                   <a href="#" className="flex gap-2">
@@ -64,13 +62,13 @@ const TeachersPage: React.FC = () => {
                           src={item.img}
                           className={
                             item.activeStatus == "Online"
-                              ? "border border-green-300 p-1 rounded-full"
+                              ? "border-2 border-green-300 p-1 rounded-full w-16 h-16"
                               : "border-2 border-neutral-400 p-1 rounded-full w-16 h-16"
                           }
                         />
                       ) : (
                         <div className="border border-neutral-600-300 rounded-full w-16 h-16 items-center flex justify-center">
-                          <Image src={LogoIcon} />
+                          <Image src={LogoIcon} className="w-1/2" />
                         </div>
                       )}
                     </div>
@@ -102,6 +100,6 @@ const TeachersPage: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-export default TeachersPage;
+export default StudentsPage;

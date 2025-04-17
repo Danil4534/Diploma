@@ -46,7 +46,7 @@ const Events: React.FC = () => {
   return (
     <>
       {pathname !== "/homepage/events" ? (
-        <div className="h-auto">
+        <div className="h-full">
           <div className="flex items-center justify-between">
             <h1 className="font-k2d text-md">Events</h1>
             <NavLink
@@ -56,23 +56,29 @@ const Events: React.FC = () => {
               View All
             </NavLink>
           </div>
-
-          {usersEvents.map((item: EventTypes, index: number) => (
-            <div
-              key={index}
-              className="flex justify-between border border-t-2 border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md py-2 px-2 mt-2 animate-rightIn shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200"
-            >
-              <p className="text-sm">{item.title}</p>
-              <div>
-                <p className="text-sm text-neutral-500">
-                  {formatDate(item.start)} -{formatDate(item.end)}
-                </p>
-                <p className="text-sm text-emerald-400 text-end">
-                  {item.status}
-                </p>
+          {usersEvents.length > 0 ? (
+            usersEvents.map((item: EventTypes, index: number) => (
+              <div
+                key={index}
+                style={{ animationDelay: `${index * 200}ms` }}
+                className="flex justify-between border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md py-2 px-2 mt-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
+              >
+                <p className="text-sm">{item.title}</p>
+                <div>
+                  <p className="text-sm text-neutral-500">
+                    {formatDate(item.start)} -{formatDate(item.end)}
+                  </p>
+                  <p className="text-sm text-emerald-400 text-end">
+                    {item.status}
+                  </p>
+                </div>
               </div>
+            ))
+          ) : (
+            <div className="flex justify-center items-center h-auto">
+              <h1 className="font-k2d text-sm text-neutral-400">Empty</h1>
             </div>
-          ))}
+          )}
         </div>
       ) : (
         <></>
