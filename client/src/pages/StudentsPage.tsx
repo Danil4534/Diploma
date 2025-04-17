@@ -6,6 +6,7 @@ import { CiSearch } from "react-icons/ci";
 import { Input } from "../components/ui/Input";
 import { Image } from "../components/ui/Image";
 import LogoIcon from "../assets/icons/LogoIconBlack.svg";
+import { AiOutlineSortAscending } from "react-icons/ai";
 function StudentsPage() {
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,6 +26,7 @@ function StudentsPage() {
   const filteredResults = students.filter((item: any) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   useEffect(() => {
     fetchTeachers(searchTerm);
   }, [searchTerm]);
@@ -36,14 +38,19 @@ function StudentsPage() {
       <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 rounded-2xl p-2">
         <div className="flex items-center justify-between p-4">
           <Breadcrumbs />
-          <div className="relative w-1/6">
-            <CiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              type="text"
-              placeholder=" Search..."
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="caret-[#34d399]"
-            />
+          <div className="flex w-full gap-2 justify-end">
+            <div className="relative w-1/5">
+              <CiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Input
+                type="text"
+                placeholder=" Search..."
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="caret-[#34d399]"
+              />
+            </div>
+            <div className="w-10 h-10 bg-slate-800 rounded-full flex justify-center items-center cursor-pointer">
+              <AiOutlineSortAscending color="white" size={24} />
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-4 gap-4 overflow-y-auto h-2/3 w-full p-4">
