@@ -8,11 +8,59 @@ import { RadialChart } from "./ui/RadialChart";
 import BigCalendar from "./BigCalendar";
 import { SideBarContent } from "./SideBarContent";
 import Events from "./Events";
-
+import axios from "axios";
+type RadialChartData = {
+  label: string;
+  count: number;
+};
 export const SideBarNav: React.FC = () => {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
-  const routeData = ["group", "user", "subject", "teacher"];
+  const [data, setData] = useState<RadialChartData[]>([]);
+  const handleGroups = async () => {
+    const response = await axios.get(`http://localhost:3000/group`);
+    return { label: "Group", count: response.data.length };
+  };
+  const handleUsers = async () => {
+    const response = await axios.get(`http://localhost:3000/user`);
+    return { label: "Users", count: response.data.length };
+  };
+  const handleTeachers = async () => {
+    const where = encodeURIComponent(
+      JSON.stringify({ roles: { has: "Teacher" } })
+    );
+    const response = await axios.get(
+      `http://localhost:3000/user?where=${where}`
+    );
+    return { label: "Teachers", count: response.data.length };
+  };
+  const handleStudents = async () => {
+    const where = encodeURIComponent(
+      JSON.stringify({
+        roles: { has: "Student" },
+      })
+    );
+    const response = await axios.get(
+      `http://localhost:3000/user?where=${where}`
+    );
+    return { label: "Students", count: response.data.length };
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const results = await Promise.all([
+          handleGroups(),
+          handleUsers(),
+          handleTeachers(),
+          handleStudents(),
+        ]);
+        setData(results);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div
@@ -42,9 +90,9 @@ export const SideBarNav: React.FC = () => {
               <div className="w-full h-screen border border-neutral-200 rounded-2xl justify-center items-center">
                 <div className="w-full p-4">
                   <div className="flex w-full justify-center">
-                    {routeData.map((item: any, index: number) => (
+                    {data.map((item: any, index: number) => (
                       <div key={index}>
-                        <RadialChart item={item} />
+                        <RadialChart count={item.count} label={item.label} />
                       </div>
                     ))}
                   </div>

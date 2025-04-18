@@ -20,7 +20,7 @@ const Breadcrumbs: React.FC = () => {
     str.charAt(0).toUpperCase() + str.slice(1);
 
   return (
-    <Breadcrumb>
+    <Breadcrumb className="w-1/4">
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href="/homepage">Home</BreadcrumbLink>

@@ -9,6 +9,7 @@ import TeachersPage from "./pages/TeachersPage";
 import SubjectPage from "./pages/SubjectPage";
 import StudentsPage from "./pages/StudentsPage";
 import GroupsPage from "./pages/GroupsPage";
+import UserProfile from "./pages/UserProfile";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
         <Route path="events" element={<TeachersPage />} />
         <Route path="students" element={<StudentsPage />} />
         <Route path="groups" element={<GroupsPage />} />
+        <Route path="profile" element={<UserProfile />} />
       </Route>
     </Routes>
   );

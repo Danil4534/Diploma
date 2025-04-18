@@ -20,51 +20,22 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 type RadialChartProps = {
-  item: any;
+  count: number;
+  label: string;
 };
 
-export const RadialChart: React.FC<RadialChartProps> = ({ item }) => {
-  const [count, setCount] = useState(0);
+export const RadialChart: React.FC<RadialChartProps> = ({ ...props }) => {
   const chartData = [
     {
-      name: item,
-      visitors: count,
+      name: props.label,
+      visitors: props.count,
       fill: "var(--color-safari)",
     },
   ];
 
   const maxCount = 100;
-  const dynamicAngle = Math.min((count / maxCount) * 360, 360);
-  useEffect(() => {
-    const handleData = async () => {
-      if (item === "teacher") {
-        const where = encodeURIComponent(
-          JSON.stringify({ roles: { has: "Teacher" } })
-        );
-        const response = await axios.get(
-          `http://localhost:3000/user?where=${where}&orderBy=%7B%7D&skip=0&take=100000`
-        );
-        setCount(response.data.length);
-      } else {
-        const response = await axios.get(
-          `http://localhost:3000/${item}?where=%7B%7D&orderBy=%7B%7D&skip=0&take=100000`
-        );
-        console.log(response.data);
-        setCount(response.data.length);
-      }
-    };
-    handleData();
-  }, [item]);
+  const dynamicAngle = Math.min((props.count / maxCount) * 360, 360);
 
-  const getLabel = (key: string) => {
-    const map: Record<string, string> = {
-      group: "Groups",
-      user: "Users",
-      subject: "Subjects",
-      teacher: "Teachers",
-    };
-    return map[key] || key;
-  };
   return (
     <CardContent className="pb-0">
       <ChartContainer
@@ -110,7 +81,7 @@ export const RadialChart: React.FC<RadialChartProps> = ({ item }) => {
                         y={(viewBox.cy || 0) + 24}
                         className="fill-muted-foreground font-k2d"
                       >
-                        {getLabel(item)}
+                        {props.label}
                       </tspan>
                     </text>
                   );

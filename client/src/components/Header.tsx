@@ -4,7 +4,7 @@ import { useStore } from "../store/store";
 import { Image } from "./ui/Image";
 import Button from "./ui/Button";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import SearchInput from "./SearchInput";
 import { useEffect } from "react";
 
@@ -42,14 +42,20 @@ const Header: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-row gap-5 items-center">
-        <div className="">
+        <NavLink to={"profile"}>
           <h1 className="text-black font-k2d text-base">
             {store.currentUser?.name} {store.currentUser?.surname}
           </h1>
-          <p className="text-neutral-400 font-k2d text-sm">
-            {store.currentUser?.roles}
-          </p>
-        </div>
+          <div className="flex w-full">
+            {store.currentUser?.roles.map((item: string, index: number) => (
+              <div key={index}>
+                <p className="font-k2d text-sm bg-slate-300 rounded-2xl py-0.5 px-1 text-white">
+                  {item.toLowerCase()}
+                </p>
+              </div>
+            ))}
+          </div>
+        </NavLink>
         <div>
           <Image
             src={store.currentUser?.img}
