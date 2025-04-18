@@ -14,6 +14,7 @@ import { FormikInput } from "./ui/FormikInput";
 import axios from "axios";
 import { useState } from "react";
 import { UserSex } from "../enum/userSex";
+import { toast, Toaster } from "sonner";
 
 const RegisterForm: React.FC = () => {
   const store = useStore();
@@ -51,8 +52,11 @@ const RegisterForm: React.FC = () => {
       if (response.status === 200) {
         navigate("/login");
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error: any) {
+      const status = error.response?.status;
+      if (status == 500) {
+        toast("❌ This user is exist ");
+      }
     }
   };
   return (
@@ -141,6 +145,7 @@ const RegisterForm: React.FC = () => {
           </div>
         </Form>
       </Formik>
+      <Toaster className="text-xl" />
     </div>
   );
 };

@@ -48,7 +48,7 @@ export default function SearchInput() {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="border p-2 rounded-md w-full"
       /> */}
-      {searchTerm.length > 0 && (
+      {/* {searchTerm.length > 0 && (
         <ul className="mt-2 border rounded-md p-2 bg-white">
           {filteredResults.length > 0 ? (
             filteredResults.map((item: any, index: any) => (
@@ -60,7 +60,7 @@ export default function SearchInput() {
             <li className="p-2 text-gray-500">Not fround</li>
           )}
         </ul>
-      )}
+      )} */}
     </div>
   );
 }

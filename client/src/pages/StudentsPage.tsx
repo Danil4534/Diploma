@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog";
 
-import { GroupModal } from "../components/ModalWindows/GroupModal";
+import { GroupModal } from "../components/modalViews/GroupModal";
 const StudentsPage: React.FC = () => {
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,9 +31,13 @@ const StudentsPage: React.FC = () => {
     }
   });
   const filteredResults = students.filter((item: any) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    formatNameSurname(item.name, item.surname)
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
   );
-
+  function formatNameSurname(name: string, surname: string) {
+    return `${name} ${surname}`;
+  }
   useEffect(() => {
     fetchTeachers(searchTerm);
   }, [searchTerm]);
@@ -63,7 +67,7 @@ const StudentsPage: React.FC = () => {
         <div className="grid grid-cols-4 gap-4 overflow-y-auto h-2/3 w-full p-4">
           {filteredResults.length > 0 ? (
             filteredResults.map((item: any, index: number) => (
-              <div>
+              <div key={index}>
                 <div
                   key={index}
                   style={{ animationDelay: `${index * 200}ms` }}
@@ -89,9 +93,7 @@ const StudentsPage: React.FC = () => {
                       </div>
                       <div className="flex flex-col justify-start items-start">
                         <h3 className="mt-0.5 text-lg font-k2d font-medium text-gray-900 flex gap-2">
-                          {item.name}
-                          <span> </span>
-                          {item.surname}
+                          {formatNameSurname(item.name, item.surname)}
                         </h3>
                         <div className="mt-2 flex flex-wrap gap-1">
                           {item.roles.map((item: any, index: number) => (

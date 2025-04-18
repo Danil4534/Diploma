@@ -7,8 +7,7 @@ import {
 } from "recharts";
 import { CardContent } from "./card";
 import { type ChartConfig, ChartContainer } from "./chart";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { cn } from "../../lib/utils";
 
 const chartConfig = {
   groups: {
@@ -22,6 +21,7 @@ const chartConfig = {
 type RadialChartProps = {
   count: number;
   label: string;
+  className?: string;
 };
 
 export const RadialChart: React.FC<RadialChartProps> = ({ ...props }) => {
@@ -37,11 +37,11 @@ export const RadialChart: React.FC<RadialChartProps> = ({ ...props }) => {
   const dynamicAngle = Math.min((props.count / maxCount) * 360, 360);
 
   return (
-    <CardContent className="pb-0">
+    <CardContent className={cn(props.className)}>
       <ChartContainer
         config={chartConfig}
         style={{ width: 250, height: 250 }}
-        className="mx-auto aspect-square max-h-[250px]"
+        className=" aspect-square max-h-[250px]"
       >
         <RadialBarChart
           data={chartData}
@@ -79,7 +79,7 @@ export const RadialChart: React.FC<RadialChartProps> = ({ ...props }) => {
                       <tspan
                         x={viewBox.cx}
                         y={(viewBox.cy || 0) + 24}
-                        className="fill-muted-foreground font-k2d"
+                        className="fill-muted-foreground font-k2d text-lg mt-1"
                       >
                         {props.label}
                       </tspan>

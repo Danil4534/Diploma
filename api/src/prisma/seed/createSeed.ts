@@ -5,16 +5,20 @@ function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-async function main() {
-  console.log('🌱 Seeding database...');
-
-  const groups = await Promise.all([
-    prisma.group.create({ data: { name: 'Group A', capacity: 15 } }),
-    prisma.group.create({ data: { name: 'Group B', capacity: 15 } }),
+async function seedGroups() {
+  return await Promise.all([
+    prisma.group.create({
+      data: { name: 'Group A', capacity: 15, status: 'New' },
+    }),
+    prisma.group.create({
+      data: { name: 'Group B', capacity: 15, status: 'New' },
+    }),
   ]);
+}
 
-  const users = await Promise.all(
-    Array.from({ length: 20 }).map((_, i) =>
+async function seedUsers(count: number) {
+  return await Promise.all(
+    Array.from({ length: count }).map((_, i) =>
       prisma.user.create({
         data: {
           name: `User${i + 1}`,
@@ -28,7 +32,9 @@ async function main() {
       }),
     ),
   );
+}
 
+async function assignUsersToGroups(users: any[], groups: any[]) {
   for (const user of users) {
     const randomGroup = groups[Math.floor(Math.random() * groups.length)];
     await prisma.group.update({
@@ -40,7 +46,9 @@ async function main() {
       },
     });
   }
+}
 
+async function seedSubjects(groups: any[]) {
   const subjectNames = [
     'Math',
     'Science',
@@ -54,20 +62,23 @@ async function main() {
     'PE',
   ];
 
-  const subjects = await Promise.all(
+  return await Promise.all(
     subjectNames.map((name) => {
-      const randomGroup = groups[Math.floor(Math.random() * groups.length)];
+      const group = groups[Math.floor(Math.random() * groups.length)];
       return prisma.subject.create({
         data: {
           name,
           description: `Description for ${name}`,
-          groupId: randomGroup.id,
+          status: 'New',
+          groupId: group.id,
         },
       });
     }),
   );
+}
 
-  const tasks = await Promise.all(
+async function seedTasks(subjects: any[]) {
+  return await Promise.all(
     subjects.flatMap((subject) =>
       ['Test', 'Quiz'].map((typeName, i) =>
         prisma.task.create({
@@ -82,7 +93,9 @@ async function main() {
       ),
     ),
   );
+}
 
+async function seedTaskGrades(users: any[], tasks: any[]) {
   for (const user of users) {
     for (const task of tasks) {
       await prisma.taskGrade.create({
@@ -94,15 +107,15 @@ async function main() {
       });
     }
   }
+}
 
+async function seedGradeBooks(users: any[], subjects: any[]) {
   for (const user of users) {
     for (const subject of subjects) {
       const grades = await prisma.taskGrade.findMany({
         where: {
           userId: user.id,
-          task: {
-            subjectId: subject.id,
-          },
+          task: { subjectId: subject.id },
         },
       });
 
@@ -118,6 +131,20 @@ async function main() {
       }
     }
   }
+}
+
+async function main() {
+  console.log('🌱 Seeding database...');
+
+  const groups = await seedGroups();
+  const users = await seedUsers(20);
+  await assignUsersToGroups(users, groups);
+
+  const subjects = await seedSubjects(groups);
+  const tasks = await seedTasks(subjects);
+
+  await seedTaskGrades(users, tasks);
+  await seedGradeBooks(users, subjects);
 
   console.log('✅ Seed completed.');
 }

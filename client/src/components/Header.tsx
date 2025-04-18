@@ -7,9 +7,11 @@ import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import SearchInput from "./SearchInput";
 import { useEffect } from "react";
+import { Switch } from "./ui/switch";
 
 const Header: React.FC = () => {
   const store = useStore();
+  console.log(store.theme);
   const navigate = useNavigate();
   const LogoutUser = async () => {
     try {
@@ -42,6 +44,9 @@ const Header: React.FC = () => {
         </div>
       </div>
       <div className="flex flex-row gap-5 items-center">
+        <div>
+          <Switch onCheckedChange={() => store.setTheme()} />
+        </div>
         <NavLink to={"profile"}>
           <h1 className="text-black font-k2d text-base">
             {store.currentUser?.name} {store.currentUser?.surname}

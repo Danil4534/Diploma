@@ -8,6 +8,7 @@ export type typeStore = {
   activeForgotPasswd: boolean;
   activeNewPassword: boolean;
   currentUser: any;
+  theme: string;
   initialValuesLogin: {
     email: string;
     password: string;
@@ -38,6 +39,7 @@ export type typeStore = {
   setActiveForgotPasswd: () => void;
   setActiveNewPasswordForm: () => void;
   clearCookie: () => void;
+  setTheme: () => void;
   setData: (values: any) => void;
 };
 
@@ -48,6 +50,12 @@ export const useStore = create<typeStore>((set) => ({
   activeNewPassword: false,
   currentUser: null,
   data: null,
+  theme: "light",
+  setTheme: () =>
+    set((state) => ({
+      theme: state.theme === "dark" ? "light" : "dark",
+    })),
+
   initialValuesEmail: {
     email: "",
   },

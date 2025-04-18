@@ -58,6 +58,7 @@ CREATE TABLE "Chat" (
 CREATE TABLE "Group" (
     "id" TEXT NOT NULL,
     "name" TEXT,
+    "status" TEXT NOT NULL,
     "capacity" INTEGER DEFAULT 0,
 
     CONSTRAINT "Group_pkey" PRIMARY KEY ("id")
@@ -68,8 +69,8 @@ CREATE TABLE "Event" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "startTime" TIMESTAMP(3) NOT NULL,
-    "endTime" TIMESTAMP(3) NOT NULL,
+    "start" TIMESTAMP(3) NOT NULL,
+    "end" TIMESTAMP(3) NOT NULL,
     "status" TEXT NOT NULL,
     "created" TIMESTAMP(3) NOT NULL,
     "groupId" TEXT,
@@ -105,16 +106,25 @@ CREATE TABLE "Lesson" (
 -- CreateTable
 CREATE TABLE "Task" (
     "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "title" TEXT,
+    "description" TEXT,
     "type" "TypeTask" NOT NULL,
-    "startTime" TIMESTAMP(3) NOT NULL,
-    "endTime" TIMESTAMP(3) NOT NULL,
-    "grade" INTEGER NOT NULL,
+    "startTime" TIMESTAMP(3),
+    "endTime" TIMESTAMP(3),
+    "grade" INTEGER,
     "lessonId" TEXT,
     "subjectId" TEXT,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "TaskGroup" (
+    "id" TEXT NOT NULL,
+    "taskId" TEXT NOT NULL,
+    "groupId" TEXT NOT NULL,
+
+    CONSTRAINT "TaskGroup_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -128,10 +138,22 @@ CREATE TABLE "Comment" (
 );
 
 -- CreateTable
+CREATE TABLE "TaskGrade" (
+    "id" TEXT NOT NULL,
+    "grade" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
+    "taskId" TEXT NOT NULL,
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "TaskGrade_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "GradeBook" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "subjectId" TEXT NOT NULL,
+    "grade" INTEGER NOT NULL,
 
     CONSTRAINT "GradeBook_pkey" PRIMARY KEY ("id")
 );
@@ -156,6 +178,9 @@ CREATE UNIQUE INDEX "User_phone_key" ON "User"("phone");
 -- CreateIndex
 CREATE UNIQUE INDEX "User_otpCode_key" ON "User"("otpCode");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "TaskGrade_userId_taskId_key" ON "TaskGrade"("userId", "taskId");
+
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -172,7 +197,7 @@ ALTER TABLE "Event" ADD CONSTRAINT "Event_groupId_fkey" FOREIGN KEY ("groupId") 
 ALTER TABLE "Subject" ADD CONSTRAINT "Subject_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Task" ADD CONSTRAINT "Task_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -181,10 +206,22 @@ ALTER TABLE "Task" ADD CONSTRAINT "Task_lessonId_fkey" FOREIGN KEY ("lessonId") 
 ALTER TABLE "Task" ADD CONSTRAINT "Task_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "TaskGroup" ADD CONSTRAINT "TaskGroup_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TaskGroup" ADD CONSTRAINT "TaskGroup_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TaskGrade" ADD CONSTRAINT "TaskGrade_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TaskGrade" ADD CONSTRAINT "TaskGrade_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "GradeBook" ADD CONSTRAINT "GradeBook_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

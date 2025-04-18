@@ -52,6 +52,7 @@ model Group {
   name         String?
   students     User[]         @relation("UserGroup")
   subjects     Subject[]
+  status       String
   capacity     Int?           @default(0)
   Events       Event[]
   Announcement Announcement[]
@@ -74,6 +75,7 @@ model Subject {
   id          String      @id @default(uuid())
   name        String
   description String
+  status      String      @default("New")
   lessons     Lesson[]
   tasks       Task[]
   groups      Group?      @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
