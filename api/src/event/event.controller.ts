@@ -56,6 +56,10 @@ export class EventController {
   async findOneEvent(@Param('id') id: string) {
     return await this.eventService.findOneEvent(id);
   }
+  @Get('getEventsForGroup/:groupId')
+  async findEventsForGroup(@Param('groupId') id: string) {
+    return await this.eventService.findEventsForGroup(id);
+  }
 
   @Put(':id')
   async update(

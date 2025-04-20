@@ -22,6 +22,13 @@ export class EventService {
       orderBy,
     });
   }
+  async findEventsForGroup(id: string) {
+    const result = await this.prisma.event.findMany({
+      where: { groupId: id },
+    });
+    console.log(result);
+    return result;
+  }
 
   async createEvent(createEventDto: Prisma.EventCreateInput) {
     try {
