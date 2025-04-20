@@ -5,7 +5,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import EventCalendar from "./EventCalendar";
 import { RadialChart } from "./ui/RadialChart";
-import BigCalendar from "./BigCalendar";
+import BigCalendar from "./BigCalendar/BigCalendar";
 import { SideBarContent } from "./SideBarContent";
 import Events from "./Events";
 import axios from "axios";
@@ -80,25 +80,27 @@ export const SideBarNav: React.FC = () => {
           <Header />
           <div className="w-full flex flex-row-reverse gap-4">
             <div className="flex flex-col gap-4">
-              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 p-4 animate-rightIn ">
+              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 dark:border-neutral-600 p-4 animate-rightIn ">
                 <EventCalendar />
                 <Events />
               </div>
-              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 p-4 animate-rightIn"></div>
+              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 dark:border-neutral-600 p-4 animate-rightIn"></div>
             </div>
             <Outlet />
             {pathname == "/homepage" ? (
-              <div className="w-full h-screen border border-neutral-200 rounded-2xl justify-center items-center">
-                <div className="w-full p-4">
-                  <div className="flex w-full justify-center">
+              <div className="w-full h-screen border border-neutral-200 dark:border-neutral-600 rounded-2xl justify-center items-center p-4">
+                <div className="w-full flex justify-between gap-10">
+                  <BigCalendar className="w-2/3" />
+                  <div className="grid grid-cols-2 w-1/3 h-full gap-0 place-items-center justify-items-center">
                     {data.map((item: any, index: number) => (
                       <div key={index}>
-                        <RadialChart count={item.count} label={item.label} />
+                        <RadialChart
+                          count={item.count}
+                          label={item.label}
+                          className="p-0 m-0"
+                        />
                       </div>
                     ))}
-                  </div>
-                  <div className="w-full">
-                    <BigCalendar />
                   </div>
                 </div>
               </div>

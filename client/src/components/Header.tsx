@@ -57,10 +57,10 @@ const Header: React.FC = () => {
           <h1 className="text-black font-k2d text-base dark:text-white">
             {store.currentUser?.name} {store.currentUser?.surname}
           </h1>
-          <div className="flex w-full">
+          <div className="flex w-full gap-2">
             {store.currentUser?.roles.map((item: string, index: number) => (
               <div key={index}>
-                <p className="font-k2d text-sm bg-slate-300 rounded-2xl py-0.5 px-1 text-white">
+                <p className="font-k2d text-sm bg-slate-300 rounded-2xl py-0.5  px-1 text-white  dark:bg-neutral-800 dark:text-emerald-500">
                   {item.toLowerCase()}
                 </p>
               </div>

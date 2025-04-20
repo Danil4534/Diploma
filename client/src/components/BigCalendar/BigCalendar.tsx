@@ -3,8 +3,9 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useStore } from "../store/store";
-
+import { useStore } from "../../store/store";
+import { cn } from "../../lib/utils";
+import "./calendar-custom.css";
 const localizer = momentLocalizer(moment);
 type EventTypes = {
   title: string;
@@ -15,7 +16,7 @@ type EventTypes = {
   created: Date;
   groupId: string;
 };
-function BigCalendar() {
+function BigCalendar({ className }: { className: string }) {
   const store = useStore();
   const [events, setEvents] = useState<EventTypes[]>([]);
   console.log(events);
@@ -37,15 +38,15 @@ function BigCalendar() {
   }, []);
 
   return (
-    <div className="w-full">
-      <h1 className="font-k2d text-2xl">Schedule</h1>
+    <div className={cn(className)}>
+      <h1 className="font-k2d text-2xl mb-2">Schedule</h1>
       {events ? (
         <>
           <Calendar
             localizer={localizer}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 500 }}
+            style={{ height: "100%" }}
             events={userEvents}
           />
         </>

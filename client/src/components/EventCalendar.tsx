@@ -10,8 +10,12 @@ function EventCalendar() {
 
   return (
     <>
-      <div className="w-full bg-white p-2 flex justify-center items-end ">
-        <Calendar onChange={onChange} value={value} />
+      <div className="w-full bg-white p-2 flex justify-center items-end dark:bg-neutral-900 ">
+        <Calendar
+          onChange={onChange}
+          value={value}
+          className={"dark:bg-neutral-900"}
+        />
       </div>
     </>
   );

@@ -63,7 +63,7 @@ function SubjectPage() {
                   style={{ animationDelay: `${index * 200}ms` }}
                   className="h-40 opacity-0 animate-fadeInOpacity hover:animate-background cursor-pointer rounded-2xl border-t-2 shadow-md border-emerald-400 hover:bg-[length:400%_400%] hover:shadow-xl animate-fill-forwards"
                 >
-                  <div className="w-auto h-full rounded-2xl bg-white p-4 relative">
+                  <div className="w-auto h-full rounded-2xl bg-white p-4 relative dark:bg-neutral-800">
                     <div className="absolute left-3 bottom-3">
                       <Image src={LogoIcon} className="animate-rotate" />
                     </div>

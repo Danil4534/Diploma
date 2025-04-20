@@ -62,7 +62,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
               {store.currentUser.roles.includes("Admin") ||
               store.currentUser.roles.includes("Teacher") ? (
                 <div>
-                  <p className="w-[120px] flex justify-center items-center text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer">
+                  <p className="w-[120px] flex justify-center items-center text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer dark:bg-neutral-800 dark:border-neutral-400">
                     Add Subject
                   </p>
                 </div>
@@ -75,7 +75,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                   type="text"
                   placeholder=" Search..."
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="caret-[#34d399]"
+                  className="caret-[#34d399] dark:bg-neutral-800 dark:placeholder:text-white"
                 />
               </div>
             </div>
@@ -84,7 +84,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                 subjects.map((item: any, index: number) => (
                   <div
                     key={index}
-                    className="flex w-auto justify-between border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md py-2 px-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
+                    className="flex w-auto justify-between border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md py-2 px-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards dark:bg-neutral-800"
                   >
                     <div className="flex gap-4 font-k2d">
                       <Image src={LogoIcon} className="w-4" />
@@ -116,7 +116,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
               {store.currentUser.roles.includes("Admin") ||
               store.currentUser.roles.includes("Teacher") ? (
                 <div>
-                  <p className="w-[120px] flex justify-center items-center text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer">
+                  <p className="w-[120px] flex justify-center items-center text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer dark:bg-neutral-800 dark:border-neutral-400">
                     Invite Student
                   </p>
                 </div>
@@ -133,12 +133,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                 />
               </div>
             </div>
-            <div className="overflow-y-auto h-96 w-full rounded-md grid grid-cols-2 gap-2 pr-4">
+            <div className="overflow-y-auto h-96 w-full rounded-md grid grid-cols-2 gap-4 pr-4">
               {students.length > 0 &&
                 students.map((item: any, index: number) => (
                   <div
                     key={index}
-                    className="flex justify-between border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md p-4  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
+                    className="flex justify-between border border-t-2 dark:bg-neutral-800 animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md p-4  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
                   >
                     <div className="flex gap-4 font-k2d">
                       {item.img ? (
