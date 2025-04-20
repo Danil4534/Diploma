@@ -8,27 +8,39 @@ datasource db {
 }
 
 model User {
-  id           String      @id @default(uuid())
-  name         String?
-  surname      String?
-  email        String?     @unique
-  phone        String?     @unique
-  password     String?
-  img          String?
-  sex          UserSex?
-  info         String?
-  otpCode      Int?        @unique
-  otpExpiresAt DateTime?
-  banned       Boolean?    @default(false)
-  activeStatus UserStatus? @default(Offline)
-  roles        Role[]      @default([Student])
-  chats        Chat[]
-  created      DateTime?   @default(now())
-  Group        Group?      @relation("UserGroup", fields: [groupId], references: [id], onUpdate: Cascade)
-  groupId      String?
-  Comment      Comment[]
-  GradeBook    GradeBook[]
-  TaskGrade    TaskGrade[]
+  id            String      @id @default(uuid())
+  name          String?
+  surname       String?
+  email         String?     @unique
+  phone         String?     @unique
+  password      String?
+  img           String?
+  sex           UserSex?
+  info          String?
+  otpCode       Int?        @unique
+  otpExpiresAt  DateTime?
+  banned        Boolean?    @default(false)
+  activeStatus  UserStatus? @default(Offline)
+  roles         Role[]      @default([Student])
+  created       DateTime?   @default(now())
+  Group         Group?      @relation("UserGroup", fields: [groupId], references: [id], onUpdate: Cascade)
+  groupId       String?
+  Comment       Comment[]
+  GradeBook     GradeBook[]
+  TaskGrade     TaskGrade[]
+  sentChats     Chat[]      @relation("User1Chats")
+  receivedChats Chat[]      @relation("User2Chats")
+  Message       Message[]
+}
+
+model Chat {
+  id        String    @id @default(uuid())
+  user1     User      @relation("User1Chats", fields: [user1Id], references: [id])
+  user1Id   String
+  user2     User      @relation("User2Chats", fields: [user2Id], references: [id])
+  user2Id   String
+  messages  Message[]
+  createdAt DateTime  @default(now())
 }
 
 model Message {
@@ -36,22 +48,16 @@ model Message {
   content String
   created DateTime @default(now())
   userId  String
-  Chat    Chat?    @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  chatId  String?
-}
-
-model Chat {
-  id       String    @id @default(uuid())
-  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId   String?
-  messages Message[]
+  user    User     @relation(fields: [userId], references: [id])
+  chat    Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId  String
 }
 
 model Group {
   id           String         @id @default(uuid())
   name         String?
   students     User[]         @relation("UserGroup")
-  subjects     Subject[]
+  subjects     Subject[]      @relation("GroupSubject")
   status       String
   capacity     Int?           @default(0)
   Events       Event[]
@@ -78,8 +84,7 @@ model Subject {
   status      String      @default("New")
   lessons     Lesson[]
   tasks       Task[]
-  groups      Group?      @relation(fields: [groupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  groupId     String?
+  groups      Group[]     @relation("GroupSubject")
   userId      String?
   GradeBook   GradeBook[]
 }

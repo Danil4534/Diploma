@@ -37,7 +37,7 @@ const GroupsPage: React.FC = () => {
       <div className="w-full flex justify-end mb-2">
         <h1 className="font-k2d text-6xl">All Groups</h1>
       </div>
-      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 rounded-2xl p-2">
+      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-600 rounded-2xl p-2">
         <div className="flex items-center justify-between p-4">
           <Breadcrumbs />
           <div className="relative w-1/6">
@@ -59,13 +59,13 @@ const GroupsPage: React.FC = () => {
                   style={{ animationDelay: `${index * 200}ms` }}
                   className="h-40 opacity-0 animate-fadeInOpacity hover:animate-background cursor-pointer rounded-2xl border-t-2 shadow-md border-emerald-400 hover:bg-[length:400%_400%] hover:shadow-xl animate-fill-forwards"
                 >
-                  <div className="w-auto h-full rounded-2xl bg-white p-4 relative">
+                  <div className="w-auto h-full rounded-2xl bg-white p-4 relative dark:bg-neutral-800">
                     <div className="absolute left-3 bottom-3">
                       <Image src={LogoIcon} className="animate-rotate" />
                     </div>
                     <div className="flex gap-2 flex-col">
                       <div className="flex items-start justify-between">
-                        <h3 className=" text-lg font-k2d font-medium text-gray-900 flex gap-2">
+                        <h3 className=" text-lg font-k2d font-medium text-gray-900 flex gap-2 dark:text-neutral-400">
                           Group
                         </h3>
                         <h3 className=" text-lg font-k2d font-medium text-gray-500 flex gap-2">

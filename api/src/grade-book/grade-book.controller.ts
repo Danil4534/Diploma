@@ -18,8 +18,13 @@ export class GradeBookController {
   async getUserSubjectsWithTaskGrades(@Param('userId') userId: string) {
     return await this.gradeBookService.getAllSubjectGradesWithTasks(userId);
   }
-  @Get('grouped-export')
+  @Get('groups-export')
   async exportGroupedRatings(@Res() res: Response) {
     return this.gradeBookService.exportGroupedRatingsToExcel(res);
+  }
+
+  @Get('group-export/:id')
+  async exportGroupRating(@Param('id') id: string, @Res() res: Response) {
+    return this.gradeBookService.exportGroupRatingToExcel(id, res);
   }
 }

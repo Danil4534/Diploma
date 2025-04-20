@@ -49,7 +49,8 @@ const RegisterForm: React.FC = () => {
         "http://localhost:3000/auth/register",
         formData
       );
-      if (response.status === 200) {
+      console.log(response.status);
+      if (response.status === 201) {
         navigate("/login");
       }
     } catch (error: any) {

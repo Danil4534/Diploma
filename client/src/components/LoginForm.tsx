@@ -108,15 +108,15 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="animate-fadeIn border border-solid border-emerald-400 shadow-input mx-auto w-[450px] max-w-md rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-white light:bg-white ">
-      <h2 className="text-xl font-bold font-k2d text-neutral-800 dark:text-black">
+    <div className="animate-fadeIn border border-solid border-emerald-400 shadow-input mx-auto w-[450px] max-w-md rounded-none bg-white p-4 md:rounded-2xl md:p-8  ">
+      <h2 className="text-xl font-bold font-k2d text-neutral-800 ">
         Welcome to UNICHUB
       </h2>
       <p className=" max-w-sm text-sm text-neutral-400 dark:text-neutral-400">
         university platform
       </p>
-      <h1 className="font-k2d text-3xl mt-6 flex items-end ">
-        <Image src={LogoIconBlack} className={"mr-2 animate-rotate"} />
+      <h1 className="font-k2d text-3xl mt-6 flex items-end dark:text-black">
+        <Image src={LogoIconBlack} className={"mr-2 animate-rotate "} />
         {store.activeLogin
           ? "Sign in"
           : store.activeForgotPasswd

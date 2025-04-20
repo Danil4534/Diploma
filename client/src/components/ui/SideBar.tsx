@@ -168,7 +168,7 @@ export const SidebarLink = ({
     <NavLink
       to={link.href}
       className={cn(
-        "flex items-center justify-start gap-2 group/sidebar px-2 py-2 hover:bg-neutral-200 rounded-lg transition-colors duration-200",
+        "flex items-center justify-start gap-2 group/sidebar px-2 py-2 hover:bg-neutral-200 rounded-lg transition-colors duration-200 dark:text-white dark:hover:bg-neutral-400",
         className
       )}
       {...props}
@@ -181,7 +181,7 @@ export const SidebarLink = ({
           opacity: animate ? (open ? 1 : 0) : 1,
           visibility: animate ? (open ? "visible" : "hidden") : "visible",
         }}
-        className="font-k2d text-base text-neutral-700 dark:text-neutral-900  group-hover/sidebar:translate-x-3 transition  duration-200 whitespace-pre inline-block !p-0 !m-0"
+        className="font-k2d text-base text-neutral-700  group-hover/sidebar:translate-x-3 transition  duration-200 whitespace-pre inline-block !p-0 !m-0 dark:text-white"
       >
         {link.label}
       </motion.span>

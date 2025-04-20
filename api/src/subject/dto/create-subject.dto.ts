@@ -5,4 +5,6 @@ export class CreateSubjectDto {
   name: string;
   @ApiProperty()
   description: string;
+  @ApiProperty()
+  groups: string;
 }

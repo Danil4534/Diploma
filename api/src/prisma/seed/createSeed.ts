@@ -1,55 +1,61 @@
 import { PrismaClient, Role, UserSex, TypeTask } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+const getRandomInt = (min: number, max: number): number =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+async function clearDatabase() {
+  console.log('🧹 Clearing database...');
+  await prisma.taskGrade.deleteMany();
+  await prisma.gradeBook.deleteMany();
+  await prisma.task.deleteMany();
+  await prisma.subject.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.group.deleteMany();
 }
 
 async function seedGroups() {
-  return await Promise.all([
-    prisma.group.create({
-      data: { name: 'Group A', capacity: 15, status: 'New' },
-    }),
-    prisma.group.create({
-      data: { name: 'Group B', capacity: 15, status: 'New' },
-    }),
-  ]);
+  console.log('📦 Seeding groups...');
+  const groups = [
+    { name: 'Group A', capacity: 15, status: 'New' },
+    { name: 'Group B', capacity: 15, status: 'New' },
+  ];
+  await prisma.group.createMany({ data: groups });
+  return prisma.group.findMany();
 }
 
 async function seedUsers(count: number) {
-  return await Promise.all(
-    Array.from({ length: count }).map((_, i) =>
-      prisma.user.create({
-        data: {
-          name: `User${i + 1}`,
-          surname: `Surname${i + 1}`,
-          email: `user${i + 1}@example.com`,
-          phone: `+123456789${i}`,
-          password: 'hashed-password',
-          roles: [Role.Student],
-          sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-        },
-      }),
-    ),
-  );
+  console.log(`👤 Seeding ${count} users...`);
+  const users = Array.from({ length: count }).map((_, i) => ({
+    name: `User${i + 1}`,
+    surname: `Surname${i + 1}`,
+    email: `user${i + 1}@example.com`,
+    phone: `+123456789${i}`,
+    password: 'hashed-password',
+    roles: [Role.Student],
+    sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
+  }));
+
+  return Promise.all(users.map((user) => prisma.user.create({ data: user })));
 }
 
 async function assignUsersToGroups(users: any[], groups: any[]) {
-  for (const user of users) {
-    const randomGroup = groups[Math.floor(Math.random() * groups.length)];
-    await prisma.group.update({
-      where: { id: randomGroup.id },
-      data: {
-        students: {
-          connect: { id: user.id },
-        },
-      },
-    });
-  }
+  console.log('🔗 Assigning users to groups...');
+  return Promise.all(
+    users.map((user) => {
+      const group = groups[getRandomInt(0, groups.length - 1)];
+      return prisma.user.update({
+        where: { id: user.id },
+        data: { groupId: group.id },
+      });
+    }),
+  );
 }
 
 async function seedSubjects(groups: any[]) {
-  const subjectNames = [
+  console.log('📘 Seeding subjects...');
+  const names = [
     'Math',
     'Science',
     'History',
@@ -62,15 +68,14 @@ async function seedSubjects(groups: any[]) {
     'PE',
   ];
 
-  return await Promise.all(
-    subjectNames.map((name) => {
-      const group = groups[Math.floor(Math.random() * groups.length)];
+  return Promise.all(
+    names.map((name) => {
+      const group = groups[getRandomInt(0, groups.length - 1)];
       return prisma.subject.create({
         data: {
           name,
           description: `Description for ${name}`,
-          status: 'New',
-          groupId: group.id,
+          groups: { connect: { id: group.id } },
         },
       });
     }),
@@ -78,16 +83,41 @@ async function seedSubjects(groups: any[]) {
 }
 
 async function seedTasks(subjects: any[]) {
-  return await Promise.all(
-    subjects.flatMap((subject) =>
-      ['Test', 'Quiz'].map((typeName, i) =>
-        prisma.task.create({
+  console.log('📝 Seeding tasks...');
+  return Promise.all(
+    subjects.flatMap((subject) => [
+      prisma.task.create({
+        data: {
+          title: `Test for ${subject.name}`,
+          description: 'Test description',
+          type: TypeTask.Test,
+          grade: 100,
+          subjectId: subject.id,
+        },
+      }),
+      prisma.task.create({
+        data: {
+          title: `Default for ${subject.name}`,
+          description: 'Default description',
+          type: TypeTask.Default,
+          grade: 100,
+          subjectId: subject.id,
+        },
+      }),
+    ]),
+  );
+}
+
+async function seedTaskGrades(users: any[], tasks: any[]) {
+  console.log('📊 Seeding task grades...');
+  return Promise.all(
+    users.flatMap((user) =>
+      tasks.map((task) =>
+        prisma.taskGrade.create({
           data: {
-            title: `${typeName} for ${subject.name}`,
-            description: `${typeName} description`,
-            type: i === 0 ? TypeTask.Test : TypeTask.Default,
-            grade: 100,
-            subjectId: subject.id,
+            userId: user.id,
+            taskId: task.id,
+            grade: getRandomInt(50, 100),
           },
         }),
       ),
@@ -95,21 +125,8 @@ async function seedTasks(subjects: any[]) {
   );
 }
 
-async function seedTaskGrades(users: any[], tasks: any[]) {
-  for (const user of users) {
-    for (const task of tasks) {
-      await prisma.taskGrade.create({
-        data: {
-          userId: user.id,
-          taskId: task.id,
-          grade: getRandomInt(50, 100),
-        },
-      });
-    }
-  }
-}
-
 async function seedGradeBooks(users: any[], subjects: any[]) {
+  console.log('📕 Seeding grade books...');
   for (const user of users) {
     for (const subject of subjects) {
       const grades = await prisma.taskGrade.findMany({
@@ -120,12 +137,15 @@ async function seedGradeBooks(users: any[], subjects: any[]) {
       });
 
       if (grades.length > 0) {
-        const avg = grades.reduce((sum, g) => sum + g.grade, 0) / grades.length;
+        const avgGrade = Math.round(
+          grades.reduce((sum, g) => sum + g.grade, 0) / grades.length,
+        );
+
         await prisma.gradeBook.create({
           data: {
             userId: user.id,
             subjectId: subject.id,
-            grade: Math.round(avg),
+            grade: avgGrade,
           },
         });
       }
@@ -134,26 +154,27 @@ async function seedGradeBooks(users: any[], subjects: any[]) {
 }
 
 async function main() {
-  console.log('🌱 Seeding database...');
+  try {
+    console.log('🌱 Starting seeding process...');
+    await clearDatabase();
 
-  const groups = await seedGroups();
-  const users = await seedUsers(20);
-  await assignUsersToGroups(users, groups);
+    const groups = await seedGroups();
+    const users = await seedUsers(20);
+    await assignUsersToGroups(users, groups);
 
-  const subjects = await seedSubjects(groups);
-  const tasks = await seedTasks(subjects);
+    const subjects = await seedSubjects(groups);
+    const tasks = await seedTasks(subjects);
 
-  await seedTaskGrades(users, tasks);
-  await seedGradeBooks(users, subjects);
+    await seedTaskGrades(users, tasks);
+    await seedGradeBooks(users, subjects);
 
-  console.log('✅ Seed completed.');
+    console.log('✅ Database successfully seeded!');
+  } catch (err) {
+    console.error('❌ Error during seeding:', err);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-main()
-  .catch((e) => {
-    console.error('❌ Seed error:', e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main();

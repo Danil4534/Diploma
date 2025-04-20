@@ -1,5 +1,5 @@
-import { AiOutlineMessage } from "react-icons/ai";
-import { IoNotificationsOutline } from "react-icons/io5";
+import { AiOutlineMessage, AiOutlineSun } from "react-icons/ai";
+import { IoCloudyNightOutline, IoNotificationsOutline } from "react-icons/io5";
 import { useStore } from "../store/store";
 import { Image } from "./ui/Image";
 import Button from "./ui/Button";
@@ -8,10 +8,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import SearchInput from "./SearchInput";
 import { useEffect } from "react";
 import { Switch } from "./ui/switch";
+import { ChatSheet } from "./ChatSheet";
+import { cn } from "../lib/utils";
 
 const Header: React.FC = () => {
   const store = useStore();
-  console.log(store.theme);
   const navigate = useNavigate();
   const LogoutUser = async () => {
     try {
@@ -29,10 +30,10 @@ const Header: React.FC = () => {
     store.setCurrentUser();
   }, []);
   return (
-    <header className="w-full h-24 bg-white px-10 py-1 flex justify-between items-center animate-topIn shadow-sm">
+    <header className="w-full h-24 bg-white px-10 py-1 flex justify-between items-center animate-topIn shadow-sm border-none dark:bg-neutral-900 border-b-2 border-neutral-500">
       <div className="flex items-center gap-20">
         <div>
-          <h1 className="text-black font-k2d text-2xl ">
+          <h1 className="text-black font-k2d text-2xl dark:text-white">
             Welcome back, {store.currentUser?.name}
           </h1>
           <p className="text-neutral-400 font-k2d text-base">
@@ -40,15 +41,20 @@ const Header: React.FC = () => {
           </p>
         </div>
         <div>
-          <SearchInput />
+          <SearchInput className=" dark:text-white dark:placeholder:text-white" />
         </div>
       </div>
       <div className="flex flex-row gap-5 items-center">
-        <div>
-          <Switch onCheckedChange={() => store.setTheme()} />
+        <div className="flex justify-center items-center gap-2">
+          <AiOutlineSun className="dark:text-white" />
+          <Switch
+            checked={localStorage.getItem("theme") === "dark"}
+            onCheckedChange={() => store.setTheme()}
+          />
+          <IoCloudyNightOutline className="dark:text-white" />
         </div>
         <NavLink to={"profile"}>
-          <h1 className="text-black font-k2d text-base">
+          <h1 className="text-black font-k2d text-base dark:text-white">
             {store.currentUser?.name} {store.currentUser?.surname}
           </h1>
           <div className="flex w-full">
@@ -68,7 +74,10 @@ const Header: React.FC = () => {
           />
         </div>
         <IoNotificationsOutline size={20} color="A6A6A6" />
-        <AiOutlineMessage size={20} color="A6A6A6" />
+        <ChatSheet
+          trigger={<AiOutlineMessage size={20} color="A6A6A6" />}
+        ></ChatSheet>
+
         <Button type="button" content={"Logout"} action={() => LogoutUser()} />
       </div>
     </header>

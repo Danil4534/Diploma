@@ -1,26 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { CreateMessageDTO } from './../prisma/chat.gateway';
+import { PrismaService } from './../prisma/prisma.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
+import { Prisma } from '@prisma/client';
+import { CreateMessageDto } from './dto/create-message.dto';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
 
 @Injectable()
 export class ChatService {
-  create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  constructor(private prisma: PrismaService) {}
+
+  async createMessage(dto: CreateMessageDto) {
+    return this.prisma.message.create({
+      data: {
+        content: dto.content,
+        chatId: dto.chatId,
+        userId: dto.userId,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all chat`;
+  async getMessages(chatId: string) {
+    return this.prisma.message.findMany({
+      where: { chatId },
+    });
+  }
+  async getAllUserChats(userId: string) {
+    try {
+      const chats = await this.prisma.chat.findMany({
+        where: { user1Id: userId },
+        include: { user1: true, user2: true },
+      });
+      return chats;
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
-  }
-
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
+  async createChat(dto: CreateChatDto) {
+    const user1Exists = await this.prisma.user.findUnique({
+      where: { id: dto.userId1 },
+    });
+    const user2Exists = await this.prisma.user.findUnique({
+      where: { id: dto.userId2 },
+    });
+    console.log(user1Exists);
+    console.log(user2Exists);
+    if (!user1Exists || !user2Exists) {
+      throw new HttpException(
+        'One or both users not found',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.prisma.chat.create({
+      data: {
+        user1Id: dto.userId1,
+        user2Id: dto.userId2,
+      },
+    });
   }
 }

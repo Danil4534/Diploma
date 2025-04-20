@@ -8,7 +8,8 @@ function App() {
   const store = useStore();
   useEffect(() => {
     const root = document.documentElement;
-    if (store.theme === "dark") {
+    const theme = localStorage.getItem("theme");
+    if (theme === "dark") {
       root.classList.add("dark");
     } else {
       root.classList.remove("dark");

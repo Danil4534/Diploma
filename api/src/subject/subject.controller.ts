@@ -65,7 +65,7 @@ export class SubjectController {
   @Put(':id')
   async updateSubject(
     @Param('id') id: string,
-    @Body() updateSubjectDto: UpdateSubjectDto,
+    @Body() updateSubjectDto: Prisma.SubjectUpdateInput,
   ): Promise<Subject> {
     return await this.subjectService.updateSubject(id, updateSubjectDto);
   }

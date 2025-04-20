@@ -3,7 +3,9 @@ import axios from "axios";
 import { debounce } from "lodash";
 import { Input } from "./ui/Input";
 import { CiSearch } from "react-icons/ci";
-export default function SearchInput() {
+import { cn } from "../lib/utils";
+
+export default function SearchInput({ className }: { className: string }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<any>([]);
   const fetchResults = debounce(async (query: string) => {
@@ -33,12 +35,12 @@ export default function SearchInput() {
 
   return (
     <div className="p-4">
-      <div className="relative">
+      <div className={cn(className, "relative")}>
         <CiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <Input
           type="text"
           placeholder=" Search..."
-          className="caret-[#34d399]"
+          className={cn(className, "caret-[#34d399] dark:bg-neutral-800")}
         />
       </div>
       {/* <input

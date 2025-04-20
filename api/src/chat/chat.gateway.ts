@@ -1,34 +1,61 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+  WebSocketServer,
+  ConnectedSocket,
+} from '@nestjs/websockets';
 import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
 
-@WebSocketGateway()
+import { UpdateChatDto } from './dto/update-chat.dto';
+import { Server, Socket } from 'socket.io';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { CreateChatDto } from './dto/create-chat.dto';
+
+@WebSocketGateway({ cors: true })
 export class ChatGateway {
+  @WebSocketServer()
+  server: Server;
   constructor(private readonly chatService: ChatService) {}
 
+  @SubscribeMessage('getChats')
+  async handleGetChats(
+    @MessageBody() userId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const chats = await this.chatService.getAllUserChats(userId);
+    client.emit('chats', chats);
+
+    return chats;
+  }
+
   @SubscribeMessage('createChat')
-  create(@MessageBody() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto);
+  async handleCreateChat(
+    @MessageBody() createChatDto: CreateChatDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const newChat = await this.chatService.createChat(createChatDto);
+    const updatedChats = await this.chatService.getAllUserChats(
+      createChatDto.userId1,
+    );
+    this.server.emit('chatsUpdated', updatedChats);
+    client.emit('chatCreated', newChat);
+    return newChat;
   }
 
-  @SubscribeMessage('findAllChat')
-  findAll() {
-    return this.chatService.findAll();
+  @SubscribeMessage('sendMessage')
+  async create(
+    @MessageBody() createChatDto: CreateMessageDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log(client);
+    const message = await this.chatService.createMessage(createChatDto);
+    this.server.emit('message', message);
+    return message;
   }
 
-  @SubscribeMessage('findOneChat')
-  findOne(@MessageBody() id: number) {
-    return this.chatService.findOne(id);
-  }
-
-  @SubscribeMessage('updateChat')
-  update(@MessageBody() updateChatDto: UpdateChatDto) {
-    return this.chatService.update(updateChatDto.id, updateChatDto);
-  }
-
-  @SubscribeMessage('removeChat')
-  remove(@MessageBody() id: number) {
-    return this.chatService.remove(id);
+  @SubscribeMessage('getMessages')
+  async handleGetMessage(@MessageBody() chatId: string) {
+    return this.chatService.getMessages(chatId);
   }
 }
