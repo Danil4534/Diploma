@@ -90,7 +90,7 @@ export const SideBarNav: React.FC = () => {
             {pathname == "/homepage" ? (
               <div className="w-full h-screen border border-neutral-200 dark:border-neutral-600 rounded-2xl justify-center items-center p-4">
                 <div className="w-full flex justify-between gap-10">
-                  <BigCalendar className="w-2/3" />
+                  <BigCalendar className="w-2/3 animate-topIn" />
                   <div className="grid grid-cols-2 w-1/3 h-full gap-0 place-items-center justify-items-center">
                     {data.map((item: any, index: number) => (
                       <div key={index}>

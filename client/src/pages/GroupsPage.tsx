@@ -37,7 +37,7 @@ const GroupsPage: React.FC = () => {
       <div className="w-full flex justify-end mb-2">
         <h1 className="font-k2d text-6xl">All Groups</h1>
       </div>
-      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-600 rounded-2xl p-2">
+      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 dark:border-neutral-600 rounded-2xl p-2">
         <div className="flex items-center justify-between p-4">
           <Breadcrumbs />
           <div className="relative w-1/6">
@@ -46,7 +46,7 @@ const GroupsPage: React.FC = () => {
               type="text"
               placeholder=" Search..."
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="caret-[#34d399]"
+              className="caret-[#34d399] dark:bg-neutral-800"
             />
           </div>
         </div>

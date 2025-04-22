@@ -11,6 +11,8 @@ import { LiaTrashAltSolid } from "react-icons/lia";
 import { useStore } from "../../store/store";
 import { Input } from "../ui/Input";
 import { CiSearch } from "react-icons/ci";
+import axios from "axios";
+import { toast } from "sonner";
 
 type GroupModalProps = {
   group: any;
@@ -19,12 +21,48 @@ type GroupModalProps = {
 export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
   const [subjects, setSubjects] = useState([]);
   const [students, setStudents] = useState([]);
+  const [bannedUsers, setBanned] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const store = useStore();
+
+  const handleBanUser = async (userId: string) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/user/ban/${userId}`
+      );
+      setStudents((prev: any) =>
+        prev.map((student: { id: string }) =>
+          student.id === userId ? { ...student, banned: true } : student
+        )
+      );
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const handleUnBanUser = async (userId: string) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/user/unBan/${userId}`
+      );
+      setStudents((prev: any) =>
+        prev.map((student: { id: string }) =>
+          student.id === userId ? { ...student, banned: false } : student
+        )
+      );
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   useEffect(() => {
     setSubjects(group.subjects);
     setStudents(group.students);
-  }, []);
+  }, [group]);
+
+  useEffect(() => {
+    setBanned(students.filter((item: any) => item.banned === true));
+  }, [students]);
   return (
     <>
       <div className="w-full outline-none">
@@ -39,13 +77,18 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
             <RadialChart
               count={group.subjects.length}
               label={"Subjects"}
-              className={`scale-90 p-0`}
+              className={`scale-75 p-0`}
+            />
+            <RadialChart
+              count={bannedUsers.length}
+              label={"Banned"}
+              className={`scale-75 p-0`}
             />
 
             <RadialChart
               count={group.students.length}
               label={"Students"}
-              className={`scale-90 p-0`}
+              className={`scale-75 p-0`}
             />
           </div>
         </div>
@@ -174,14 +217,26 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                       store.currentUser.roles.includes("Teacher") ? (
                         <div className="flex flex-col gap-2">
                           <div>
-                            <p className="w-auto flex justify-center items-center  h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-red-400 transition-colors duration-75 hover:text-red-400">
+                            <p className="w-auto flex justify-center items-center dark:bg-neutral-800  h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-red-400 transition-colors duration-75 hover:text-red-400">
                               Disconnect
                             </p>
                           </div>
                           <div>
-                            <p className="w-auto flex justify-center items-center  h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-orange-400 transition-colors duration-75 hover:text-red-400">
-                              Ban
-                            </p>
+                            {!item.banned ? (
+                              <button
+                                onClick={() => handleBanUser(item.id)}
+                                className="w-auto flex justify-center items-center  h-7 dark:bg-neutral-800 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-orange-400 transition-colors duration-75 hover:text-red-400"
+                              >
+                                Ban
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleUnBanUser(item.id)}
+                                className="w-full border border-red-600 rounded-xl text-center px-4 justify-center items-center hover:shadow-md hover:bg-red-500 text-white"
+                              >
+                                unban
+                              </button>
+                            )}
                           </div>
                         </div>
                       ) : (

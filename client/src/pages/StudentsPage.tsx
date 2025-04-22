@@ -9,6 +9,7 @@ import LogoIcon from "../assets/icons/LogoIconBlack.svg";
 import { AiOutlineSortAscending } from "react-icons/ai";
 import { io } from "socket.io-client";
 import { useStore } from "../store/store";
+import { cn } from "../lib/utils";
 
 const StudentsPage: React.FC = () => {
   const [students, setStudents] = useState([]);
@@ -64,7 +65,7 @@ const StudentsPage: React.FC = () => {
                 type="text"
                 placeholder=" Search..."
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="caret-[#34d399]"
+                className="caret-[#34d399] dark:bg-neutral-800 dark:text-white dark:placeholder:text-neutral-500"
               />
             </div>
             <div className="w-10 h-10 bg-slate-800 rounded-full flex justify-center items-center cursor-pointer">
@@ -78,17 +79,25 @@ const StudentsPage: React.FC = () => {
               <div
                 key={index}
                 style={{ animationDelay: `${index * 200}ms` }}
-                className="h-40 opacity-0 animate-fadeInOpacity hover:animate-background cursor-pointer rounded-2xl border-t-2 shadow-md border-emerald-400 hover:bg-[length:400%_400%] hover:shadow-xl animate-fill-forwards"
+                className={cn(
+                  "relative group h-40 opacity-0 animate-fadeInOpacity hover:animate-background cursor-pointer rounded-2xl border-t-2 shadow-md border-emerald-400 hover:bg-[length:400%_400%] hover:shadow-xl animate-fill-forwards",
+                  {
+                    "border-red-400": item.banned,
+                  }
+                )}
               >
-                <div className="w-auto h-full rounded-2xl bg-white p-2 sm:p-2 dark:bg-neutral-800">
-                  <div className="flex gap-2 h-full">
-                    <div className="flex flex-col gap-2">
+                <div className="absolute z-20 top-0 left-1/2 -translate-x-1/2  -translate-y-3 lowercase bg-red-400 w-full text-center text-white text-sm px-2  rounded-t-2xl  opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  {item.banned ? "Banned" : <></>}
+                </div>
+                <div className="w-auto h-full rounded-2xl bg-white p-2 sm:p-2 dark:bg-neutral-800 relative">
+                  <div className="flex flex-row gap-2 h-full">
+                    <div className="flex  justify-start gap-2">
                       {item.img ? (
                         <Image
                           src={item.img}
                           className={
                             item.activeStatus == "Online"
-                              ? "border-2 border-green-300 p-1 rounded-full w-16 h-16 dark:border-neutral-200 dark:border-2"
+                              ? " border-2 border-green-300 p-1 rounded-full w-16 h-16  dark:border-2 dark:border-emerald-400"
                               : "border-2 border-neutral-400 p-1 rounded-full w-16 h-16 dark:border-neutral-200 dark:border-2"
                           }
                         />
@@ -98,7 +107,7 @@ const StudentsPage: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    <div className="flex h-full w-full flex-col justify-start items-start relative">
+                    <div className="flex h-full w-auto flex-col justify-start items-start ">
                       <h3 className="mt-0.5 text-lg font-k2d font-medium text-gray-900 flex gap-2 dark:text-neutral-400">
                         {formatNameSurname(item.name, item.surname)}
                       </h3>
@@ -112,11 +121,12 @@ const StudentsPage: React.FC = () => {
                           </span>
                         ))}
                       </div>
+
                       <button
                         onClick={() =>
                           handleCreateNewChat(store.currentUser.id, item.id)
                         }
-                        className=" absolute right-1 bottom-1 mt-2 rounded-xl bg-slate-800 text-white px-4 py-2 text-sm hover:bg-emerald-600 transition"
+                        className=" absolute right-2 bottom-2 mt-2 rounded-xl bg-slate-800 text-white px-4 py-2 text-sm hover:bg-emerald-600 transition"
                       >
                         Send Message
                       </button>

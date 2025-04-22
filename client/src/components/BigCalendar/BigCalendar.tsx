@@ -10,8 +10,8 @@ const localizer = momentLocalizer(moment);
 type EventTypes = {
   title: string;
   description: String;
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
   status: String;
   created: Date;
   groupId: string;
@@ -23,13 +23,18 @@ function BigCalendar({ className }: { className: string }) {
   const userEvents = events.filter(
     (item: EventTypes) => item.groupId == store.currentUser?.groupId
   );
+  console.log(userEvents);
   useEffect(() => {
     try {
       const handleEvents = async () => {
-        const response = await axios.get(
-          "http://localhost:3000/event?where=%7B%7D&orderBy=%7B%7D&skip=0&take=10"
-        );
-        setEvents(response.data);
+        const response = await axios.get("http://localhost:3000/event");
+        const formattedEvents = response.data.map((event: EventTypes) => ({
+          ...event,
+          start: new Date(event.start),
+          end: new Date(event.end),
+          created: new Date(event.created),
+        }));
+        setEvents(formattedEvents);
       };
       handleEvents();
     } catch (e) {
@@ -40,19 +45,17 @@ function BigCalendar({ className }: { className: string }) {
   return (
     <div className={cn(className)}>
       <h1 className="font-k2d text-2xl mb-2">Schedule</h1>
-      {events ? (
-        <>
-          <Calendar
-            localizer={localizer}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: "100%" }}
-            events={userEvents}
-          />
-        </>
-      ) : (
-        <></>
-      )}
+      {userEvents ? (
+        <Calendar
+          localizer={localizer}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 500 }}
+          events={userEvents}
+          views={["month", "day", "week"]}
+          defaultView="month"
+        />
+      ) : null}
     </div>
   );
 }

@@ -1,9 +1,9 @@
 .rbc-calendar {
-    @apply bg-neutral-800 shadow-md rounded-xl p-4 border-none;
+    @apply dark:bg-neutral-800 shadow-md rounded-xl p-4 border-none;
 }
 
 .rbc-event {
-    @apply bg-blue-500 text-white px-2 py-1 rounded-lg text-sm border-none;
+    @apply bg-emerald-400 text-white px-2 py-1 rounded-lg text-sm border-none;
 }
 
 .rbc-toolbar {
@@ -11,11 +11,11 @@
 }
 
 .rbc-toolbar-label {
-    @apply text-lg font-semibold border-none;
+    @apply text-lg font-semibold border-none dark:text-neutral-400 text-neutral-800;
 }
 
 .rbc-header {
-    @apply bg-neutral-900 text-neutral-400 p-2 text-center border-none;
+    @apply dark:bg-neutral-900 text-neutral-400 p-2 text-center border-none;
 }
 
 .rbc-date-cell {
@@ -23,7 +23,7 @@
 }
 
 .rbc-today {
-    @apply bg-neutral-900 border-none;
+    @apply dark:bg-neutral-900 border-none;
 }
 
 .rbc-month-view {
@@ -31,5 +31,21 @@
 }
 
 .rbc-off-range-bg {
-    @apply bg-neutral-600
+    @apply dark:bg-neutral-600
+}
+
+.rbc-time-view {
+    @apply border-none
+}
+
+.rbc-btn-group button {
+    @apply text-white bg-emerald-400 rounded-lg border-none hover:shadow-md bg-neutral-700
+}
+
+.rbc-active {
+    @apply dark:bg-slate-800
+}
+
+.rbc-toolbar button:active, .rbc-toolbar button.rbc-active {
+    background-color: transparent;
 }

@@ -30,7 +30,7 @@ export class UserService {
     try {
       const foundUser = this.findUserById(id);
       if (foundUser) {
-        this.prisma.user.update({
+        await this.prisma.user.update({
           where: { id: id },
           data: { banned: ban },
         });
