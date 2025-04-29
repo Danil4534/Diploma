@@ -15,32 +15,47 @@ export class EventService {
     orderBy?: Prisma.EventOrderByWithRelationInput;
   }) {
     const { skip, take, where, orderBy } = params;
-    return this.prisma.event.findMany({
+
+    const events = await this.prisma.event.findMany({
       where,
       skip,
       take,
       orderBy,
     });
+
+    const now = new Date();
+
+    const updatedEvents = await Promise.all(
+      events.map((event) =>
+        this.prisma.event.update({
+          where: { id: event.id },
+          data: { status: now > event.start ? 'Old' : 'Upcoming' },
+        }),
+      ),
+    );
+
+    return updatedEvents;
   }
+
   async findEventsForGroup(id: string) {
     const result = await this.prisma.event.findMany({
       where: { groupId: id },
     });
+    const now = new Date();
+    const updatedEvents = await Promise.all(
+      result.map((event) =>
+        this.prisma.event.update({
+          where: { id: event.id },
+          data: { status: now > event.start ? 'Old' : 'Upcoming' },
+        }),
+      ),
+    );
     console.log(result);
     return result;
   }
 
   async createEvent(createEventDto: Prisma.EventCreateInput) {
     try {
-      // const existEvent = this.prisma.event.findFirst({
-      //   where: { id: createEventDto.id },
-      // });
-      // if (existEvent) {
-      //   throw new HttpException(
-      //     'This event was created later',
-      //     HttpStatus.BAD_REQUEST,
-      //   );
-      // }
       const newEvent = await this.prisma.event.create({
         data: createEventDto,
       });
@@ -104,4 +119,7 @@ export class EventService {
 
     return parsedData;
   }
+}
+function now(): string | number | Date {
+  throw new Error('Function not implemented.');
 }

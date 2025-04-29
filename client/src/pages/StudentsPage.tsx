@@ -52,7 +52,11 @@ const StudentsPage: React.FC = () => {
   }, [searchTerm]);
   return (
     <div className="flex flex-col w-full ">
-      <div className="w-full flex justify-end mb-2">
+      <div className="w-full flex justify-between items-center mb-2">
+        <div className="flex items-center gap-2">
+          <Image src={LogoIcon} />
+          <h1 className="font-k2d text-4xl uppercase">Unichub</h1>
+        </div>
         <h1 className="font-k2d text-6xl">All Students</h1>
       </div>
       <div className="w-full h-screen gap-4  border shadow-sm border-neutral-600 rounded-2xl p-2">

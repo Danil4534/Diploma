@@ -1,4 +1,9 @@
-import { AlertDialogCancel } from "../ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 import { IoMdClose } from "react-icons/io";
 import { RadialChart } from "../ui/RadialChart";
 import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
@@ -12,8 +17,11 @@ import { useStore } from "../../store/store";
 import { Input } from "../ui/Input";
 import { CiSearch } from "react-icons/ci";
 import axios from "axios";
-import { toast } from "sonner";
-
+import { toast, Toaster } from "sonner";
+import { EventTypes } from "../Events";
+import LogoIconLight from "../../assets/icons/LogoIconLight.svg";
+import LogoIconBlack from "../../assets/icons/LogoIconBlack.svg";
+import { InviteStudentModal } from "./InviteStudentModal";
 type GroupModalProps = {
   group: any;
 };
@@ -22,8 +30,33 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
   const [subjects, setSubjects] = useState([]);
   const [students, setStudents] = useState([]);
   const [bannedUsers, setBanned] = useState([]);
+  const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const store = useStore();
+
+  const handleEvents = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/event/getEventsForGroup/${group.id}`
+      );
+      setEvents(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleUnInviteUser = async (userId: string) => {
+    try {
+      await axios.put(
+        `http://localhost:3000/group/${group.id}/unInviteStudent/${userId}`
+      );
+      setStudents((prev) => prev.filter((item: any) => item.id != userId));
+      toast.success("Student was successfully deleted from group");
+    } catch (e) {
+      console.error(e);
+      toast.error("Error with deleting student");
+    }
+  };
 
   const handleBanUser = async (userId: string) => {
     try {
@@ -55,7 +88,19 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
       console.log(e);
     }
   };
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const dayOfWeek = daysOfWeek[date.getUTCDay()];
+    const dayOfMonth = String(date.getUTCDate()).padStart(2, "0");
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+
+    return `${dayOfWeek} ${dayOfMonth}, ${hours}:${minutes}`;
+  };
   useEffect(() => {
+    handleEvents();
     setSubjects(group.subjects);
     setStudents(group.students);
   }, [group]);
@@ -68,12 +113,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
       <div className="w-full outline-none">
         <div className="flex justify-between items-start">
           <AlertDialogTitle>
-            <div className="font-k2d text-6xl flex gap-2">
+            <div className=" w-full font-k2d text-6xl flex gap-2">
               <Image src={LogoIcon} className="animate-rotate" />
               {group.name}
             </div>
           </AlertDialogTitle>
-          <div className="flex  justify-end">
+          <div className="flex w-full justify-end">
             <RadialChart
               count={group.subjects.length}
               label={"Subjects"}
@@ -86,7 +131,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
             />
 
             <RadialChart
-              count={group.students.length}
+              count={students.length}
               label={"Students"}
               className={`scale-75 p-0`}
             />
@@ -130,7 +175,17 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                     className="flex w-auto justify-between border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md py-2 px-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards dark:bg-neutral-800"
                   >
                     <div className="flex gap-4 font-k2d">
-                      <Image src={LogoIcon} className="w-4" />
+                      {store.theme === "dark" ? (
+                        <Image
+                          src={LogoIconLight}
+                          className="animate-rotate size-5"
+                        />
+                      ) : (
+                        <Image
+                          src={LogoIconBlack}
+                          className="animate-rotate size-5"
+                        />
+                      )}
                       {item.name}
                       <div className="bg-emerald-200 rounded-xl text-emerald-500 px-1.5 text-xs flex justify-center items-center">
                         {item.status.toLowerCase()}
@@ -159,9 +214,14 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
               {store.currentUser.roles.includes("Admin") ||
               store.currentUser.roles.includes("Teacher") ? (
                 <div>
-                  <p className="w-[120px] flex justify-center items-center text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer dark:bg-neutral-800 dark:border-neutral-400">
-                    Invite Student
-                  </p>
+                  <AlertDialog>
+                    <AlertDialogTrigger className="w-[120px] flex justify-center items-center text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer dark:bg-neutral-800 dark:border-neutral-400">
+                      Invite Student
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <InviteStudentModal group={group} />
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               ) : (
                 <></>
@@ -172,18 +232,18 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                   type="text"
                   placeholder=" Search..."
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="caret-[#34d399]"
+                  className="caret-[#34d399] dark:bg-neutral-800 dark:placeholder:text-neutral-400"
                 />
               </div>
             </div>
-            <div className="overflow-y-auto h-96 w-full rounded-md grid grid-cols-2 gap-4 pr-4">
+            <div className="overflow-y-auto h-auto w-full rounded-md grid grid-cols-2 gap-4 pr-4">
               {students.length > 0 &&
                 students.map((item: any, index: number) => (
                   <div
                     key={index}
-                    className="flex justify-between border border-t-2 dark:bg-neutral-800 animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md p-4  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
+                    className="flex w-full justify-between border border-t-2 dark:bg-neutral-800 animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md p-4  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
                   >
-                    <div className="flex gap-4 font-k2d">
+                    <div className="flex w-full gap-4 font-k2d">
                       {item.img ? (
                         <Image
                           src={item.img}
@@ -194,11 +254,21 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                           }
                         />
                       ) : (
-                        <div className="border border-neutral-600-300 rounded-full w-16 h-16 items-center flex justify-center">
-                          <Image src={LogoIcon} className="w-1/2" />
+                        <div className="w-44 border border-neutral-600 rounded-full flex items-center justify-center">
+                          {store.theme === "dark" ? (
+                            <Image
+                              src={LogoIconLight}
+                              className="animate-rotate size-10"
+                            />
+                          ) : (
+                            <Image
+                              src={LogoIconBlack}
+                              className="animate-rotate"
+                            />
+                          )}
                         </div>
                       )}
-                      <div>
+                      <div className=" w-full">
                         <p>{item.name}</p>
                         <p>{item.surname}</p>
                         <p>{item.email}</p>
@@ -217,9 +287,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                       store.currentUser.roles.includes("Teacher") ? (
                         <div className="flex flex-col gap-2">
                           <div>
-                            <p className="w-auto flex justify-center items-center dark:bg-neutral-800  h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-red-400 transition-colors duration-75 hover:text-red-400">
+                            <button
+                              onClick={() => handleUnInviteUser(item.id)}
+                              className="w-auto flex justify-center items-center dark:bg-neutral-800  h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-red-400 transition-colors duration-75 hover:text-red-400"
+                            >
                               Disconnect
-                            </p>
+                            </button>
                           </div>
                           <div>
                             {!item.banned ? (
@@ -232,7 +305,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                             ) : (
                               <button
                                 onClick={() => handleUnBanUser(item.id)}
-                                className="w-full border border-red-600 rounded-xl text-center px-4 justify-center items-center hover:shadow-md hover:bg-red-500 text-white"
+                                className="w-full border border-red-600 rounded-lg text-center px-4 justify-center items-center hover:shadow-md hover:bg-red-500 dark:text-white hover:text-white"
                               >
                                 unban
                               </button>
@@ -247,11 +320,48 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                 ))}
             </div>
           </TabsContent>
+          <TabsContent value="Events">
+            <div className="outline-none flex  justify-between items-center p-0 my-2">
+              {store.currentUser.roles.includes("Admin") ||
+              store.currentUser.roles.includes("Teacher") ? (
+                <AlertDialog>
+                  <AlertDialogTrigger className="w-[120px] flex justify-center items-center text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer dark:bg-neutral-800 dark:border-neutral-400">
+                    Create Event
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <InviteStudentModal group={group} />
+                  </AlertDialogContent>
+                </AlertDialog>
+              ) : (
+                <></>
+              )}
+              <div className="w-full">
+                {events.map((item: EventTypes, index: number) => (
+                  <div
+                    key={item.id}
+                    style={{ animationDelay: `${index * 200}ms` }}
+                    className="flex justify-between border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md py-2 px-2 mt-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
+                  >
+                    <p className="text-sm">{item.title}</p>
+                    <div>
+                      <p className="text-sm text-neutral-500">
+                        {formatDate(item.start)} -{formatDate(item.end)}
+                      </p>
+                      <p className="text-sm text-emerald-400 text-end">
+                        {item.status}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </TabsContent>
         </Tabs>
         <AlertDialogCancel className="absolute top-4 right-4">
           <IoMdClose />
         </AlertDialogCancel>
       </div>
+      <Toaster />
     </>
   );
 };

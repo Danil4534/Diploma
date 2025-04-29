@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../store/store";
 import { NavLink, useLocation } from "react-router-dom";
 import { orderBy } from "lodash";
-type EventTypes = {
+export type EventTypes = {
+  id: string;
   title: string;
   description: String;
   start: string;

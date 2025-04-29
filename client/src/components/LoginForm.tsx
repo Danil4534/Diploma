@@ -36,14 +36,20 @@ const LoginForm: React.FC = () => {
         email: values.email,
         password: values.password,
       });
+      if (response.status == 400) {
+        toast("❌ Wrong Credentials");
+      }
       if (response.status === 201) {
         const { accessToken } = response.data;
         document.cookie = `accessToken=${accessToken}; path=/`;
+
         store.setCurrentUser();
         store.setActiveOtpForm();
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error: any) {
+      if (error) {
+        toast("❌ Something went wrong. Please try again.");
+      }
     }
   };
 

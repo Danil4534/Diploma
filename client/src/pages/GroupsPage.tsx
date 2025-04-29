@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { CiSearch } from "react-icons/ci";
 import { Input } from "../components/ui/Input";
-import LogoIcon from "../assets/icons/LogoIconBlack.svg";
+import LogoIconBlack from "../assets/icons/LogoIconBlack.svg";
+import LogoIconLight from "../assets/icons/LogoIconLight.svg";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,8 +13,10 @@ import {
 } from "../components/ui/alert-dialog";
 import { GroupModal } from "../components/modalViews/GroupModal";
 import { Image } from "../components/ui/Image";
+import { useStore } from "../store/store";
 
 const GroupsPage: React.FC = () => {
+  const store = useStore();
   const [groups, setGroups] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const fetchGroups = debounce(async (query: string) => {
@@ -34,7 +37,15 @@ const GroupsPage: React.FC = () => {
   }, [searchTerm]);
   return (
     <div className="flex flex-col w-full ">
-      <div className="w-full flex justify-end mb-2">
+      <div className="w-full flex justify-between items-center mb-2">
+        <div className="flex items-center gap-2">
+          {store.theme === "dark" ? (
+            <Image src={LogoIconLight} className="animate-rotate size-10" />
+          ) : (
+            <Image src={LogoIconBlack} className="animate-rotate" />
+          )}
+          <h1 className="font-k2d text-4xl uppercase">Unichub</h1>
+        </div>
         <h1 className="font-k2d text-6xl">All Groups</h1>
       </div>
       <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 dark:border-neutral-600 rounded-2xl p-2">
@@ -46,11 +57,11 @@ const GroupsPage: React.FC = () => {
               type="text"
               placeholder=" Search..."
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="caret-[#34d399] dark:bg-neutral-800"
+              className="caret-[#34d399] dark:bg-neutral-800 dark:placeholder:text-neutral-400"
             />
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-4 overflow-y-auto h-2/3 w-full p-4">
+        <div className="grid grid-cols-4 justify-center items-start gap-4 overflow-y-auto h-auto w-full p-4">
           {filteredResults.length > 0 ? (
             filteredResults.map((item: any, index: number) => (
               <AlertDialog>
@@ -61,7 +72,14 @@ const GroupsPage: React.FC = () => {
                 >
                   <div className="w-auto h-full rounded-2xl bg-white p-4 relative dark:bg-neutral-800">
                     <div className="absolute left-3 bottom-3">
-                      <Image src={LogoIcon} className="animate-rotate" />
+                      {store.theme === "dark" ? (
+                        <Image
+                          src={LogoIconLight}
+                          className="animate-rotate size-10"
+                        />
+                      ) : (
+                        <Image src={LogoIconBlack} className="animate-rotate" />
+                      )}
                     </div>
                     <div className="flex gap-2 flex-col">
                       <div className="flex items-start justify-between">

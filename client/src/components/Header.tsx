@@ -9,7 +9,6 @@ import SearchInput from "./SearchInput";
 import { useEffect } from "react";
 import { Switch } from "./ui/switch";
 import { ChatSheet } from "./ChatSheet";
-import { cn } from "../lib/utils";
 
 const Header: React.FC = () => {
   const store = useStore();
@@ -20,6 +19,7 @@ const Header: React.FC = () => {
         `http://localhost:3000/auth/logout/${store.currentUser.id}`
       );
       store.setActiveLoginForm();
+      localStorage.removeItem("theme");
       navigate("/login");
       store.clearCookie();
     } catch (e) {
@@ -73,7 +73,12 @@ const Header: React.FC = () => {
             className="w-[45px] h-[45px] bg-red-400 rounded-full"
           />
         </div>
-        <IoNotificationsOutline size={20} color="A6A6A6" />
+        <div className="relative">
+          <div className="absolute -top-1 -right-1 bg-emerald-400 w-3 h-3 rounded-full">
+            <p>{}</p>
+          </div>
+          <IoNotificationsOutline size={20} color="A6A6A6" />
+        </div>
         <ChatSheet
           trigger={<AiOutlineMessage size={20} color="A6A6A6" />}
         ></ChatSheet>
