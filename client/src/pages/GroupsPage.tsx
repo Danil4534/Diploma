@@ -64,7 +64,7 @@ const GroupsPage: React.FC = () => {
         <div className="grid grid-cols-4 justify-center items-start gap-4 overflow-y-auto h-auto w-full p-4">
           {filteredResults.length > 0 ? (
             filteredResults.map((item: any, index: number) => (
-              <AlertDialog>
+              <AlertDialog key={index}>
                 <AlertDialogTrigger
                   key={index}
                   style={{ animationDelay: `${index * 200}ms` }}

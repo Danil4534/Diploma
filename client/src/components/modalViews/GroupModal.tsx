@@ -236,12 +236,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                 />
               </div>
             </div>
-            <div className="overflow-y-auto h-auto w-full rounded-md grid grid-cols-2 gap-4 pr-4">
+            <div className="overflow-y-scroll h-96 w-full rounded-md grid grid-cols-2 gap-4 pr-4">
               {students.length > 0 &&
                 students.map((item: any, index: number) => (
                   <div
                     key={index}
-                    className="flex w-full justify-between border border-t-2 dark:bg-neutral-800 animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md p-4  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
+                    className="flex w-full justify-between border border-t-2 dark:bg-neutral-800 animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-lg p-4  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
                   >
                     <div className="flex w-full gap-4 font-k2d">
                       {item.img ? (

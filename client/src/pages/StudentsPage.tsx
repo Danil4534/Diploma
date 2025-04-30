@@ -5,12 +5,13 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import { CiSearch } from "react-icons/ci";
 import { Input } from "../components/ui/Input";
 import { Image } from "../components/ui/Image";
-import LogoIcon from "../assets/icons/LogoIconBlack.svg";
+import LogoIconBlack from "../assets/icons/LogoIconBlack.svg";
 import { AiOutlineSortAscending } from "react-icons/ai";
 import { io } from "socket.io-client";
 import { useStore } from "../store/store";
 import { cn } from "../lib/utils";
-
+import StudentIcon from "../assets/icons/icon _Users_Light.svg";
+import LogoIconLight from "../assets/icons/LogoIconLight.svg";
 const StudentsPage: React.FC = () => {
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,12 +55,12 @@ const StudentsPage: React.FC = () => {
     <div className="flex flex-col w-full ">
       <div className="w-full flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          <Image src={LogoIcon} />
+          <Image src={LogoIconBlack} />
           <h1 className="font-k2d text-4xl uppercase">Unichub</h1>
         </div>
         <h1 className="font-k2d text-6xl">All Students</h1>
       </div>
-      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-600 rounded-2xl p-2">
+      <div className="w-full h-screen gap-4  border shadow-sm dark:border-neutral-600 rounded-2xl p-2">
         <div className="flex items-center justify-between p-4 ">
           <Breadcrumbs />
           <div className="flex w-full gap-2 justify-end">
@@ -90,6 +91,10 @@ const StudentsPage: React.FC = () => {
                   }
                 )}
               >
+                <Image
+                  src={StudentIcon}
+                  className="absolute top-4 right-4 w-5 z-10"
+                />
                 <div className="absolute z-20 top-0 left-1/2 -translate-x-1/2  -translate-y-3 lowercase bg-red-400 w-full text-center text-white text-sm px-2  rounded-t-2xl  opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                   {item.banned ? "Banned" : <></>}
                 </div>
@@ -107,7 +112,17 @@ const StudentsPage: React.FC = () => {
                         />
                       ) : (
                         <div className="border border-neutral-300 rounded-full w-16 h-16 items-center flex justify-center">
-                          <Image src={LogoIcon} className="w-1/2" />
+                          {store.theme === "dark" ? (
+                            <Image
+                              src={LogoIconLight}
+                              className="animate-rotate size-8"
+                            />
+                          ) : (
+                            <Image
+                              src={LogoIconBlack}
+                              className="animate-rotate"
+                            />
+                          )}
                         </div>
                       )}
                     </div>
