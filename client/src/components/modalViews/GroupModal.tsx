@@ -113,12 +113,12 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
       <div className="w-full outline-none">
         <div className="flex justify-between items-start">
           <AlertDialogTitle>
-            <div className=" w-full font-k2d text-6xl flex gap-2">
+            <div className=" w-full font-k2d text-4xl flex gap-2">
               <Image src={LogoIcon} className="animate-rotate" />
-              {group.name}
+              <h1 className="w-full">{group.name}</h1>
             </div>
           </AlertDialogTitle>
-          <div className="flex w-full justify-end">
+          <div className="flex w-auto justify-end">
             <RadialChart
               count={group.subjects.length}
               label={"Subjects"}
@@ -254,16 +254,16 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                           }
                         />
                       ) : (
-                        <div className="w-44 border border-neutral-600 rounded-full flex items-center justify-center">
+                        <div className="w-44 border dark:border-neutral-600 rounded-full flex items-center justify-center">
                           {store.theme === "dark" ? (
                             <Image
                               src={LogoIconLight}
-                              className="animate-rotate size-10"
+                              className="animate-rotate size-8"
                             />
                           ) : (
                             <Image
                               src={LogoIconBlack}
-                              className="animate-rotate"
+                              className="animate-rotate size-8"
                             />
                           )}
                         </div>
@@ -321,7 +321,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
             </div>
           </TabsContent>
           <TabsContent value="Events">
-            <div className="outline-none flex  justify-between items-center p-0 my-2">
+            <div className="outline-none flex flex-col justify-between  p-0 my-2">
               {store.currentUser.roles.includes("Admin") ||
               store.currentUser.roles.includes("Teacher") ? (
                 <AlertDialog>
@@ -347,7 +347,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                       <p className="text-sm text-neutral-500">
                         {formatDate(item.start)} -{formatDate(item.end)}
                       </p>
-                      <p className="text-sm text-emerald-400 text-end">
+                      <p className="text-sm text-red-400 text-end">
                         {item.status}
                       </p>
                     </div>
