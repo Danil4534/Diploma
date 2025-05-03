@@ -11,12 +11,15 @@ import Breadcrumbs from "../components/Breadcrumbs";
 import { CiSearch } from "react-icons/ci";
 import { Input } from "../components/ui/Input";
 import { Image } from "../components/ui/Image";
-import LogoIcon from "../assets/icons/LogoIconBlack.svg";
+import LogoIconBlack from "../assets/icons/LogoIconBlack.svg";
+import LogoIconLight from "../assets/icons/LogoIconLight.svg";
 import { AiOutlineSortAscending } from "react-icons/ai";
+import { useStore } from "../store/store";
 
 function SubjectPage() {
   const [subjects, setSubjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const store = useStore();
   const fetchGroups = debounce(async (query: string) => {
     try {
       const response = await axios.get(`http://localhost:3000/subject`);
@@ -38,7 +41,7 @@ function SubjectPage() {
       <div className="w-full flex justify-end mb-2">
         <h1 className="font-k2d text-6xl">All Subjects</h1>
       </div>
-      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 rounded-2xl p-2">
+      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 dark:border-neutral-600 rounded-2xl p-2">
         <div className="flex items-center justify-between p-4">
           <Breadcrumbs />
           <div className="relative w-1/6">
@@ -65,11 +68,18 @@ function SubjectPage() {
                 >
                   <div className="w-auto h-full rounded-2xl bg-white p-4 relative dark:bg-neutral-800">
                     <div className="absolute left-3 bottom-3">
-                      <Image src={LogoIcon} className="animate-rotate" />
+                      {store.theme === "dark" ? (
+                        <Image
+                          src={LogoIconLight}
+                          className="animate-rotate size-10"
+                        />
+                      ) : (
+                        <Image src={LogoIconBlack} className="animate-rotate" />
+                      )}
                     </div>
                     <div className="flex gap-2 flex-col">
                       <div className="flex items-start justify-between">
-                        <h3 className=" text-lg font-k2d font-medium text-gray-900 flex gap-2">
+                        <h3 className=" text-lg font-k2d font-medium text-neutral-400 flex gap-2">
                           Subject
                         </h3>
                         <h3 className=" text-lg font-k2d font-medium text-gray-500 flex gap-2">

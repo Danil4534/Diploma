@@ -123,7 +123,7 @@ export const useStore = create<typeStore>((set) => ({
   },
   clearCookie: () => {
     document.cookie =
-      "accessToken= expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   },
 
   setData: (values: any) => {

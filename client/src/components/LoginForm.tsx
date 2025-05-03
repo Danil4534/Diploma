@@ -11,10 +11,12 @@ import { FormikInput } from "./ui/FormikInput";
 import axios from "axios";
 import { toast, Toaster } from "sonner";
 import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const [emailForReset, setEmailForReset] = useState<string | undefined>();
+  const [vision, setVision] = useState<boolean>(false);
   const store = useStore();
 
   const validationSchemaLogin = Yup.object({
@@ -147,13 +149,28 @@ const LoginForm: React.FC = () => {
                   type="email"
                 />
               </LabelInputContainer>
-              <LabelInputContainer className="mb-2">
+              <LabelInputContainer className="mb-2 ">
                 <Label htmlFor="password">Password</Label>
-                <FormikInput
-                  name="password"
-                  placeholder="Password"
-                  type="password"
-                />
+                <div className="relative w-full h-full">
+                  <FormikInput
+                    name="password"
+                    placeholder="Password"
+                    type={vision ? "text" : "password"}
+                    className="relative"
+                  />
+                  {!vision ? (
+                    <AiOutlineEye
+                      className="absolute right-4 top-4 text-neutral-500 cursor-pointer"
+                      onClick={() => setVision(!vision)}
+                    />
+                  ) : (
+                    <AiOutlineEyeInvisible
+                      onClick={() => setVision(!vision)}
+                      className="absolute right-4 top-4 text-neutral-500 cursor-pointer"
+                    />
+                  )}
+                </div>
+
                 <p
                   onClick={() => store.setActiveForgotPasswd()}
                   className="text-right font-k2d font-medium hover:underline cursor-pointer "
