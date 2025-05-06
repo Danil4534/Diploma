@@ -36,3 +36,7 @@
 ::-webkit-scrollbar-track {
     @apply bg-transparent
 }
+
+* {
+    outline: none;
+}

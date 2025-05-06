@@ -120,7 +120,7 @@ const StudentsPage: React.FC = () => {
                           ) : (
                             <Image
                               src={LogoIconBlack}
-                              className="animate-rotate"
+                              className="animate-rotate size-8"
                             />
                           )}
                         </div>

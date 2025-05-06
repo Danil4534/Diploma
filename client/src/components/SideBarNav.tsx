@@ -66,8 +66,7 @@ export const SideBarNav: React.FC = () => {
   return (
     <div
       className={cn(
-        "flex w-full flex-1 flex-row overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
-        "h-screen"
+        "flex w-full flex-1 flex-row overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800"
       )}
     >
       <Sidebar open={open} setOpen={setOpen}>
@@ -76,11 +75,11 @@ export const SideBarNav: React.FC = () => {
         </SidebarBody>
       </Sidebar>
       <div className="flex flex-1">
-        <div className="flex h-full w-full flex-col gap-4 rounded-tl-2xl border border-neutral-200 bg-white p-2 md: dark:border-neutral-700 dark:bg-neutral-900">
+        <div className="flex h-screen w-full flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md: dark:border-neutral-700 dark:bg-neutral-900 ">
           <Header />
-          <div className="w-full flex flex-row-reverse gap-4">
-            <div className="flex flex-col gap-4">
-              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 dark:border-neutral-600 p-4 animate-rightIn ">
+          <div className="w-full h-full flex flex-row-reverse gap-2 animate-fadeIn">
+            <div className="flex flex-col gap-2">
+              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 dark:border-neutral-600 p-4">
                 <EventCalendar />
                 <Events />
               </div>
@@ -88,10 +87,10 @@ export const SideBarNav: React.FC = () => {
             </div>
             <Outlet />
             {pathname == "/homepage" ? (
-              <div className="w-full h-screen border border-neutral-200 dark:border-neutral-600 rounded-2xl justify-center items-center p-4">
+              <div className="w-full h-full border border-neutral-200 dark:border-neutral-600 rounded-2xl justify-center items-center p-4 animate-fadeInOpacity">
                 <div className="w-full flex justify-between gap-10">
-                  <BigCalendar className="w-2/3 animate-topIn" />
-                  <div className="grid grid-cols-2 w-1/3 h-full gap-0 place-items-center justify-items-center">
+                  <BigCalendar className="w-2/3 animate-rightIn" />
+                  <div className="grid grid-cols-2 w-1/3 h-full gap-0 place-items-center justify-items-center ">
                     {data.map((item: any, index: number) => (
                       <div key={index}>
                         <RadialChart

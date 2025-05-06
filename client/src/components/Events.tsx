@@ -3,6 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../store/store";
 import { NavLink, useLocation } from "react-router-dom";
 import { orderBy } from "lodash";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
 export type EventTypes = {
   id: string;
   title: string;
@@ -56,30 +62,37 @@ const Events: React.FC = () => {
             >
               View All
             </NavLink>
-          </div>
-          {usersEvents.length > 0 ? (
-            usersEvents.map((item: EventTypes, index: number) => (
-              <div
-                key={index}
-                style={{ animationDelay: `${index * 200}ms` }}
-                className="flex justify-between border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md py-2 px-2 mt-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
-              >
-                <p className="text-sm">{item.title}</p>
-                <div>
-                  <p className="text-sm text-neutral-500">
-                    {formatDate(item.start)} -{formatDate(item.end)}
-                  </p>
-                  <p className="text-sm text-emerald-400 text-end">
-                    {item.status}
-                  </p>
-                </div>
+          </div>{" "}
+          <Accordion type="single" collapsible>
+            {usersEvents.length > 0 ? (
+              usersEvents.slice(0, 3).map((item: EventTypes, index: number) => (
+                <AccordionItem
+                  value={item.id}
+                  key={index}
+                  className=" border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md  px-2 mt-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
+                  style={{ animationDelay: `${index * 200}ms` }}
+                >
+                  <AccordionTrigger className="font-k2d">
+                    {item.title}{" "}
+                    <p className="text-xs bg-red-200 px-2 py-0.5 rounded-full  lowercase text-red-500 font-k2d">
+                      {" "}
+                      {item.status}
+                    </p>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <span className="text-xs underline lowercase">Start</span>{" "}
+                    {formatDate(item.start)} -{" "}
+                    <span className="text-xs underline lowercase"> End</span>{" "}
+                    {formatDate(item.end)}
+                  </AccordionContent>
+                </AccordionItem>
+              ))
+            ) : (
+              <div className="flex justify-center items-center h-auto">
+                <h1 className="font-k2d text-sm text-neutral-400">Empty</h1>
               </div>
-            ))
-          ) : (
-            <div className="flex justify-center items-center h-auto">
-              <h1 className="font-k2d text-sm text-neutral-400">Empty</h1>
-            </div>
-          )}
+            )}
+          </Accordion>
         </div>
       ) : (
         <></>

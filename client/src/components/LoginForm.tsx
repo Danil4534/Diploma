@@ -12,6 +12,7 @@ import axios from "axios";
 import { toast, Toaster } from "sonner";
 import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
@@ -203,32 +204,47 @@ const LoginForm: React.FC = () => {
           validationSchema={validationSchemaOtp}
           onSubmit={(values) => handleSubmitOtpForm(values)}
         >
-          <Form className="mt-8 justify-items-center items-center ">
-            <div className="flex-col w-full  md:flex-row md:space-y-0 justify-items-center animate-fadeIn ">
-              <LabelInputContainer className="mb-2 ">
-                <Label htmlFor="password" className="text-center">
-                  Your Verification Code
-                </Label>
-                <FormikInput
-                  name="otpCode"
-                  placeholder="4-digit code"
-                  type="text"
-                  className="text-center text-xl"
+          {({ setFieldValue }) => (
+            <Form className="mt-8 justify-items-center items-center ">
+              <div className="flex-col w-full md:flex-row md:space-y-0 justify-items-center animate-fadeIn ">
+                <LabelInputContainer className="mb-2 ">
+                  <Label htmlFor="otpCode" className="text-center">
+                    Your Verification Code
+                  </Label>
+
+                  <div className="w-full flex justify-center items-center my-2">
+                    <InputOTP
+                      maxLength={6}
+                      onChange={(value: string) =>
+                        setFieldValue("otpCode", value)
+                      }
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                </LabelInputContainer>
+
+                <Button
+                  content={"Sign in securely"}
+                  type="submit"
+                  className="w-[382px] mt-4 font-k2d text-xl"
                 />
-              </LabelInputContainer>
-              <Button
-                content={"Sign in securely"}
-                type="submit"
-                className=" w-[382px] mt-4 font-k2d text-xl"
-              />
-              <p
-                className="font-k2d pt-4 cursor-pointer hover:underline"
-                onClick={() => handleBackForm("login")}
-              >
-                Cancel
-              </p>
-            </div>
-          </Form>
+                <p
+                  className="font-k2d pt-4 cursor-pointer hover:underline"
+                  onClick={() => handleBackForm("login")}
+                >
+                  Cancel
+                </p>
+              </div>
+            </Form>
+          )}
         </Formik>
       ) : null}
       {store.activeForgotPasswd ? (

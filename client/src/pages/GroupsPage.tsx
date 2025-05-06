@@ -61,65 +61,78 @@ const GroupsPage: React.FC = () => {
             />
           </div>
         </div>
-        <div className="grid grid-cols-4 justify-center items-start gap-4 overflow-y-auto h-auto w-full p-4">
-          {filteredResults.length > 0 ? (
-            filteredResults.map((item: any, index: number) => (
-              <AlertDialog key={index}>
-                <AlertDialogTrigger
-                  key={index}
-                  style={{ animationDelay: `${index * 200}ms` }}
-                  className="h-40 opacity-0 animate-fadeInOpacity hover:animate-background cursor-pointer rounded-2xl border-t-2 shadow-md border-emerald-400 hover:bg-[length:400%_400%] hover:shadow-xl animate-fill-forwards"
-                >
-                  <div className="w-auto h-full rounded-2xl bg-white p-4 relative dark:bg-neutral-800">
-                    <div className="absolute left-3 bottom-3">
-                      {store.theme === "dark" ? (
-                        <Image
-                          src={LogoIconLight}
-                          className="animate-rotate size-10"
-                        />
-                      ) : (
-                        <Image src={LogoIconBlack} className="animate-rotate" />
-                      )}
-                    </div>
-                    <div className="flex gap-2 flex-col">
-                      <div className="flex items-start justify-between">
-                        <h3 className=" text-lg font-k2d font-medium text-gray-900 flex gap-2 dark:text-neutral-400">
-                          Group
-                        </h3>
-                        <h3 className=" text-lg font-k2d font-medium text-gray-500 flex gap-2">
-                          {item.name}
-                        </h3>
+        {filteredResults.length > 0 && (
+          <div className="grid grid-cols-4 justify-center items-start gap-4 overflow-y-auto h-auto w-full p-4">
+            {filteredResults.length > 0 &&
+              filteredResults.map((item: any, index: number) => (
+                <AlertDialog key={index}>
+                  <AlertDialogTrigger
+                    key={index}
+                    style={{ animationDelay: `${index * 200}ms` }}
+                    className="h-40 opacity-0 animate-fadeInOpacity hover:animate-background cursor-pointer rounded-2xl border-t-2 shadow-md border-emerald-400 hover:bg-[length:400%_400%] hover:shadow-xl animate-fill-forwards"
+                  >
+                    <div className="w-auto h-full rounded-2xl bg-white p-4 relative dark:bg-neutral-800">
+                      <div className="absolute left-3 bottom-3">
+                        {store.theme === "dark" ? (
+                          <Image
+                            src={LogoIconLight}
+                            className="animate-rotate size-10"
+                          />
+                        ) : (
+                          <Image
+                            src={LogoIconBlack}
+                            className="animate-rotate"
+                          />
+                        )}
                       </div>
-                      <div className="flex justify-end gap-4 ">
-                        <div className="flex flex-col gap-2">
-                          <div className="w-20 flex-col-reverse h-20 border border-neutral-200 flex justify-center items-center font-k2d font-medium rounded-xl">
-                            <h3 className="font-sm">Students</h3>
-                            <p className="font-k2d text-2xl ">
-                              {item.students.length}
-                            </p>
+                      <div className="flex gap-2 flex-col">
+                        <div className="flex items-start justify-between">
+                          <h3 className=" text-lg font-k2d font-medium text-gray-900 flex gap-2 dark:text-neutral-400">
+                            Group
+                          </h3>
+                          <h3 className=" text-lg font-k2d font-medium text-gray-500 flex gap-2">
+                            {item.name}
+                          </h3>
+                        </div>
+                        <div className="flex justify-end gap-4 ">
+                          <div className="flex flex-col gap-2">
+                            <div className="w-20 flex-col-reverse h-20 border border-neutral-200 flex justify-center items-center font-k2d font-medium rounded-xl">
+                              <h3 className="font-sm">Students</h3>
+                              <p className="font-k2d text-2xl ">
+                                {item.students.length}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <div className="w-20 flex-col-reverse h-20 border border-neutral-200 flex justify-center items-center font-k2d font-medium rounded-xl">
+                              <h3 className="font-sm">Subjects</h3>
+                              <p className="font-k2d text-2xl">
+                                {item.subjects.length}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex flex-col gap-2">
-                          <div className="w-20 flex-col-reverse h-20 border border-neutral-200 flex justify-center items-center font-k2d font-medium rounded-xl">
-                            <h3 className="font-sm">Subjects</h3>
-                            <p className="font-k2d text-2xl">
-                              {item.subjects.length}
-                            </p>
-                          </div>
-                        </div>
                       </div>
                     </div>
-                  </div>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <GroupModal group={item} />
-                </AlertDialogContent>
-              </AlertDialog>
-            ))
-          ) : (
-            <>Empty</>
-          )}
-        </div>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <GroupModal group={item} />
+                  </AlertDialogContent>
+                </AlertDialog>
+              ))}
+          </div>
+        )}
+
+        {filteredResults.length == 0 && (
+          <div className="w-full h-full flex justify-center items-center flex-col gap-3">
+            {store.theme === "dark" ? (
+              <Image src={LogoIconLight} className="animate-rotate size-10" />
+            ) : (
+              <Image src={LogoIconBlack} className="animate-rotate" />
+            )}
+            <h1 className="">Empty</h1>
+          </div>
+        )}
       </div>
     </div>
   );

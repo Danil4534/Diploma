@@ -29,7 +29,7 @@ export class EventService {
       events.map((event) =>
         this.prisma.event.update({
           where: { id: event.id },
-          data: { status: now > event.start ? 'Old' : 'Upcoming' },
+          data: { status: now > event.start ? 'Old' : 'New' },
         }),
       ),
     );
