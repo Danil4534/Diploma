@@ -35,7 +35,7 @@ export type typeStore = {
   data: any;
   setActiveOtpForm: () => void;
   setActiveLoginForm: () => void;
-  setCurrentUser: () => void;
+  setCurrentUser: () => any;
   setActiveForgotPasswd: () => void;
   setActiveNewPasswordForm: () => void;
   clearCookie: () => void;
@@ -117,9 +117,8 @@ export const useStore = create<typeStore>((set) => ({
 
     const jwt = token.split("=")[1];
     const payload = jwtDecode<{ userId: string }>(jwt);
-    console.log(payload);
-
     set({ currentUser: payload.userId });
+    return payload.userId;
   },
   clearCookie: () => {
     document.cookie =

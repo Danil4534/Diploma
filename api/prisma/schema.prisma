@@ -25,11 +25,11 @@ model User {
   created       DateTime?   @default(now())
   Group         Group?      @relation("UserGroup", fields: [groupId], references: [id], onUpdate: Cascade)
   groupId       String?
+  sentChats     Chat[]      @relation("User1Chats")
+  receivedChats Chat[]      @relation("User2Chats")
   Comment       Comment[]
   GradeBook     GradeBook[]
   TaskGrade     TaskGrade[]
-  sentChats     Chat[]      @relation("User1Chats")
-  receivedChats Chat[]      @relation("User2Chats")
   Message       Message[]
 }
 

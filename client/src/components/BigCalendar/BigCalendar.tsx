@@ -19,11 +19,10 @@ type EventTypes = {
 function BigCalendar({ className }: { className: string }) {
   const store = useStore();
   const [events, setEvents] = useState<EventTypes[]>([]);
-  console.log(events);
+
   const userEvents = events.filter(
     (item: EventTypes) => item.groupId == store.currentUser?.groupId
   );
-  console.log(userEvents);
   useEffect(() => {
     try {
       const handleEvents = async () => {

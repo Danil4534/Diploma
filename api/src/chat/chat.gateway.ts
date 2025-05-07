@@ -18,16 +18,16 @@ export class ChatGateway {
   server: Server;
   constructor(private readonly chatService: ChatService) {}
 
-  @SubscribeMessage('getChats')
-  async handleGetChats(
-    @MessageBody() userId: string,
-    @ConnectedSocket() client: Socket,
-  ) {
-    const chats = await this.chatService.getAllUserChats(userId);
-    client.emit('chats', chats);
-
-    return chats;
-  }
+  // @SubscribeMessage('getChats')
+  // async handleGetChats(
+  //   @MessageBody() userId: string,
+  //   @ConnectedSocket() client: Socket,
+  // ) {
+  //   const chats = await this.chatService.getAllUserChats(userId);
+  //   client.emit('chats', chats);
+  //   this.server.emit('chats', chats);
+  //   return chats;
+  // }
 
   @SubscribeMessage('createChat')
   async handleCreateChat(
@@ -41,6 +41,20 @@ export class ChatGateway {
     this.server.emit('chatsUpdated', updatedChats);
     client.emit('chatCreated', newChat);
     return newChat;
+  }
+
+  @SubscribeMessage('getAllChats')
+  async getAllChats(@ConnectedSocket() client) {
+    const chats = await this.chatService.getAllChats();
+    this.server.emit('chats', chats);
+    client.emit('chats', chats);
+  }
+
+  @SubscribeMessage('getUserChats')
+  async getUserChats(@ConnectedSocket() client, @MessageBody() userId: string) {
+    const userChats = await this.chatService.getAllUserChats(userId);
+    this.server.emit('userChats', userChats);
+    client.emit('userChats', userChats);
   }
 
   @SubscribeMessage('sendMessage')

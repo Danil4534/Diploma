@@ -145,7 +145,7 @@ const StudentsPage: React.FC = () => {
                         onClick={() =>
                           handleCreateNewChat(store.currentUser.id, item.id)
                         }
-                        className=" absolute right-2 bottom-2 mt-2 rounded-xl bg-slate-800 text-white px-4 py-2 text-sm hover:bg-emerald-600 transition"
+                        className="absolute right-2 bottom-2 mt-2 rounded-xl bg-slate-800 text-white px-4 py-2 text-sm hover:bg-emerald-600 transition"
                       >
                         Send Message
                       </button>

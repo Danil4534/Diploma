@@ -10,6 +10,7 @@ import SubjectPage from "./pages/SubjectPage";
 import StudentsPage from "./pages/StudentsPage";
 import GroupsPage from "./pages/GroupsPage";
 import UserProfile from "./pages/UserProfile";
+import ChatsPage from "./pages/ChatsPage";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
         <Route path="students" element={<StudentsPage />} />
         <Route path="groups" element={<GroupsPage />} />
         <Route path="profile" element={<UserProfile />} />
+        <Route path="chats" element={<ChatsPage />} />
       </Route>
     </Routes>
   );

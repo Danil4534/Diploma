@@ -1,14 +1,15 @@
-import { Link, LinkProps, NavLink } from "react-router-dom";
+import { Link, LinkProps, NavLink, useLocation } from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import { cn } from "../../lib/utils";
+import { useEndPoint } from "../hooks/useEndPoint";
 
-interface Links {
+type Links = {
   label: string;
   href: string;
   icon: React.JSX.Element | React.ReactNode;
-}
+};
 
 interface SidebarContextProps {
   open: boolean;
@@ -164,12 +165,15 @@ export const SidebarLink = ({
   props?: LinkProps;
 }) => {
   const { open, animate } = useSidebar();
+  const endpoint = useEndPoint();
+
   return (
     <NavLink
       to={link.href}
       className={cn(
-        "flex items-center justify-start gap-2 group/sidebar px-2 py-2 hover:bg-neutral-200 rounded-lg transition-colors duration-200 dark:text-white dark:hover:bg-neutral-400",
-        className
+        "flex items-center justify-start gap-2 group/sidebar px-2 py-2 hover:bg-neutral-200 rounded-lg transition-colors duration-200 dark:text-white dark:hover:bg-neutral-600",
+        className,
+        endpoint == link.href && "border-2 border-emerald-400"
       )}
       {...props}
     >
@@ -181,7 +185,7 @@ export const SidebarLink = ({
           opacity: animate ? (open ? 1 : 0) : 1,
           visibility: animate ? (open ? "visible" : "hidden") : "visible",
         }}
-        className="font-k2d text-base text-neutral-700  group-hover/sidebar:translate-x-3 transition  duration-200 whitespace-pre inline-block !p-0 !m-0 dark:text-white"
+        className="font-k2d text-base text-neutral-700  group-hover/sidebar:translate-x-3 transition  duration-200 whitespace-pre inline-block !p-0 !m-0 dark:text-white "
       >
         {link.label}
       </motion.span>

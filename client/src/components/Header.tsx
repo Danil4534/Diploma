@@ -26,6 +26,7 @@ const Header: React.FC = () => {
       console.log(e);
     }
   };
+
   useEffect(() => {
     store.setCurrentUser();
   }, []);
@@ -79,10 +80,7 @@ const Header: React.FC = () => {
           </div>
           <IoNotificationsOutline size={20} color="A6A6A6" />
         </div>
-        <ChatSheet
-          trigger={<AiOutlineMessage size={20} color="A6A6A6" />}
-        ></ChatSheet>
-
+        <ChatSheet trigger={<AiOutlineMessage size={20} color="A6A6A6" />} />
         <Button type="button" content={"Logout"} action={() => LogoutUser()} />
       </div>
     </header>

@@ -30,12 +30,14 @@ export default {
     			},
     			fadeInOpacity: {
     				'0%': {
-    					opacity: 0,
+					
+    					opacity:0,
     					transform: 'translateY(100px)'
     				},
     				'100%': {
+					
     					transform: 'translateY(0)',
-    					opacity: 1
+						opacity:1,
     				}
     			},
     			rightIn: {

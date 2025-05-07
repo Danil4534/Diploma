@@ -42,7 +42,7 @@ export const SideBarContent: React.FC<SideBarContentProps> = ({ open }) => {
     },
     {
       label: "Tasks",
-      href: "groups",
+      href: "tasks",
       icon: <Image src={BooksIcon} className="w-4 " />,
     },
 
@@ -52,8 +52,8 @@ export const SideBarContent: React.FC<SideBarContentProps> = ({ open }) => {
       icon: <Image src={EventsIcon} className="w-4" />,
     },
     {
-      label: "Messages",
-      href: "messages",
+      label: "Chats",
+      href: "chats",
       icon: <Image src={MessageIcon} className="w-4" />,
     },
   ];

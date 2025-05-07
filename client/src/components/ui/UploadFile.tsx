@@ -69,7 +69,6 @@ export const UploadFile: React.FC<UploadFileProps> = ({ onChange }) => {
           onChange={(e) => {
             const selectedFile = e.target.files?.[0];
             if (selectedFile) {
-              console.log(selectedFile);
               handleFileChange(selectedFile);
             }
           }}

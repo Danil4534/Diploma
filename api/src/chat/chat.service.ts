@@ -29,14 +29,24 @@ export class ChatService {
     try {
       const chats = await this.prisma.chat.findMany({
         where: { user1Id: userId },
-        include: { user1: true, user2: true },
+        include: { user1: true, user2: true, messages: true },
       });
       return chats;
     } catch (e) {
-      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e, HttpStatus.BAD_GATEWAY);
     }
   }
 
+  async getAllChats() {
+    try {
+      const allChats = await this.prisma.chat.findMany({
+        include: { user1: true, user2: true },
+      });
+      return allChats;
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_GATEWAY);
+    }
+  }
   async createChat(dto: CreateChatDto) {
     const user1Exists = await this.prisma.user.findUnique({
       where: { id: dto.userId1 },
@@ -44,8 +54,6 @@ export class ChatService {
     const user2Exists = await this.prisma.user.findUnique({
       where: { id: dto.userId2 },
     });
-    console.log(user1Exists);
-    console.log(user2Exists);
     if (!user1Exists || !user2Exists) {
       throw new HttpException(
         'One or both users not found',
