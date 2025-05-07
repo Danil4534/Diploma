@@ -38,9 +38,21 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
   const [students, setStudents] = useState([]);
   const [bannedUsers, setBanned] = useState([]);
   const [events, setEvents] = useState([]);
+  const [ratings, setRatings] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const store = useStore();
-
+  const handleGetRating = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/grade-book/groupRatings/${group.id}`
+      );
+      setRatings(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching ratings", error);
+      toast.error("Failed to load rating data");
+    }
+  };
   const handleEvents = async () => {
     try {
       const response = await axios.get(
@@ -110,6 +122,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
     handleEvents();
     setSubjects(group.subjects);
     setStudents(group.students);
+    handleGetRating();
   }, [group]);
 
   useEffect(() => {
@@ -150,6 +163,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
             <TabsTrigger value="Subjects">Subjects</TabsTrigger>
             <TabsTrigger value="Students">Students</TabsTrigger>
             <TabsTrigger value="Events">Events</TabsTrigger>
+            <TabsTrigger value="Rating">Rating</TabsTrigger>
           </TabsList>
 
           <TabsContent value="Subjects">
@@ -328,7 +342,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
             </div>
           </TabsContent>
           <TabsContent value="Events">
-            <div className="outline-none flex flex-col justify-between  p-0 my-2">
+            <div className="outline-none flex flex-col justify-between p-0 my-2">
               {store.currentUser.roles.includes("Admin") ||
               store.currentUser.roles.includes("Teacher") ? (
                 <AlertDialog>
@@ -392,6 +406,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
               </div>
             </div>
           </TabsContent>
+          <TabsContent value="Rating"></TabsContent>
         </Tabs>
         <AlertDialogCancel className="absolute top-4 right-4">
           <IoMdClose />
