@@ -29,6 +29,93 @@ export class GradeBookService {
 
     return result;
   }
+  async getGroupRatingData(groupId: string) {
+    const group = await this.prisma.group.findUnique({
+      where: { id: groupId },
+      include: {
+        students: {
+          include: {
+            TaskGrade: {
+              include: {
+                task: {
+                  include: {
+                    Subject: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        subjects: true,
+      },
+    });
+
+    if (!group) {
+      throw new Error('Group not found');
+    }
+
+    const subjectNames = group.subjects.map((subj) => subj.name);
+    const headerRow = [
+      'Student ID',
+      'Name Surname',
+      'Group',
+      ...subjectNames,
+      'Average',
+    ];
+
+    const studentRows = [];
+
+    for (const student of group.students) {
+      const subjectGradesMap: Record<string, number[]> = {};
+
+      for (const tg of student.TaskGrade) {
+        const subject = tg.task?.Subject;
+        if (!subject) continue;
+
+        const subjectName = subject.name;
+        if (!subjectGradesMap[subjectName]) {
+          subjectGradesMap[subjectName] = [];
+        }
+        subjectGradesMap[subjectName].push(tg.grade);
+      }
+
+      const avgGrades = subjectNames.map((subjName) => {
+        const grades = subjectGradesMap[subjName] || [];
+        return grades.length
+          ? (grades.reduce((a, b) => a + b, 0) / grades.length).toFixed(2)
+          : 'N/A';
+      });
+
+      const validGrades = avgGrades.filter((avg) => avg !== 'N/A').map(Number);
+
+      const overallAverage = validGrades.length
+        ? (validGrades.reduce((a, b) => a + b, 0) / validGrades.length).toFixed(
+            2,
+          )
+        : 'N/A';
+
+      studentRows.push({
+        data: [
+          student.id,
+          `${student.name ?? ''} ${student.surname ?? ''}`,
+          group.name,
+          ...avgGrades,
+          overallAverage,
+        ],
+        averageNumeric:
+          overallAverage === 'N/A' ? -1 : parseFloat(overallAverage),
+      });
+    }
+
+    studentRows.sort((a, b) => b.averageNumeric - a.averageNumeric);
+
+    const result = {
+      headers: headerRow,
+      rows: studentRows.map((s) => s.data),
+    };
+
+    return result;
+  }
 
   async exportGroupRatingToExcel(groupId: string, res: Response) {
     const group = await this.prisma.group.findUnique({

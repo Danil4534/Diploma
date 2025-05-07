@@ -90,10 +90,13 @@ export const ChatSheet: React.FC<ChatSheetProps> = ({ trigger }) => {
 
             <div className="py-4 h-screen">
               <div className="flex flex-col gap-2 ">
-                <h1 className="my-2 flex gap-1 font-k2d  items-center">
-                  <TiPinOutline className="text-neutral-400" />
-                  Pinned
-                </h1>
+                {pinnedChats.length > 0 && (
+                  <h1 className="my-1 flex gap-1 font-k2d text-sm items-center">
+                    <TiPinOutline className="text-neutral-400" />
+                    Pinned
+                  </h1>
+                )}
+
                 {pinnedChats.map((chat: any, index: number) => (
                   <ChatItem
                     chat={chat}
@@ -105,9 +108,9 @@ export const ChatSheet: React.FC<ChatSheetProps> = ({ trigger }) => {
               </div>
 
               <div className="flex justify-between items-center">
-                <h1 className="my-4 flex gap-1 items-center">
+                <h1 className="my-4 flex gap-1 items-center font-k2d text-sm low">
                   <RiUnpinLine className="text-neutral-500" />
-                  All Chats
+                  All
                 </h1>
                 <div className="relative w-3/6">
                   <CiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />

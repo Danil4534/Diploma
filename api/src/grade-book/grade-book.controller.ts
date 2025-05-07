@@ -27,4 +27,9 @@ export class GradeBookController {
   async exportGroupRating(@Param('id') id: string, @Res() res: Response) {
     return this.gradeBookService.exportGroupRatingToExcel(id, res);
   }
+
+  @Get('groupRatings/:id')
+  async getGroupRating(@Param('id') id: string) {
+    return this.gradeBookService.getGroupRatingData(id);
+  }
 }

@@ -162,7 +162,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                   </p>
                 </div>
               ) : (
-                <></>
+                <div></div>
               )}
               <div className="relative">
                 <CiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -231,7 +231,7 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                   </AlertDialog>
                 </div>
               ) : (
-                <></>
+                <div></div>
               )}
               <div className="relative">
                 <CiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
