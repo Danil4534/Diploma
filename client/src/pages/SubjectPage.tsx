@@ -4,7 +4,7 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog";
-import { GroupModal } from "../components/modalViews/GroupModal";
+import { GroupModal } from "../components/modalViews/GroupModal/GroupModal";
 import { debounce } from "lodash";
 import axios from "axios";
 import Breadcrumbs from "../components/Breadcrumbs";

@@ -1,4 +1,4 @@
-import Button from "./ui/Button";
+import Button from "./ui/ButtonLogout";
 import { Label } from "./ui/Label";
 import { Image } from "./ui/Image";
 import LogoIconBlack from "../assets/icons/LogoIconBlack.svg";

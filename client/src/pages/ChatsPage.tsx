@@ -1,7 +1,7 @@
-import React from "react";
+import RatingsTable from "../components/modalViews/GroupModal/components/Table";
 
 function ChatsPage() {
-  return <div>ChatsPage</div>;
+  return <div></div>;
 }
 
 export default ChatsPage;

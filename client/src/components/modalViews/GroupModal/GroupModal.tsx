@@ -3,42 +3,56 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogTrigger,
-} from "../ui/alert-dialog";
+} from "../../ui/alert-dialog";
 import { IoMdClose } from "react-icons/io";
-import { RadialChart } from "../ui/RadialChart";
+import { RadialChart } from "../../ui/RadialChart";
 import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { useEffect, useState } from "react";
-import { Image } from "../ui/Image";
-import LogoIcon from "../../assets/icons/LogoIconBlack.svg";
+import { Image } from "../../ui/Image";
+
 import { FaRegEdit } from "react-icons/fa";
 import { LiaTrashAltSolid } from "react-icons/lia";
-import { useStore } from "../../store/store";
-import { Input } from "../ui/Input";
+import { useStore } from "../../../store/store";
+import { Input } from "../../ui/Input";
 import { CiSearch } from "react-icons/ci";
 import axios from "axios";
 import { toast, Toaster } from "sonner";
-import { EventTypes } from "../Events";
-import LogoIconLight from "../../assets/icons/LogoIconLight.svg";
-import LogoIconBlack from "../../assets/icons/LogoIconBlack.svg";
-import { InviteStudentModal } from "./InviteStudentModal";
+import { EventTypes } from "../../Events";
+import LogoIconLight from "../../../assets/icons/LogoIconLight.svg";
+import LogoIconBlack from "../../../assets/icons/LogoIconBlack.svg";
+import { InviteStudentModal } from "../InviteStudentModal";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
+} from "../../ui/accordion";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../ui/table";
+import RatingsTable from "./components/Table";
 
 type GroupModalProps = {
   group: any;
 };
 
+type Rating = {
+  headers: string[];
+  rows: string[][];
+};
 export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
   const [subjects, setSubjects] = useState([]);
   const [students, setStudents] = useState([]);
   const [bannedUsers, setBanned] = useState([]);
   const [events, setEvents] = useState([]);
-  const [ratings, setRatings] = useState([]);
+  const [ratings, setRatings] = useState<Rating>();
   const [searchTerm, setSearchTerm] = useState("");
   const store = useStore();
   const handleGetRating = async () => {
@@ -134,7 +148,11 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
         <div className="flex justify-between items-start">
           <AlertDialogTitle>
             <div className=" w-full font-k2d text-4xl flex gap-2">
-              <Image src={LogoIcon} className="animate-rotate" />
+              {store.theme === "dark" ? (
+                <Image src={LogoIconLight} className="animate-rotate size-10" />
+              ) : (
+                <Image src={LogoIconBlack} className="animate-rotate" />
+              )}
               <h1 className="w-full">{group.name}</h1>
             </div>
           </AlertDialogTitle>
@@ -160,10 +178,14 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
 
         <Tabs defaultValue="Subjects">
           <TabsList>
-            <TabsTrigger value="Subjects">Subjects</TabsTrigger>
-            <TabsTrigger value="Students">Students</TabsTrigger>
-            <TabsTrigger value="Events">Events</TabsTrigger>
-            <TabsTrigger value="Rating">Rating</TabsTrigger>
+            <TabsTrigger value="Subjects">
+              Subjects {subjects.length}
+            </TabsTrigger>
+            <TabsTrigger value="Students">
+              Students {students.length}
+            </TabsTrigger>
+            <TabsTrigger value="Events">Events {events.length}</TabsTrigger>
+            <TabsTrigger value="Rating">Rating </TabsTrigger>
           </TabsList>
 
           <TabsContent value="Subjects">
@@ -215,14 +237,9 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
                     {store.currentUser.roles.includes("Admin") && (
                       <div className="flex gap-1">
                         <div>
-                          <p className="w-12 flex justify-center items-center  h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-emerald-400 transition-colors duration-75">
-                            <FaRegEdit />
-                          </p>
-                        </div>
-                        <div>
-                          <p className="w-12 flex justify-center items-center  h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-red-400 transition-colors duration-75">
+                          <button className="w-12 flex justify-center items-center dark:bg-transparent h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-red-400 transition-colors duration-75">
                             <LiaTrashAltSolid size={20} />
-                          </p>
+                          </button>
                         </div>
                       </div>
                     )}
@@ -356,47 +373,65 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
               ) : (
                 <></>
               )}
-              <div className="w-full">
-                <Accordion type="single" collapsible>
+              <div className="w-auto h-96">
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="h-full py-2 pr-4 mt-3 flex flex-col gap-2 overflow-y-auto"
+                >
                   {events.length > 0 ? (
-                    events
-                      .slice(0, 3)
-                      .map((item: EventTypes, index: number) => (
-                        <AccordionItem
-                          value={item.id}
-                          key={index}
-                          className=" border border-t-2  animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md  px-2 mt-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards"
-                          style={{ animationDelay: `${index * 200}ms` }}
-                        >
-                          <AccordionTrigger className="font-k2d">
-                            {item.title}{" "}
-                            {item.status == "New" ? (
-                              <p className="text-xs bg-emerald-400-200 px-2 py-0.5 rounded-full  lowercase text-emerald-500 font-k2d">
+                    events.map((item: EventTypes, index: number) => (
+                      <AccordionItem
+                        value={item.id}
+                        key={index}
+                        className=" border border-t-2 animate-fadeInOpacity border-b-0 border-l-0 border-r-0 border-emerald-400 rounded-md px-2  shadow-sm hover:shadow-md cursor-pointer transition-colors duration-200 animation-fill-forwards dark:bg-neutral-800"
+                        style={{ animationDelay: `${index * 200}ms` }}
+                      >
+                        <AccordionTrigger className="font-k2d">
+                          {item.title}{" "}
+                          {item.status == "New" ? (
+                            <p className="text-xs bg-emerald-400 px-2 py-0.5 rounded-full  lowercase text-emerald-500 font-k2d">
+                              {item.status}
+                            </p>
+                          ) : (
+                            <p className="text-xs bg-transparent border border-red-500 px-2 py-0.5 rounded-lg  lowercase text-red-500 font-k2d">
+                              {item.status}
+                            </p>
+                          )}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="flex justify-between">
+                            <div>
+                              <span className="text-xs underline lowercase">
+                                Start
+                              </span>{" "}
+                              {formatDate(item.start)} -{" "}
+                              <span className="text-xs underline lowercase">
                                 {" "}
-                                {item.status}
-                              </p>
-                            ) : (
-                              <p className="text-xs bg-red-200 px-2 py-0.5 rounded-full  lowercase text-red-500 font-k2d">
-                                {" "}
-                                {item.status}
-                              </p>
+                                End
+                              </span>{" "}
+                              {formatDate(item.end)}
+                            </div>
+                            {store.currentUser.roles.includes("Admin") && (
+                              <div className="flex gap-2">
+                                <div>
+                                  <button className="w-12 flex justify-center items-center  h-7 text-sm text-center p-1.5 font-k2d bg-white rounded-lg dark:bg-transparent border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-emerald-400 transition-colors duration-75">
+                                    <FaRegEdit size={16} />
+                                  </button>
+                                </div>
+                                <div>
+                                  <button className="w-12 flex justify-center items-center  h-7 text-sm text-center p-1.5 font-k2d bg-white dark:bg-transparent rounded-lg border-2 border-neutral-200 hover:shadow-md cursor-pointer hover:border-red-400 transition-colors duration-75">
+                                    <LiaTrashAltSolid size={20} />
+                                  </button>
+                                </div>
+                              </div>
                             )}
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <span className="text-xs underline lowercase">
-                              Start
-                            </span>{" "}
-                            {formatDate(item.start)} -{" "}
-                            <span className="text-xs underline lowercase">
-                              {" "}
-                              End
-                            </span>{" "}
-                            {formatDate(item.end)}
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))
                   ) : (
-                    <div className="flex justify-center items-center h-auto">
+                    <div className="flex justify-center items-center ">
                       <h1 className="font-k2d text-sm text-neutral-400">
                         Empty
                       </h1>
@@ -406,7 +441,13 @@ export const GroupModal: React.FC<GroupModalProps> = ({ group }) => {
               </div>
             </div>
           </TabsContent>
-          <TabsContent value="Rating"></TabsContent>
+          <TabsContent value="Rating">
+            {ratings ? (
+              <RatingsTable ratings={ratings} />
+            ) : (
+              <div className="text-center">Loading ratings...</div>
+            )}
+          </TabsContent>
         </Tabs>
         <AlertDialogCancel className="absolute top-4 right-4">
           <IoMdClose />

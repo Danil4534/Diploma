@@ -55,7 +55,11 @@ const StudentsPage: React.FC = () => {
     <div className="flex flex-col w-full ">
       <div className="w-full flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          <Image src={LogoIconBlack} />
+          {store.theme === "dark" ? (
+            <Image src={LogoIconLight} className="animate-rotate size-10" />
+          ) : (
+            <Image src={LogoIconBlack} className="animate-rotate size-10" />
+          )}
           <h1 className="font-k2d text-4xl uppercase">Unichub</h1>
         </div>
         <h1 className="font-k2d text-6xl">All Students</h1>

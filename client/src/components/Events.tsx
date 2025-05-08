@@ -62,7 +62,7 @@ const Events: React.FC = () => {
             >
               View All
             </NavLink>
-          </div>{" "}
+          </div>
           <Accordion type="single" collapsible>
             {usersEvents.length > 0 ? (
               usersEvents.slice(0, 3).map((item: EventTypes, index: number) => (

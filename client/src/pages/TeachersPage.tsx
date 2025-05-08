@@ -50,12 +50,16 @@ const TeachersPage: React.FC = () => {
     <div className="flex flex-col w-full">
       <div className="w-full flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          <Image src={LogoIconBlack} />
+          {store.theme === "dark" ? (
+            <Image src={LogoIconLight} className="animate-rotate size-10" />
+          ) : (
+            <Image src={LogoIconBlack} className="animate-rotate" />
+          )}
           <h1 className="font-k2d text-4xl uppercase">Unichub</h1>
         </div>
         <h1 className="font-k2d text-6xl">All Teachers</h1>
       </div>
-      <div className="w-full h-screen gap-4  border shadow-sm dark:border-neutral-800 rounded-2xl p-2">
+      <div className="flex h-full w-full flex-col gap-2 rounded-2xl border border-neutral-200 bg-white  md: dark:border-neutral-700 dark:bg-neutral-900 ">
         <div className="flex items-center justify-between p-4 ">
           <Breadcrumbs />
           <div className="flex w-full gap-2 justify-end">
@@ -67,9 +71,6 @@ const TeachersPage: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="caret-[#34d399] dark:bg-neutral-800 dark:placeholder:text-neutral-400 dark:text-white"
               />
-            </div>
-            <div className="w-10 h-10 bg-slate-800 rounded-full flex justify-center items-center cursor-pointer">
-              <AiOutlineSortAscending color="white" size={24} />
             </div>
           </div>
         </div>

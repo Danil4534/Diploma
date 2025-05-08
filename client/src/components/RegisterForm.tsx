@@ -1,4 +1,4 @@
-import Button from "./ui/Button";
+import Button from "./ui/ButtonLogout";
 import { Input } from "./ui/Input";
 import { Select } from "./ui/Select";
 import { Label } from "./ui/Label";

@@ -2,13 +2,14 @@ import { AiOutlineMessage, AiOutlineSun } from "react-icons/ai";
 import { IoCloudyNightOutline, IoNotificationsOutline } from "react-icons/io5";
 import { useStore } from "../store/store";
 import { Image } from "./ui/Image";
-import Button from "./ui/Button";
+
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import SearchInput from "./SearchInput";
 import { useEffect } from "react";
 import { Switch } from "./ui/switch";
 import { ChatSheet } from "./ChatSheet";
+import ButtonLogout from "./ui/ButtonLogout";
 
 const Header: React.FC = () => {
   const store = useStore();
@@ -81,7 +82,11 @@ const Header: React.FC = () => {
           <IoNotificationsOutline size={20} color="A6A6A6" />
         </div>
         <ChatSheet trigger={<AiOutlineMessage size={20} color="A6A6A6" />} />
-        <Button type="button" content={"Logout"} action={() => LogoutUser()} />
+        <ButtonLogout
+          type="button"
+          content={"Logout"}
+          action={() => LogoutUser()}
+        />
       </div>
     </header>
   );

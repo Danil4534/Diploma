@@ -9,7 +9,8 @@ import BigCalendar from "./BigCalendar/BigCalendar";
 import { SideBarContent } from "./SideBarContent";
 import Events from "./Events";
 import axios from "axios";
-import { Sheet } from "lucide-react";
+import TeacherGroupStatistics from "./TeacherGroupStatistics";
+
 type RadialChartData = {
   label: string;
   count: number;
@@ -17,9 +18,13 @@ type RadialChartData = {
 export const SideBarNav: React.FC = () => {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const [groups, setGroups] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [data, setData] = useState<RadialChartData[]>([]);
+
   const handleGroups = async () => {
     const response = await axios.get(`http://localhost:3000/group`);
+    setGroups(response.data);
     return { label: "Group", count: response.data.length };
   };
   const handleUsers = async () => {
@@ -33,6 +38,7 @@ export const SideBarNav: React.FC = () => {
     const response = await axios.get(
       `http://localhost:3000/user?where=${where}`
     );
+    setTeachers(response.data);
     return { label: "Teachers", count: response.data.length };
   };
   const handleStudents = async () => {
@@ -79,7 +85,7 @@ export const SideBarNav: React.FC = () => {
           <Header />
           <div className="w-full h-full flex flex-row-reverse gap-2 animate-fadeIn">
             <div className="flex flex-col gap-2">
-              <div className="h-full w-[380px] rounded-2xl border border-neutral-200 dark:border-neutral-600 p-4">
+              <div className="h-auto w-[380px] rounded-2xl border border-neutral-200 dark:border-neutral-600 p-4">
                 <EventCalendar />
                 <Events />
               </div>
@@ -100,6 +106,10 @@ export const SideBarNav: React.FC = () => {
                         />
                       </div>
                     ))}
+                    {/* <TeacherGroupStatistics
+                      group={groups}
+                      teachers={teachers}
+                    /> */}
                   </div>
                 </div>
               </div>

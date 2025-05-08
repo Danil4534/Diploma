@@ -11,6 +11,7 @@ import { Input } from "./ui/Input";
 import { RiUnpinLine } from "react-icons/ri";
 import { TiPinOutline } from "react-icons/ti";
 import ChatItem from "./ChatItem";
+import { ScrollArea } from "./ui/scroll-area";
 type ChatSheetProps = {
   trigger?: React.ReactNode;
 };
@@ -85,32 +86,36 @@ export const ChatSheet: React.FC<ChatSheetProps> = ({ trigger }) => {
       </SheetTrigger>
       <SheetContent side={"right"} className="p-0">
         <SheetHeader>
-          <div className="p-2 py-4 h-screen">
+          <div className="p-2 py-4 ">
             <h2 className="text-lg font-k2d mb-2">Chats</h2>
 
             <div className="py-4 h-screen">
               <div className="flex flex-col gap-2 ">
                 {pinnedChats.length > 0 && (
-                  <h1 className="my-1 flex gap-1 font-k2d text-sm items-center">
-                    <TiPinOutline className="text-neutral-400" />
-                    Pinned
-                  </h1>
-                )}
+                  <>
+                    <h1 className="my-1 flex gap-1 font-k2d text-sm items-center">
+                      <TiPinOutline className="text-neutral-400" />
+                      Pinned
+                    </h1>
 
-                {pinnedChats.map((chat: any, index: number) => (
-                  <ChatItem
-                    chat={chat}
-                    index={index}
-                    pinnedChats={pinnedChats}
-                    handlePinnedChat={handlePinnedChat}
-                  />
-                ))}
+                    <ScrollArea className="flex flex-col gap-2 overflow-y-auto w-full max-h-1/3 p-2 bg-neutral-100 rounded-lg">
+                      {pinnedChats.map((chat: any, index: number) => (
+                        <ChatItem
+                          chat={chat}
+                          index={index}
+                          pinnedChats={pinnedChats}
+                          handlePinnedChat={handlePinnedChat}
+                        />
+                      ))}
+                    </ScrollArea>
+                  </>
+                )}
               </div>
 
               <div className="flex justify-between items-center">
                 <h1 className="my-4 flex gap-1 items-center font-k2d text-sm low">
                   <RiUnpinLine className="text-neutral-500" />
-                  All
+                  All {chats.length}
                 </h1>
                 <div className="relative w-3/6">
                   <CiSearch className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -122,7 +127,7 @@ export const ChatSheet: React.FC<ChatSheetProps> = ({ trigger }) => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-2 overflow-y-auto w-full h-screen p-2">
+              <ScrollArea className="flex flex-col gap-2 overflow-y-auto w-full h-[calc(100%-250px)] p-2 bg-neutral-100 rounded-lg">
                 {filteredResults.map((chat: any, index: number) => (
                   <ChatItem
                     chat={chat}
@@ -131,7 +136,7 @@ export const ChatSheet: React.FC<ChatSheetProps> = ({ trigger }) => {
                     handlePinnedChat={handlePinnedChat}
                   />
                 ))}
-              </div>
+              </ScrollArea>
             </div>
           </div>
         </SheetHeader>

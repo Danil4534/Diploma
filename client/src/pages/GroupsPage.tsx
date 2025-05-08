@@ -11,7 +11,7 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog";
-import { GroupModal } from "../components/modalViews/GroupModal";
+import { GroupModal } from "../components/modalViews/GroupModal/GroupModal";
 import { Image } from "../components/ui/Image";
 import { useStore } from "../store/store";
 
@@ -48,7 +48,7 @@ const GroupsPage: React.FC = () => {
         </div>
         <h1 className="font-k2d text-6xl">All Groups</h1>
       </div>
-      <div className="w-full h-screen gap-4  border shadow-sm border-neutral-200 dark:border-neutral-600 rounded-2xl p-2">
+      <div className="w-full h-full border border-neutral-200 dark:border-neutral-600 rounded-2xl justify-center items-center  animate-fadeInOpacity">
         <div className="flex items-center justify-between p-4">
           <Breadcrumbs />
           <div className="relative w-1/6">

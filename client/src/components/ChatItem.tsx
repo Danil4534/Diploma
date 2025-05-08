@@ -20,7 +20,7 @@ export const ChatItem: React.FC<ChatItemProps> = ({
   const store = useStore();
   return (
     <div
-      className="relative p-2 flex w-full h-20 gap-2 shadow-sm border-t-2 border-emerald-300 rounded-lg dark:bg-neutral-800 cursor-pointer hover:bg-white animate-rightIn animate-fill-forwards"
+      className="relative p-2 flex w-full h-20 gap-2 shadow-sm border-t-2 bg-white border-emerald-300  dark:bg-neutral-800 cursor-pointer hover:bg-white animate-rightIn animate-fill-forwards"
       key={index}
       style={{ animationDelay: `${index * 200}ms` }}
     >
