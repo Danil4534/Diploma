@@ -50,9 +50,9 @@ export default function RatingsTable({ ratings }: { ratings: RatingsData }) {
 
         let className = "";
         if (item === "N/A" || (!isNaN(numeric) && numeric < 60)) {
-          className = "bg-red-200 text-red-500 text-center";
+          className = "bg-red-200 text-red-500 text-center w-full";
         } else if (!isNaN(numeric) && numeric >= 60) {
-          className = "bg-green-200 text-green-500 text-center";
+          className = " text-green-500 text-center w-full";
         }
         return <div className={className}>{item}</div>;
       },
@@ -158,7 +158,7 @@ export default function RatingsTable({ ratings }: { ratings: RatingsData }) {
                     />
                   </TableCell>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="p-0">
+                    <TableCell key={cell.id} className="w-auto">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
